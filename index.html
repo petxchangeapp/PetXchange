@@ -7560,12 +7560,40 @@ function missingTableFrom(err) {
 }
 
 // Runs a write, and if the DB is missing a column, retries without it.
+// Every "Add pet", "Post", "Save changes" button in the app funnels through
+// here — so this one function is where a hung or auth-dead write either
+// gets fixed cleanly or, unfixed, silently breaks every save until someone
+// finds Settings → "Fix stuck loading" and clears their device by hand.
 async function writeWithFallback(builder, payload) {
   const data = { ...payload };
   const dropped = [];
   for (let i = 0; i < 8; i++) {
-    const { error } = await builder(data);
+    let res;
+    try {
+      res = await withDeadline(builder(data), QUERY_TIMEOUT_MS, 'Save');
+    } catch (e) {
+      // No response at all in time. Try once to refresh — if the session
+      // was actually dead, recoverSession() already signs the person out
+      // and sends them to the splash screen with a clear message.
+      const recovered = await recoverSession();
+      if (recovered) { try { res = await withDeadline(builder(data), QUERY_TIMEOUT_MS, 'Save (retry)'); }
+                        catch (e2) { throw new Error('TIMED_OUT'); } }
+      else throw new Error('TIMED_OUT');
+    }
+    const { error } = res;
     if (!error) return { dropped };
+
+    // A fast, definitive rejection rather than a hang — e.g. an expired
+    // token. Same recovery path, so this doesn't take a full timeout to notice.
+    if (/jwt|token|session/i.test(error.message || '') && /expired|invalid|not.?found/i.test(error.message || '')) {
+      const recovered = await recoverSession();
+      if (recovered) { try { res = await withDeadline(builder(data), QUERY_TIMEOUT_MS, 'Save (retry)'); }
+                        catch (e2) { throw new Error('TIMED_OUT'); }
+                        if (!res.error) return { dropped };
+                        throw res.error; }
+      throw new Error('SESSION_DEAD');   // recoverSession() has already signed them out and shown why
+    }
+
     const col = missingColumnFrom(error);
     if (col && Object.prototype.hasOwnProperty.call(data, col)) {
       delete data[col];
@@ -7698,6 +7726,8 @@ function handleErrorText(e, fallback) {
   const m = (e && e.message) || '';
   if (m.includes('duplicate') || m.includes('unique')) return 'That ID is already taken. Pick another.';
   if (m.includes('column')) return 'Something went wrong saving that. Please try again.';
+  if (m === 'TIMED_OUT') return 'That took too long to respond. Check your connection and try again.';
+  if (m === 'SESSION_DEAD') return null;   // recoverSession() already explained this and moved to sign-in
   return fallback;
 }
 
@@ -9393,6 +9423,7 @@ if(window.matchMedia){
 
 let toastT;
 function showToast(msg){
+  if (!msg) return;   // e.g. handleErrorText() returning null when a clearer message already showed
   const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
   clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2800);
 }
