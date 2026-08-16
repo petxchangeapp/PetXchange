@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PetXchange — Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231C1C1E'/%3E%3Ctext x='32' y='45' font-size='34' text-anchor='middle' fill='white' font-family='system-ui' font-weight='bold'%3EA%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#F4F2F0;--card:#FFFFFF;--bd:#E4DAD5;--text:#1C1C1E;--t2:#6B5F5A;--t3:#9C918C;
+  --coral:#D85A30;--coral-l:#FAECE7;--coral-m:#993C1D;
+  --teal:#1D9E75;--teal-l:#E1F5EE;--teal-m:#0F6E56;
+  --red:#C8372D;--red-l:#FBE9E7;
+  --amber:#BA7517;--amber-l:#FAEEDA;--amber-m:#854F0B;
+  --blue:#2C6FB5;--blue-l:#E5EFF8;--blue-m:#1B4C80;
+  --purple:#534AB7;--purple-l:#EEEDFE;--purple-m:#3C3489;
+  --r:14px;--rs:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.45}
+button{font-family:inherit}
+a{color:var(--coral-m)}
+
+/* ---------- login gate ---------- */
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.gate-card{background:var(--card);border-radius:var(--r);padding:32px;max-width:390px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.08)}
+.gate-logo{width:54px;height:54px;border-radius:15px;background:var(--text);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 16px}
+.gate-title{font-size:21px;font-weight:800;text-align:center}
+.gate-sub{font-size:13px;color:var(--t2);text-align:center;margin:5px 0 22px}
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:5px}
+.fld input,.fld select,.fld textarea{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:var(--rs);padding:11px 13px;font-size:14px;font-family:inherit;color:var(--text);outline:none}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--coral)}
+.btn{width:100%;background:var(--text);color:#fff;border:none;border-radius:100px;padding:13px;font-size:14px;font-weight:700;cursor:pointer}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.ghost{background:var(--bg);color:var(--text);border:1px solid var(--bd)}
+.err{background:var(--red-l);color:var(--red);border-radius:var(--rs);padding:10px 13px;font-size:13px;margin-bottom:14px;display:none}
+.err.show{display:block}
+
+/* ---------- shell ---------- */
+#shell{display:none;min-height:100vh}
+.topbar{background:var(--text);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50}
+.topbar .brand{font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px}
+.topbar .brand i{font-size:19px}
+.topbar .spacer{flex:1}
+.topbar .who{font-size:12.5px;opacity:.85}
+.topbar button{background:rgba(255,255,255,.14);color:#fff;border:none;border-radius:100px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer}
+.tabs{background:var(--card);border-bottom:1px solid var(--bd);display:flex;gap:2px;padding:0 12px;overflow-x:auto;position:sticky;top:47px;z-index:40}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:none;border:none;padding:13px 15px;font-size:13.5px;font-weight:600;color:var(--t2);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.tab.on{color:var(--coral-m);border-bottom-color:var(--coral)}
+.tab .pip{background:var(--red);color:#fff;font-size:10px;font-weight:800;min-width:17px;height:17px;border-radius:100px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+.wrap{max-width:1160px;margin:0 auto;padding:20px}
+.pane{display:none}
+.pane.on{display:block}
+
+.empty-detail{font-size:12.5px;color:var(--t2);line-height:1.6;max-width:440px;margin:8px auto 0}
+.empty-detail code{background:var(--bg);border:1px solid var(--bd);border-radius:5px;padding:1px 5px;font-size:12px}
+.toolbar-count{font-size:12.5px;color:var(--t2);font-weight:600;align-self:center}
+
+/* ---------- stats ---------- */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;margin-bottom:22px}
+.stat{background:var(--card);border-radius:var(--r);padding:16px 18px;border:1px solid var(--bd)}
+.stat .n{font-size:26px;font-weight:800;line-height:1.1}
+.stat .l{font-size:12px;color:var(--t2);margin-top:3px}
+.stat .sub{font-size:11px;color:var(--teal-m);margin-top:4px;font-weight:600}
+.stat.alert .n{color:var(--red)}
+
+/* ---------- cards & rows ---------- */
+.sec-title{font-size:15px;font-weight:800;margin:22px 0 11px;display:flex;align-items:center;gap:9px}
+.sec-title .count{font-size:12px;font-weight:600;color:var(--t2)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:15px 17px;margin-bottom:10px}
+.card.flag{border-left:3px solid var(--red)}
+.row-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:9px}
+.row-main{flex:1;min-width:0}
+.row-title{font-size:14.5px;font-weight:700}
+.row-sub{font-size:12px;color:var(--t2);margin-top:2px}
+.body-text{font-size:13.5px;line-height:1.5;background:var(--bg);border-radius:var(--rs);padding:11px 13px;margin:9px 0;white-space:pre-wrap;word-break:break-word}
+.acts{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.act{border:1px solid var(--bd);background:var(--card);border-radius:100px;padding:7px 13px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--text);display:inline-flex;align-items:center;gap:5px}
+.act:hover{background:var(--bg)}
+.act.danger{color:var(--red);border-color:var(--red)}
+.act.warn{color:var(--amber-m);border-color:var(--amber)}
+.act.good{color:var(--teal-m);border-color:var(--teal)}
+.act.solid{background:var(--text);color:#fff;border-color:var(--text)}
+.tag{display:inline-flex;align-items:center;gap:4px;border-radius:100px;padding:3px 9px;font-size:11px;font-weight:700}
+.tag.red{background:var(--red-l);color:var(--red)}
+.tag.amber{background:var(--amber-l);color:var(--amber-m)}
+.tag.teal{background:var(--teal-l);color:var(--teal-m)}
+.tag.blue{background:var(--blue-l);color:var(--blue-m)}
+.tag.grey{background:var(--bg);color:var(--t2)}
+.tag.purple{background:var(--purple-l);color:var(--purple-m)}
+.thumb{width:52px;height:52px;border-radius:var(--rs);object-fit:cover;flex-shrink:0;background:var(--bg)}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--coral-l);color:var(--coral-m);display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:15px;align-items:center}
+.toolbar input,.toolbar select{background:var(--card);border:1px solid var(--bd);border-radius:100px;padding:9px 15px;font-size:13px;font-family:inherit;outline:none;color:var(--text)}
+.toolbar input{min-width:230px}
+.empty{text-align:center;padding:46px 20px;color:var(--t3)}
+.empty i{font-size:40px;opacity:.4;display:block;margin-bottom:10px}
+.empty p{font-size:15px;font-weight:600;color:var(--t2)}
+.empty span{font-size:13px;display:block;margin-top:4px}
+.spin{width:22px;height:22px;border:2.5px solid var(--bd);border-top-color:var(--coral);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+.loading{text-align:center;padding:40px;color:var(--t3);font-size:13px}
+.loading .spin{margin-bottom:10px}
+
+/* ---------- modal ---------- */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal.on{display:flex}
+.modal-box{background:var(--card);border-radius:var(--r);padding:24px;max-width:440px;width:100%;max-height:88vh;overflow-y:auto}
+.modal-title{font-size:17px;font-weight:800;margin-bottom:6px}
+.modal-sub{font-size:13px;color:var(--t2);margin-bottom:18px;line-height:1.5}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--text);color:#fff;padding:12px 22px;border-radius:100px;font-size:13.5px;font-weight:600;z-index:300;transition:transform .25s;max-width:90vw;text-align:center}
+.toast.on{transform:translateX(-50%) translateY(0)}
+@media(max-width:640px){
+  .wrap{padding:14px}
+  .toolbar input{min-width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN GATE ============ -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-logo"><i class="ti ti-shield-lock"></i></div>
+    <div class="gate-title">PetXchange Admin</div>
+    <div class="gate-sub">Moderator access only</div>
+    <div class="err" id="gate-err"></div>
+    <div class="fld"><label>Email</label><input type="email" id="g-email" autocomplete="email" placeholder="you@email.com"></div>
+    <div class="fld"><label>Password</label><input type="password" id="g-pass" autocomplete="current-password" onkeydown="if(event.key==='Enter')adminLogin()"></div>
+    <button class="btn" id="g-btn" onclick="adminLogin()">Sign in</button>
+    <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--t3);line-height:1.5;">
+      Admin rights are granted in the database.<br>Signing in with a normal account won't unlock this.
+    </div>
+  </div>
+</div>
+
+<!-- ============ ADMIN SHELL ============ -->
+<div id="shell">
+  <div class="topbar">
+    <div class="brand"><i class="ti ti-shield-lock"></i> PetXchange Admin</div>
+    <div class="spacer"></div>
+    <div class="who" id="who"></div>
+    <button onclick="refreshAll()"><i class="ti ti-refresh"></i></button>
+    <button onclick="adminLogout()">Sign out</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-pane="dash"    onclick="showPane('dash',this)"><i class="ti ti-chart-bar"></i> Dashboard</button>
+    <button class="tab"    data-pane="reports" onclick="showPane('reports',this)"><i class="ti ti-flag"></i> Reports <span class="pip" id="pip-reports" style="display:none">0</span></button>
+    <button class="tab"    data-pane="posts"   onclick="showPane('posts',this)"><i class="ti ti-news"></i> Posts</button>
+    <button class="tab"    data-pane="users"   onclick="showPane('users',this)"><i class="ti ti-users"></i> Users</button>
+    <button class="tab"    data-pane="audit"   onclick="showPane('audit',this)"><i class="ti ti-history"></i> Audit log</button>
+  </div>
+
+  <div class="wrap">
+    <div class="pane on" id="pane-dash">
+      <div class="stat-grid" id="stat-grid"><div class="loading"><div class="spin"></div>Loading…</div></div>
+      <div class="sec-title"><i class="ti ti-flag"></i> Needs your attention</div>
+      <div id="dash-queue"></div>
+    </div>
+
+    <div class="pane" id="pane-reports">
+      <div class="toolbar">
+        <select id="rep-status" onchange="loadReports()">
+          <option value="open">Open</option>
+          <option value="reviewing">Reviewing</option>
+          <option value="actioned">Actioned</option>
+          <option value="dismissed">Dismissed</option>
+          <option value="all">All</option>
+        </select>
+      </div>
+      <div id="reports-list"></div>
+    </div>
+
+    <div class="pane" id="pane-posts">
+      <div class="toolbar">
+        <input type="text" id="post-search" placeholder="Search post text…" onkeydown="if(event.key==='Enter')loadPosts()">
+        <select id="post-filter" onchange="loadPosts()">
+          <option value="all">All posts</option>
+          <option value="reported">Reported</option>
+          <option value="hidden">Hidden</option>
+          <option value="lost">Lost</option>
+          <option value="found">Found</option>
+          <option value="adopt">Adoption</option>
+          <option value="care_request">Care requests</option>
+          <option value="service_offer">Service offers</option>
+          <option value="grievance">Grievance</option>
+          <option value="general">Updates</option>
+        </select>
+        <button class="act solid" onclick="loadPosts()">Search</button>
+      </div>
+      <div id="posts-list"></div>
+    </div>
+
+    <div class="pane" id="pane-users">
+      <div class="toolbar">
+        <input type="text" id="user-search" placeholder="Name, @handle or email…" onkeydown="if(event.key==='Enter')loadUsers()">
+        <select id="user-status" onchange="loadUsers()">
+          <option value="all">All users</option>
+          <option value="active">Active</option>
+          <option value="warned">Warned</option>
+          <option value="suspended">Suspended</option>
+          <option value="banned">Banned</option>
+        </select>
+        <button class="act solid" onclick="loadUsers()">Search</button>
+        <span id="user-count" class="toolbar-count"></span>
+      </div>
+      <div id="users-list"></div>
+    </div>
+
+    <div class="pane" id="pane-audit">
+      <div class="sec-title"><i class="ti ti-history"></i> Every admin action <span class="count">newest first</span></div>
+      <div id="audit-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ACTION MODAL ============ -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title">Confirm</div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div id="modal-fields"></div>
+    <div style="display:flex;gap:9px;margin-top:18px;">
+      <button class="btn ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn" id="modal-go" onclick="modalConfirm()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+// ============================================================
+// PetXchange Admin
+// Every privileged call below is a database function that re-checks
+// is_admin() on the server. This page is a convenience layer — it grants
+// no power on its own. Opening it without admin rights shows an interface
+// where every action is refused.
+// ============================================================
+// ============================================================
+//  >>> PASTE YOUR NEW SUPABASE DETAILS ON THE TWO LINES BELOW <<<
+//
+//  Find them in your NEW Supabase project:
+//    Project Settings  ->  API
+//      "Project URL"        goes in SUPABASE_URL
+//      "anon public" key    goes in SUPABASE_ANON
+//
+//  Keep the quote marks. Replace only the text between them.
+//  The anon key is safe to publish - it is designed to be public,
+//  and the row level security rules in the SQL file protect your data.
+// ============================================================
+const SUPABASE_URL  = 'PASTE_YOUR_PROJECT_URL_HERE';
+const SUPABASE_ANON = 'PASTE_YOUR_ANON_KEY_HERE';
+
+let sb = null, me = null, myRole = null;
+
+try {
+  sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+    auth: { persistSession: true, autoRefreshToken: true,
+            lock: async (_n, _t, fn) => await fn() }
+  });
+} catch (e) {
+  document.getElementById('gate-err').textContent = 'Could not reach the server.';
+  document.getElementById('gate-err').classList.add('show');
+}
+
+// ---------- helpers ----------
+const $ = id => document.getElementById(id);
+function esc(v){ return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+let toastT;
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),2600); }
+function gateErr(msg){ const e=$('gate-err'); e.textContent=msg; e.classList.add('show'); }
+function initials(n){ return (n||'?').trim().charAt(0).toUpperCase(); }
+function ago(ts){
+  if(!ts) return '';
+  let str=String(ts);
+  if(/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}/.test(str) && !/[zZ]|[+-]\d{2}:?\d{2}$/.test(str)) str=str.replace(' ','T')+'Z';
+  const d=new Date(str); if(isNaN(d)) return '';
+  let s=(Date.now()-d.getTime())/1000; if(s<0)s=0;
+  if(s<60) return 'just now';
+  if(s<3600) return Math.round(s/60)+'m ago';
+  if(s<86400) return Math.round(s/3600)+'h ago';
+  if(s<604800) return Math.round(s/86400)+'d ago';
+  return d.toLocaleDateString([], {day:'numeric',month:'short'});
+}
+
+// ---------- auth ----------
+async function adminLogin(){
+  const email=$('g-email').value.trim(), pass=$('g-pass').value;
+  $('gate-err').classList.remove('show');
+  if(!email||!pass){ gateErr('Enter your email and password.'); return; }
+  const btn=$('g-btn'); btn.disabled=true; btn.textContent='Signing in…';
+  try{
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if(error) throw error;
+    me = data.user;
+    await checkAdminAndEnter();
+  }catch(e){
+    gateErr(e.message==='Invalid login credentials' ? 'Wrong email or password.' : (e.message||'Sign in failed.'));
+    try{ await sb.auth.signOut({scope:'local'}); }catch(e2){}
+  }finally{ btn.disabled=false; btn.textContent='Sign in'; }
+}
+
+// The real gate. Asks the database whether this account has admin rights.
+async function checkAdminAndEnter(){
+  try{
+    const { data, error } = await sb.rpc('my_account_status');
+    if(error) throw error;
+    const st = typeof data==='string' ? JSON.parse(data) : data;
+    if(!st || !st.is_admin){
+      gateErr('This account does not have admin access.');
+      await sb.auth.signOut({scope:'local'});
+      me=null;
+      return;
+    }
+    myRole = st.admin_role || 'moderator';
+    $('gate').style.display='none';
+    $('shell').style.display='block';
+    $('who').textContent = (me.email||'') + ' · ' + myRole;
+    refreshAll();
+  }catch(e){
+    console.log('admin check:', e);
+    gateErr('Could not verify admin access. Make sure the admin SQL has been run.');
+  }
+}
+
+async function adminLogout(){
+  try{ await sb.auth.signOut(); }catch(e){}
+  location.reload();
+}
+
+// ---------- navigation ----------
+function showPane(name, el){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  $('pane-'+name).classList.add('on');
+  if(el) el.classList.add('on');
+  if(name==='reports') loadReports();
+  if(name==='posts')   loadPosts();
+  if(name==='users')   loadUsers();
+  if(name==='audit')   loadAudit();
+}
+
+function refreshAll(){
+  loadStats();
+  loadReports(true);
+}
+
+// ---------- dashboard ----------
+async function loadStats(){
+  try{
+    const { data, error } = await sb.rpc('admin_stats');
+    if(error) throw error;
+    const s = typeof data==='string' ? JSON.parse(data) : data;
+    if(s.error){ $('stat-grid').innerHTML='<div class="empty"><i class="ti ti-lock"></i><p>Access denied</p></div>'; return; }
+    $('stat-grid').innerHTML = `
+      <div class="stat ${s.reports_open>0?'alert':''}"><div class="n">${s.reports_open}</div><div class="l">Open reports</div></div>
+      <div class="stat"><div class="n">${s.users_total}</div><div class="l">Users</div><div class="sub">+${s.users_new_7d} this week</div></div>
+      <div class="stat"><div class="n">${s.posts_total}</div><div class="l">Posts</div><div class="sub">+${s.posts_new_7d} this week</div></div>
+      <div class="stat"><div class="n">${s.pets_total}</div><div class="l">Pets</div></div>
+      <div class="stat"><div class="n">${s.businesses_total}</div><div class="l">Businesses</div></div>
+      <div class="stat"><div class="n">${s.bookings_total}</div><div class="l">Bookings</div></div>
+      <div class="stat"><div class="n">${s.messages_7d}</div><div class="l">Messages (7d)</div></div>
+      <div class="stat ${s.users_suspended>0?'alert':''}"><div class="n">${s.users_suspended}</div><div class="l">Restricted users</div></div>
+      <div class="stat"><div class="n">${s.posts_hidden}</div><div class="l">Hidden posts</div></div>`;
+  }catch(e){
+    console.log('stats:', e);
+    $('stat-grid').innerHTML='<div class="empty"><i class="ti ti-alert-circle"></i><p>Could not load stats</p><span>Has the admin SQL been run?</span></div>';
+  }
+}
+
+// ---------- reports ----------
+const REASONS = {
+  spam:['Spam','grey'], harassment:['Harassment','red'], animal_welfare:['Animal welfare','red'],
+  scam:['Scam / fraud','red'], misinformation:['Misinformation','amber'],
+  inappropriate:['Inappropriate','amber'], fake:['Fake listing','amber'], other:['Other','grey']
+};
+
+async function loadReports(quietly){
+  const status = $('rep-status').value;
+  if(!quietly) $('reports-list').innerHTML='<div class="loading"><div class="spin"></div>Loading…</div>';
+  try{
+    const { data, error } = await sb.rpc('admin_list_reports', { p_status: status });
+    if(error) throw error;
+    const rows = data||[];
+
+    // badge + dashboard queue always reflect open reports
+    if(status==='open' || quietly){
+      const openCount = status==='open' ? rows.length : null;
+      if(openCount!=null){
+        const pip=$('pip-reports');
+        pip.textContent=openCount; pip.style.display=openCount?'inline-flex':'none';
+        $('dash-queue').innerHTML = openCount
+          ? rows.slice(0,5).map(reportCard).join('')
+          : '<div class="empty"><i class="ti ti-circle-check"></i><p>Nothing to review</p><span>No open reports right now.</span></div>';
+      }
+    }
+    if(quietly) return;
+
+    $('reports-list').innerHTML = rows.length
+      ? rows.map(reportCard).join('')
+      : `<div class="empty"><i class="ti ti-circle-check"></i><p>No ${status==='all'?'':status} reports</p><span>Nothing here.</span></div>`;
+  }catch(e){
+    console.log('reports:', e);
+    $('reports-list').innerHTML='<div class="empty"><i class="ti ti-alert-circle"></i><p>Could not load reports</p></div>';
+  }
+}
+
+function reportCard(r){
+  const rs = REASONS[r.reason] || ['Reported','grey'];
+  const many = r.report_count>1;
+  return `<div class="card flag">
+    <div class="row-top">
+      <div class="row-main">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span class="tag ${rs[1]}">${rs[0]}</span>
+          <span class="tag grey">${esc(r.target_type)}</span>
+          ${many?`<span class="tag red">${r.report_count} reports</span>`:''}
+          ${r.is_hidden?'<span class="tag amber">Hidden</span>':''}
+          ${r.status!=='open'?`<span class="tag teal">${esc(r.status)}</span>`:''}
+        </div>
+        <div class="row-title">${esc(r.content_author_name||'Unknown')}${r.content_preview?'':' — content deleted'}</div>
+        <div class="row-sub">Reported by ${esc(r.reporter_name||'someone')}${r.reporter_handle?' @'+esc(r.reporter_handle):''} · ${ago(r.created_at)}</div>
+      </div>
+    </div>
+    ${r.content_preview?`<div class="body-text">${esc(r.content_preview)}</div>`:''}
+    ${r.details?`<div class="row-sub"><b>Their note:</b> ${esc(r.details)}</div>`:''}
+    <div class="acts">
+      ${r.target_type==='post' && r.content_preview ? (r.is_hidden
+        ? `<button class="act good" onclick="modPost('${r.target_id}','unhide','${r.id}')"><i class="ti ti-eye"></i> Unhide</button>`
+        : `<button class="act warn" onclick="modPost('${r.target_id}','hide','${r.id}')"><i class="ti ti-eye-off"></i> Hide post</button>`) : ''}
+      ${r.target_type==='post' && r.content_preview ? `<button class="act danger" onclick="modPost('${r.target_id}','delete','${r.id}')"><i class="ti ti-trash"></i> Delete post</button>` : ''}
+      ${r.target_type==='comment' && r.content_preview ? `<button class="act danger" onclick="delComment('${r.target_id}','${r.id}')"><i class="ti ti-trash"></i> Delete comment</button>` : ''}
+      ${r.content_author ? `<button class="act warn" onclick="userAction('${r.content_author}','warned','${esc(r.content_author_name||'')}')"><i class="ti ti-alert-triangle"></i> Warn author</button>` : ''}
+      ${r.content_author ? `<button class="act danger" onclick="userAction('${r.content_author}','suspended','${esc(r.content_author_name||'')}')"><i class="ti ti-ban"></i> Suspend author</button>` : ''}
+      <button class="act good" onclick="resolveReport('${r.id}','dismissed')"><i class="ti ti-check"></i> Dismiss</button>
+    </div>
+  </div>`;
+}
+
+async function resolveReport(id, status, note){
+  try{
+    const { data, error } = await sb.rpc('admin_resolve_report', { p_report_id:id, p_status:status, p_note:note||null });
+    if(error) throw error;
+    if(data==='forbidden'){ toast('Not permitted'); return; }
+    toast(status==='dismissed'?'Report dismissed':'Report updated');
+    loadReports(); loadStats();
+  }catch(e){ console.log(e); toast('Could not update the report'); }
+}
+</script>
+
+<script>
+// ---------- posts ----------
+const PTYPE = {
+  lost:['Lost','red'], found:['Found','blue'], adopt:['Adoption','teal'],
+  care_request:['Care needed','purple'], service_offer:['Offering help','teal'],
+  grievance:['Grievance','red'], help:['Help','amber'], general:['Update','grey'],
+  funny:['Moment','grey'], playdate:['Playdate','grey'], achievement:['Achievement','grey']
+};
+
+async function loadPosts(){
+  $('posts-list').innerHTML='<div class="loading"><div class="spin"></div>Loading…</div>';
+  try{
+    const { data, error } = await sb.rpc('admin_list_posts', {
+      p_filter: $('post-filter').value,
+      p_search: $('post-search').value.trim() || null
+    });
+    if(error) throw error;
+    const rows=data||[];
+    $('posts-list').innerHTML = rows.length ? rows.map(postCard).join('')
+      : '<div class="empty"><i class="ti ti-news"></i><p>No posts match</p><span>Try a different filter.</span></div>';
+  }catch(e){
+    console.log('posts:', e);
+    $('posts-list').innerHTML='<div class="empty"><i class="ti ti-alert-circle"></i><p>Could not load posts</p></div>';
+  }
+}
+
+function postCard(p){
+  const t = PTYPE[p.post_type] || ['Post','grey'];
+  const isVid = /video/i.test(p.media_url||'') || /\.(mp4|mov|webm)$/i.test(p.media_url||'');
+  return `<div class="card ${p.report_count>0?'flag':''}">
+    <div class="row-top">
+      ${p.media_url && !isVid ? `<img class="thumb" src="${esc(p.media_url)}" alt="" loading="lazy">` : `<div class="avatar">${initials(p.author_name)}</div>`}
+      <div class="row-main">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:5px;">
+          <span class="tag ${t[1]}">${t[0]}</span>
+          ${p.is_hidden?'<span class="tag amber">Hidden</span>':''}
+          ${p.report_count>0?`<span class="tag red">${p.report_count} report${p.report_count>1?'s':''}</span>`:''}
+        </div>
+        <div class="row-title">${esc(p.author_name||'Unknown')}${p.author_handle?' <span style="font-weight:500;color:var(--t2);">@'+esc(p.author_handle)+'</span>':''}</div>
+        <div class="row-sub">${ago(p.created_at)} · ${p.likes_count} likes · ${p.comments_count} comments${p.location_text?' · '+esc(p.location_text):''}</div>
+      </div>
+    </div>
+    ${p.body?`<div class="body-text">${esc(p.body.slice(0,400))}${p.body.length>400?'…':''}</div>`:''}
+    <div class="acts">
+      ${p.is_hidden
+        ? `<button class="act good" onclick="modPost('${p.id}','unhide')"><i class="ti ti-eye"></i> Unhide</button>`
+        : `<button class="act warn" onclick="modPost('${p.id}','hide')"><i class="ti ti-eye-off"></i> Hide</button>`}
+      <button class="act danger" onclick="modPost('${p.id}','delete')"><i class="ti ti-trash"></i> Delete</button>
+      <button class="act warn" onclick="userAction('${p.author_id}','warned','${esc(p.author_name||'')}')"><i class="ti ti-alert-triangle"></i> Warn author</button>
+    </div>
+  </div>`;
+}
+
+async function modPost(id, action, reportId){
+  if(action==='delete' && !confirm('Delete this post permanently? This cannot be undone.')) return;
+  try{
+    const { data, error } = await sb.rpc('admin_moderate_post', { p_post_id:id, p_action:action, p_reason:null });
+    if(error) throw error;
+    if(data==='forbidden'){ toast('Not permitted'); return; }
+    toast(action==='delete'?'Post deleted':action==='hide'?'Post hidden':'Post restored');
+    if(reportId) await resolveReport(reportId,'actioned','Post '+action+'d');
+    else { loadPosts(); loadStats(); }
+  }catch(e){ console.log(e); toast('Action failed'); }
+}
+
+async function delComment(id, reportId){
+  if(!confirm('Delete this comment permanently?')) return;
+  try{
+    const { data, error } = await sb.rpc('admin_delete_comment', { p_comment_id:id, p_reason:null });
+    if(error) throw error;
+    if(data==='forbidden'){ toast('Not permitted'); return; }
+    toast('Comment deleted');
+    if(reportId) await resolveReport(reportId,'actioned','Comment deleted');
+  }catch(e){ console.log(e); toast('Action failed'); }
+}
+
+// ---------- users ----------
+const USTATUS = {
+  active:['Active','teal'], warned:['Warned','amber'],
+  suspended:['Suspended','red'], banned:['Banned','red']
+};
+
+async function loadUsers(){
+  $('users-list').innerHTML='<div class="loading"><div class="spin"></div>Loading…</div>';
+  const search = $('user-search').value.trim();
+  const status = $('user-status').value;
+  try{
+    const { data, error } = await sb.rpc('admin_list_users', {
+      p_search: search || null,
+      p_status: status
+    });
+    if(error) throw error;
+    const rows = data || [];
+    $('user-count').textContent = rows.length
+      ? rows.length + (rows.length === 200 ? '+ users' : ' user' + (rows.length>1?'s':''))
+      : '';
+    if(rows.length){
+      $('users-list').innerHTML = rows.map(userCard).join('');
+      return;
+    }
+    // Empty with no filters applied is almost never "there are no users".
+    // Work out which of the three real causes it is and say so, rather than
+    // leaving an empty state that looks the same for all of them.
+    if(search || status !== 'all'){
+      $('users-list').innerHTML = '<div class="empty"><i class="ti ti-users"></i>' +
+        '<p>No users match those filters</p></div>';
+      return;
+    }
+    await diagnoseEmptyUsers();
+  }catch(e){
+    console.log('users:', e);
+    const msg = (e && e.message) || String(e);
+    const missing = /could not find the function|does not exist|schema cache/i.test(msg);
+    $('users-list').innerHTML = '<div class="empty"><i class="ti ti-alert-circle"></i>' +
+      '<p>Could not load users</p>' +
+      '<div class="empty-detail">' + esc(msg) + '</div>' +
+      (missing
+        ? '<div class="empty-detail">The <code>admin_list_users</code> function is not in this database. ' +
+          'Run <code>petxchange_admin.sql</code> in the Supabase SQL editor, then reload.</div>'
+        : '') +
+      '</div>';
+  }
+}
+
+// Distinguishes "no accounts exist" from "this admin session cannot read them".
+async function diagnoseEmptyUsers(){
+  let profileCount = null, whoami = null;
+  try{
+    const { count } = await sb.from('profiles').select('id', { count:'exact', head:true });
+    profileCount = count;
+  }catch(e){ console.log('profile count:', e); }
+  try{
+    const { data } = await sb.rpc('my_account_status');
+    whoami = typeof data === 'string' ? JSON.parse(data) : data;
+  }catch(e){ console.log('whoami:', e); }
+
+  if(profileCount === 0){
+    $('users-list').innerHTML = '<div class="empty"><i class="ti ti-users"></i>' +
+      '<p>No accounts yet</p>' +
+      '<div class="empty-detail">Nobody has signed up on the app yet. ' +
+      'Accounts appear here as soon as someone creates one.</div></div>';
+    return;
+  }
+  if(whoami && whoami.is_admin === false){
+    $('users-list').innerHTML = '<div class="empty"><i class="ti ti-shield-x"></i>' +
+      '<p>This account is not an admin in the database</p>' +
+      '<div class="empty-detail">Add yourself to the <code>admins</code> table — see the last section of ' +
+      '<code>petxchange_admin.sql</code> — then sign out and back in.</div></div>';
+    return;
+  }
+  $('users-list').innerHTML = '<div class="empty"><i class="ti ti-alert-circle"></i>' +
+    '<p>' + (profileCount === null
+        ? 'The user list came back empty'
+        : profileCount + ' account' + (profileCount===1?'':'s') + ' exist, but none were returned') + '</p>' +
+    '<div class="empty-detail">The <code>admin_list_users</code> function returned no rows. ' +
+    'The usual cause is an older copy of it still in the database — re-run <code>petxchange_admin.sql</code> ' +
+    'in the Supabase SQL editor and reload this page.</div></div>';
+}
+
+function userCard(u){
+  const st = USTATUS[u.status] || USTATUS.active;
+  const until = u.suspended_until ? new Date(u.suspended_until) : null;
+  const stillOut = until && until > new Date();
+  return `<div class="card ${u.status==='banned'||u.status==='suspended'?'flag':''}">
+    <div class="row-top">
+      <div class="avatar">${initials(u.full_name)}</div>
+      <div class="row-main">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:5px;">
+          <span class="tag ${st[1]}">${st[0]}</span>
+          ${u.is_admin?'<span class="tag purple">Admin</span>':''}
+          ${u.role==='provider'?'<span class="tag blue">Provider</span>':''}
+          ${u.warning_count>0?`<span class="tag amber">${u.warning_count} warning${u.warning_count>1?'s':''}</span>`:''}
+          ${u.report_count>0?`<span class="tag red">${u.report_count} reported</span>`:''}
+        </div>
+        <div class="row-title">${esc(u.full_name||'No name')}${u.handle?' <span style="font-weight:500;color:var(--t2);">@'+esc(u.handle)+'</span>':''}</div>
+        <div class="row-sub">${esc(u.email||'')}${u.city?' · '+esc(u.city):''} · joined ${ago(u.created_at)}</div>
+        <div class="row-sub">${u.pet_count} pets · ${u.post_count} posts${stillOut?' · suspended until '+until.toLocaleDateString():''}</div>
+        ${u.status_reason?`<div class="row-sub" style="margin-top:4px;"><b>Reason:</b> ${esc(u.status_reason)}</div>`:''}
+      </div>
+    </div>
+    <div class="acts">
+      ${u.status!=='active'?`<button class="act good" onclick="userAction('${u.id}','active','${esc(u.full_name||'')}')"><i class="ti ti-check"></i> Reinstate</button>`:''}
+      ${u.status!=='warned'?`<button class="act warn" onclick="userAction('${u.id}','warned','${esc(u.full_name||'')}')"><i class="ti ti-alert-triangle"></i> Warn</button>`:''}
+      ${u.status!=='suspended'?`<button class="act danger" onclick="userAction('${u.id}','suspended','${esc(u.full_name||'')}')"><i class="ti ti-clock-pause"></i> Suspend</button>`:''}
+      ${u.status!=='banned'?`<button class="act danger" onclick="userAction('${u.id}','banned','${esc(u.full_name||'')}')"><i class="ti ti-ban"></i> Ban</button>`:''}
+      ${myRole==='owner'&&!u.is_admin?`<button class="act" onclick="grantAdmin('${u.id}','${esc(u.full_name||'')}')"><i class="ti ti-shield-plus"></i> Make moderator</button>`:''}
+      ${myRole==='owner'&&u.is_admin?`<button class="act" onclick="revokeAdmin('${u.id}','${esc(u.full_name||'')}')"><i class="ti ti-shield-minus"></i> Remove admin</button>`:''}
+      ${myRole==='owner'?`<button class="act danger" onclick="deleteUser('${u.id}','${esc(u.full_name||'')}')"><i class="ti ti-trash"></i> Delete account</button>`:''}
+    </div>
+  </div>`;
+}
+
+// ---------- action modal ----------
+let modalGo = null;
+function openModal(title, sub, fieldsHtml, onConfirm, confirmLabel){
+  $('modal-title').textContent=title;
+  $('modal-sub').textContent=sub||'';
+  $('modal-fields').innerHTML=fieldsHtml||'';
+  $('modal-go').textContent=confirmLabel||'Confirm';
+  modalGo=onConfirm;
+  $('modal').classList.add('on');
+}
+function closeModal(){ $('modal').classList.remove('on'); modalGo=null; }
+function modalConfirm(){ if(modalGo) modalGo(); }
+$('modal').addEventListener('click', e=>{ if(e.target.id==='modal') closeModal(); });
+
+function userAction(userId, status, name){
+  const labels = { warned:'Warn', suspended:'Suspend', banned:'Ban', active:'Reinstate' };
+  const needsDays = status==='suspended';
+  const fields = `
+    ${needsDays?`<div class="fld"><label>Suspend for</label><select id="m-days">
+      <option value="1">1 day</option><option value="3">3 days</option>
+      <option value="7" selected>7 days</option><option value="30">30 days</option>
+      <option value="90">90 days</option></select></div>`:''}
+    <div class="fld"><label>Reason ${status==='active'?'(optional)':'— shown to the user'}</label>
+      <textarea id="m-reason" rows="3" placeholder="${status==='active'?'Note for the audit log':'e.g. Repeated spam posts in the community feed'}"></textarea></div>`;
+  openModal(
+    labels[status]+' '+(name||'this user'),
+    status==='banned' ? 'They will be permanently blocked from posting, commenting, messaging and following.'
+    : status==='suspended' ? 'They will be blocked from posting, commenting, messaging and following until the suspension ends.'
+    : status==='warned' ? 'They get a notification with your reason. No restrictions are applied.'
+    : 'This removes all restrictions on the account.',
+    fields,
+    async () => {
+      const reason = ($('m-reason')?.value||'').trim();
+      const days = needsDays ? parseInt($('m-days').value,10) : null;
+      if(status!=='active' && !reason){ toast('Please give a reason'); return; }
+      try{
+        const { data, error } = await sb.rpc('admin_set_user_status', {
+          p_user_id:userId, p_status:status, p_days:days, p_reason:reason||null });
+        if(error) throw error;
+        if(data==='forbidden'){ toast('Not permitted'); return; }
+        if(data==='cannot_action_self'){ toast("You can't action your own account"); return; }
+        if(data==='target_is_admin'){ toast('Only the owner can action another admin'); return; }
+        closeModal();
+        toast(labels[status]+'ed successfully');
+        loadUsers(); loadStats(); loadReports(true);
+      }catch(e){ console.log(e); toast('Action failed'); }
+    },
+    labels[status]
+  );
+}
+
+function grantAdmin(userId, name){
+  openModal('Make '+(name||'this user')+' a moderator',
+    'They will be able to review reports, hide and delete posts, and warn or suspend users. They will not be able to delete accounts or manage other admins.',
+    '', async () => {
+      try{
+        const { data, error } = await sb.rpc('admin_set_role', { p_user_id:userId, p_role:'moderator' });
+        if(error) throw error;
+        if(data!=='ok'){ toast(data==='forbidden_owner_only'?'Only the owner can do this':'Failed'); return; }
+        closeModal(); toast('Moderator added'); loadUsers();
+      }catch(e){ console.log(e); toast('Action failed'); }
+    }, 'Make moderator');
+}
+
+function revokeAdmin(userId, name){
+  openModal('Remove admin rights from '+(name||'this user')+'?',
+    'They keep their normal account and all their content. Only their moderator access is removed.',
+    '', async () => {
+      try{
+        const { data, error } = await sb.rpc('admin_set_role', { p_user_id:userId, p_role:'none' });
+        if(error) throw error;
+        if(data!=='ok'){ toast(data==='cannot_remove_self'?"You can't remove your own access":'Failed'); return; }
+        closeModal(); toast('Admin access removed'); loadUsers();
+      }catch(e){ console.log(e); toast('Action failed'); }
+    }, 'Remove access');
+}
+
+function deleteUser(userId, name){
+  openModal('Delete '+(name||'this account')+' permanently?',
+    'This removes their profile, pets, posts, comments and messages. It cannot be undone. In most cases a ban is the better choice — it stops the person without destroying conversations other users were part of.',
+    `<div class="fld"><label>Reason — recorded in the audit log</label>
+       <textarea id="m-reason" rows="3" placeholder="e.g. Confirmed fake account, requested by user"></textarea></div>
+     <div class="fld"><label>Type DELETE to confirm</label><input type="text" id="m-confirm" placeholder="DELETE"></div>`,
+    async () => {
+      if(($('m-confirm').value||'').trim().toUpperCase()!=='DELETE'){ toast('Type DELETE to confirm'); return; }
+      const reason=($('m-reason').value||'').trim();
+      if(!reason){ toast('Please give a reason'); return; }
+      try{
+        const { data, error } = await sb.rpc('admin_delete_user', { p_user_id:userId, p_reason:reason });
+        if(error) throw error;
+        if(data!=='ok'){ toast(data==='forbidden_owner_only'?'Only the owner can delete accounts':'Failed'); return; }
+        closeModal();
+        toast('Account deleted — remove the login from Supabase → Authentication');
+        loadUsers(); loadStats();
+      }catch(e){ console.log(e); toast('Action failed'); }
+    }, 'Delete permanently');
+}
+
+// ---------- audit log ----------
+async function loadAudit(){
+  $('audit-list').innerHTML='<div class="loading"><div class="spin"></div>Loading…</div>';
+  try{
+    const { data, error } = await sb.rpc('admin_list_actions');
+    if(error) throw error;
+    const rows=data||[];
+    $('audit-list').innerHTML = rows.length ? rows.map(a=>`
+      <div class="card" style="padding:12px 15px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <div class="row-main">
+            <div class="row-title" style="font-size:13.5px;">${esc(a.admin_name)} · <span style="font-weight:600;color:var(--coral-m);">${esc(a.action.replace(/_/g,' '))}</span></div>
+            <div class="row-sub">${ago(a.created_at)}${a.reason?' · '+esc(a.reason):''}</div>
+          </div>
+        </div>
+      </div>`).join('')
+      : '<div class="empty"><i class="ti ti-history"></i><p>No actions yet</p><span>Moderation activity will appear here.</span></div>';
+  }catch(e){
+    console.log('audit:', e);
+    $('audit-list').innerHTML='<div class="empty"><i class="ti ti-alert-circle"></i><p>Could not load the audit log</p></div>';
+  }
+}
+
+// ---------- boot ----------
+(async () => {
+  if(!sb) return;
+  try{
+    const { data } = await sb.auth.getSession();
+    if(data && data.session){ me = data.session.user; await checkAdminAndEnter(); }
+  }catch(e){ console.log('boot:', e); }
+})();
+</script>
+</body>
+</html>
