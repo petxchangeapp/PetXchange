@@ -2942,6 +2942,25 @@ window.addEventListener('DOMContentLoaded', async () => {
     p, new Promise((_, rej) => setTimeout(() => rej(new Error(label + ' timed out after ' + ms + 'ms')), ms))
   ]);
 
+  // If getSession() is too slow to answer in time, this reads the token
+  // supabase-js already wrote to localStorage on a previous visit, so a slow
+  // network doesn't mean "show the login screen" for someone who is really
+  // still signed in. The real queries that follow have their own retry and
+  // refresh handling, so acting on a stored token here is safe even if it
+  // turns out to need a refresh.
+  const readStoredSession = () => {
+    try {
+      const ref = (SUPABASE_URL.match(/^https?:\/\/([^.]+)\./) || [])[1];
+      if (!ref) return null;
+      const raw = localStorage.getItem('sb-' + ref + '-auth-token');
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      const sess = (parsed && parsed.access_token) ? parsed : (parsed && parsed.currentSession);
+      if (!sess || !sess.access_token || !sess.user) return null;
+      return sess;
+    } catch (e) { return null; }
+  };
+
   // Is the backend actually reachable? Answering this first means the
   // error message can name the real problem instead of guessing.
   probeBackend();
@@ -2952,16 +2971,14 @@ window.addEventListener('DOMContentLoaded', async () => {
       const res = await withTimeout(sb.auth.getSession(), 9000, 'Session check');
       session = res && res.data ? res.data.session : null;
     } catch (e) {
-      // A timeout means SLOW, not BROKEN. On a cold load supabase-js is
-      // still initialising and getSession() waits on that, which can easily
-      // exceed a few seconds on mobile data. Deleting a valid token here is
-      // what was logging people out on every refresh.
-      //
-      // So: don't touch storage. Fall through to the splash screen and let
-      // onAuthStateChange deliver the session when it arrives — it does,
-      // moments later, and routes straight into the app.
-      console.log('[boot] getSession slow (' + e.message + ') — waiting for auth to settle');
-      session = null;
+      // A timeout means SLOW, not BROKEN. Deleting a valid token here is
+      // what was logging people out on every refresh — so never touch
+      // storage. Instead, check what's already there ourselves rather than
+      // just waiting: if a previous sign-in left a token, use it and let
+      // the app's normal query-level recovery confirm or refresh it.
+      console.log('[boot] getSession slow (' + e.message + ') — checking stored session directly');
+      session = readStoredSession();
+      if (session) console.log('[boot] found a stored session — entering the app while auth settles');
     }
 
     // Show the app now. Profile and content load behind it.
