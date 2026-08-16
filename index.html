@@ -1504,7 +1504,7 @@ img{background:var(--surface-2)}
   }, 8000);
 
   window.addEventListener('error', function(ev){
-    if (window.__bootDone) return;
+    if (window.__bootDone || window.__placeholderCreds) return;
     var msg = (ev && ev.message) || 'Unknown error';
     if (/supabase is not defined|createClient/.test(msg)) {
       window.__bootFail('Could not load PetXchange',
@@ -2877,13 +2877,28 @@ img{background:var(--surface-2)}
 //  The anon key is safe to publish - it is designed to be public,
 //  and the row level security rules in the SQL file protect your data.
 // ============================================================
-const SUPABASE_URL = 'https://vtpjpfezobnlmoxwlauu.supabase.co';
+const SUPABASE_URL = 'PASTE_YOUR_PROJECT_URL_HERE';
 // ⚠️  PASTE YOUR FULL ANON KEY BELOW (Settings → API Keys → Legacy → anon public)
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0cGpwZmV6b2JubG1veHdsYXV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY4NzYyNTUsImV4cCI6MjEwMjQ1MjI1NX0.NfQVg0iUjAFbN8DyKs4eWN0PJxc7jR1HNzUSPsap9lE';
+const SUPABASE_ANON = 'PASTE_YOUR_ANON_KEY_HERE';
 
 // Init Supabase client — never let a CDN hiccup brick the whole app
 let sb = null;
 try {
+  // The single most common setup mistake is deploying this file with the
+  // placeholders still in it. Say so plainly instead of showing a generic
+  // "could not reach servers", which sends people hunting for a network fault.
+  if (String(SUPABASE_URL).indexOf('PASTE_') === 0 || String(SUPABASE_ANON).indexOf('PASTE_') === 0) {
+    window.__bootDone = true;
+    window.__bootFail('Supabase details not filled in yet',
+      'This copy of PetXchange still has the placeholder text where your project ' +
+      'URL and anon key belong.<br><br>Open <b>index.html</b>, find the block near ' +
+      'the top marked <b>PASTE YOUR NEW SUPABASE DETAILS</b>, and replace ' +
+      '<b>PASTE_YOUR_PROJECT_URL_HERE</b> and <b>PASTE_YOUR_ANON_KEY_HERE</b> with the ' +
+      'values from Supabase → Project Settings → API. Then re-upload the file.<br><br>' +
+      'The same two lines need filling in inside <b>admin.html</b>.', false);
+    window.__placeholderCreds = true;   // stops the generic handler below overwriting this
+    throw new Error('Supabase credentials are still placeholders');
+  }
   if (typeof supabase === 'undefined' || !supabase.createClient) {
     throw new Error('Supabase library did not load');
   }
@@ -2905,7 +2920,9 @@ try {
   });
 } catch (err) {
   console.error('Supabase init failed:', err);
-  if (window.__bootFail) {
+  // The placeholder case already showed a precise message — don't replace it
+  // with a generic network one, which sends people chasing the wrong problem.
+  if (window.__bootFail && !window.__placeholderCreds) {
     window.__bootFail('Could not load PetXchange',
       'The data library failed to download. Check your connection, or disable shields/ad-blocking for this site.');
   }
@@ -3423,7 +3440,7 @@ async function doSignup() {
     }
 
     const city = signupLocation.city || '';
-    const { data, error } = await sb.auth.signUp({
+    const { data, error } = await withDeadline(sb.auth.signUp({
       email, password: pass,
       // Everything the account needs travels in here, not just as a client
       // follow-up write. A server-side trigger reads this the moment the
@@ -3434,7 +3451,7 @@ async function doSignup() {
         latitude: signupLocation.lat, longitude: signupLocation.lng,
         location_text: signupLocation.label, search_radius_km: radius
       } }
-    });
+    }), 12000, 'Creating your account');
     if (error) throw error;
 
     // The trigger has already written the full profile — handle, location,
@@ -3485,6 +3502,8 @@ async function doSignup() {
       // not anything wrong with what was typed. A custom SMTP provider
       // (Resend, Brevo, etc.) removes it; see Supabase → Auth → Emails.
       showAuthErr('Too many signups have used this app\'s email sender in the last hour, so no confirmation email can go out right now. This isn\'t about your account — please try again shortly, or contact petxchangeindia@gmail.com if it keeps happening.');
+    } else if (m.includes('timed out')) {
+      showAuthErr('That took too long to respond. Check your connection and try again.');
     } else {
       showAuthErr(e.message || 'Signup failed. Please try again.');
     }
@@ -3498,7 +3517,8 @@ async function resolveLoginEmail(idOrEmail) {
   if (v.includes('@') && !v.startsWith('@')) return v;          // looks like an email
   const handle = v.replace(/^@/, '').toLowerCase();
   if (!handle) return v;
-  const { data, error } = await sb.rpc('email_for_handle', { p_handle: handle });
+  const { data, error } = await withDeadline(
+    sb.rpc('email_for_handle', { p_handle: handle }), 8000, 'Looking up @id');
   if (error || !data) throw new Error('NO_SUCH_HANDLE');
   return data;
 }
@@ -3518,11 +3538,12 @@ async function doLogin() {
       if (err.message === 'NO_SUCH_HANDLE') { showAuthErr("We couldn't find an account with that @id."); return; }
       throw err;
     }
-    const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+    const { data, error } = await withDeadline(
+      sb.auth.signInWithPassword({ email, password: pass }), 12000, 'Sign in');
     if (error) {
       // A rejected sign-in can leave a half-finished token exchange behind,
       // which then blocks every later request. Clear it before surfacing.
-      try { await sb.auth.signOut({ scope: 'local' }); } catch (e2) {}
+      try { await withDeadline(sb.auth.signOut({ scope: 'local' }), 4000, 'Cleanup'); } catch (e2) {}
       throw error;
     }
     currentUser = data.user;
@@ -3540,6 +3561,9 @@ async function doLogin() {
       showResendConfirm(email || idInput);
     } else if (msg === 'Invalid login credentials') {
       showAuthErr('Wrong password, or that account does not exist.');
+      hideResendConfirm();
+    } else if (/timed out/i.test(msg)) {
+      showAuthErr('That took too long to respond. Check your connection and try again.');
       hideResendConfirm();
     } else {
       showAuthErr(msg || 'Login failed.');
@@ -3575,7 +3599,8 @@ async function resendConfirmation(email) {
   const btn = document.getElementById('btn-resend-confirm');
   if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
   try {
-    const { error } = await sb.auth.resend({ type: 'signup', email });
+    const { error } = await withDeadline(
+      sb.auth.resend({ type: 'signup', email }), 10000, 'Resending email');
     if (error) throw error;
     showAuthOk('Confirmation email resent to ' + email + '. Check your inbox.');
   } catch(e) {
@@ -3589,13 +3614,30 @@ async function resendConfirmation(email) {
 async function doReset() {
   const email = document.getElementById('r-email').value.trim();
   if (!email) { showAuthErr('Please enter your email.'); return; }
-  const { error } = await sb.auth.resetPasswordForEmail(email);
-  if (error) { showAuthErr(error.message); return; }
-  showAuthOk('Reset link sent! Check your inbox.');
+  try {
+    const { error } = await withDeadline(
+      sb.auth.resetPasswordForEmail(email), 10000, 'Sending reset link');
+    if (error) { showAuthErr(error.message); return; }
+    showAuthOk('Reset link sent! Check your inbox.');
+  } catch (e) {
+    showAuthErr(/timed out/i.test(e.message||'')
+      ? 'That took too long to respond. Check your connection and try again.'
+      : (e.message || 'Could not send the reset link.'));
+  }
 }
 
 async function doLogout() {
-  await sb.auth.signOut();
+  // Signing out is a promise to the PERSON, not to the server — if the
+  // network call hangs, they still expect to land back on the splash
+  // screen instantly. The felt, local part of sign-out always happens;
+  // the server-side call gets a deadline and its failure is only logged.
+  try {
+    await withDeadline(sb.auth.signOut(), 6000, 'Sign out');
+  } catch (e) {
+    console.log('[signOut] server call did not confirm in time:', e.message);
+  }
+  currentUser = null; currentProfile = null;
+  clearTimeout(refreshTimer);
   showToast('Signed out. See you soon!');
   showScreen('s-splash');
 }
@@ -3629,7 +3671,16 @@ async function saveAccountPassword(){
   const pw2 = document.getElementById('set-pw-confirm-inp').value;
   if (!pw || pw.length < 6) { showToast('Password must be at least 6 characters'); return; }
   if (pw !== pw2) { showToast('Passwords do not match'); return; }
-  const { error } = await sb.auth.updateUser({ password: pw });
+  let error;
+  try {
+    ({ error } = await withDeadline(
+      sb.auth.updateUser({ password: pw }), 10000, 'Updating password'));
+  } catch (e) {
+    showToast(/timed out/i.test(e.message||'')
+      ? 'That took too long. Check your connection and try again.'
+      : 'Could not update password.');
+    return;
+  }
   if (error) { showToast('Could not update password: ' + error.message); return; }
   document.getElementById('set-pw-inp').value = '';
   document.getElementById('set-pw-confirm-inp').value = '';
@@ -4578,7 +4629,7 @@ async function swipeRight(){
   card.style.opacity = '0';
   if (petId && currentUser) {
     try {
-      const { data } = await sb.rpc('toggle_follow', { p_type: 'pet', p_id: petId });
+      const { data } = await withDeadline(sb.rpc('toggle_follow', { p_type: 'pet', p_id: petId }), 8000, 'Follow');
       if (data === 'followed') showToast("Following — their posts will show in your feed 🐾");
       else if (data === 'unfollowed') showToast('Unfollowed');
       else if (data === 'self') showToast("That's your own pet");
@@ -4910,7 +4961,7 @@ async function loadMyStats(){
   } catch(e) { set('me-stat-posts', 0); }
 
   try {
-    const { data, error } = await sb.rpc('profile_follow_counts', { p_user: currentUser.id });
+    const { data, error } = await withDeadline(sb.rpc('profile_follow_counts', { p_user: currentUser.id }), 8000, 'Follow counts');
     if (error) throw error;
     const c = typeof data === 'string' ? JSON.parse(data) : data;
     set('me-stat-followers', (c && c.followers) || 0);
@@ -7434,7 +7485,7 @@ async function submitReport() {
 async function checkAccountStanding() {
   if (!currentUser) return;
   try {
-    const { data, error } = await sb.rpc('my_account_status');
+    const { data, error } = await withDeadline(sb.rpc('my_account_status'), 8000, 'Account status');
     if (error) return;                      // moderation not installed yet
     const st = typeof data === 'string' ? JSON.parse(data) : data;
     if (!st || st.status === 'active') return;
@@ -8914,7 +8965,7 @@ async function openUserProfile(userId, opts) {
     document.getElementById('own-s4').textContent = postList.filter(p => p.media_url).length;
     document.querySelectorAll('.own-stat-l')[2].textContent = 'Followers';
     try {
-      const { data: fc } = await sb.rpc('profile_follow_counts', { p_user: userId });
+      const { data: fc } = await withDeadline(sb.rpc('profile_follow_counts', { p_user: userId }), 8000, 'Follow counts');
       const c = typeof fc === 'string' ? JSON.parse(fc) : fc;
       document.getElementById('own-s3').textContent = (c && c.followers) || 0;
     } catch(e) { document.getElementById('own-s3').textContent = 0; }
@@ -9011,7 +9062,7 @@ async function toggleFollow(type, id, btnId) {
   const btn = btnId ? document.getElementById(btnId) : null;
   if (btn) { btn.disabled = true; btn.style.opacity = '.6'; }
   try {
-    const { data, error } = await sb.rpc('toggle_follow', { p_type: type, p_id: id });
+    const { data, error } = await withDeadline(sb.rpc('toggle_follow', { p_type: type, p_id: id }), 8000, 'Follow');
     if (error) throw error;
 
     if (data === 'self')      { showToast("That's yours already"); return; }
@@ -9055,7 +9106,7 @@ function paintFollowButton(btnId, following, type) {
 async function refreshFollowButton(type, id, btnId) {
   if (!currentUser || !id) return;
   try {
-    const { data, error } = await sb.rpc('follow_info', { p_type: type, p_id: id });
+    const { data, error } = await withDeadline(sb.rpc('follow_info', { p_type: type, p_id: id }), 8000, 'Follow status');
     if (error) throw error;
     const info = typeof data === 'string' ? JSON.parse(data) : data;
     followCache[type + ':' + id] = !!(info && info.following);
@@ -9192,7 +9243,7 @@ function personRowHtml(p, showUnfollow) {
 
 async function unfollowFromList(type, id, btn) {
   try {
-    const { data, error } = await sb.rpc('toggle_follow', { p_type: type, p_id: id });
+    const { data, error } = await withDeadline(sb.rpc('toggle_follow', { p_type: type, p_id: id }), 8000, 'Follow');
     if (error) throw error;
     if (data === 'unfollowed') {
       btn.textContent = 'Follow';
