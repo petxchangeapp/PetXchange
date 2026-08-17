@@ -3791,7 +3791,7 @@ async function saveProfile() {
     updateHeaderAvatar();
   } catch(e) {
     console.log('saveProfile error:', e);
-    showToast('Could not save profile');
+    showToast(handleErrorText(e, 'Could not save profile'));
   }
 }
 
@@ -4259,7 +4259,10 @@ async function respondToPost(postId, kind) {
     await writeWithFallback(d2 => sb.from('post_responses').insert(d2),
       { post_id: postId, responder_id: currentUser.id, kind: kind, status: 'open' });
     showToast(kind === 'help_offer' ? 'Offer sent — say hello' : 'Enquiry sent');
-  } catch(e) { console.log('response insert:', e); }
+  } catch(e) {
+    console.log('response insert:', e);
+    showToast(handleErrorText(e, "Couldn't log that, but opening the chat anyway"));
+  }
   openChatWith(post.author_id, openers[kind] || 'Hi, I saw your post.');
 }
 
@@ -4392,7 +4395,7 @@ async function submitPost() {
     loadMyStats();
   } catch(e) {
     console.log('submitPost error:', e);
-    showToast(e.message && e.message.includes('column') ? 'Something went wrong saving that. Please try again.' : 'Could not save. Try again.');
+    showToast(handleErrorText(e, 'Could not save. Try again.'));
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = editingPostId ? 'Save changes' : 'Post'; }
   }
@@ -7404,7 +7407,7 @@ async function saveLocation() {
     else loadDiscoverPets().then(buildCards);
   } catch (e) {
     console.log('saveLocation:', e);
-    showToast(e.message && e.message.includes('column') ? 'Could not save your location — please try again' : 'Could not save location');
+    showToast(handleErrorText(e, 'Could not save location'));
   } finally {
     btn.disabled = false; btn.textContent = 'Save location';
   }
@@ -7426,7 +7429,7 @@ async function quickSetRadius(val) {
     else if (currentScreen === 's-services') loadServices();
   } catch (e) {
     console.log('quickSetRadius:', e);
-    showToast('Could not update radius');
+    showToast(handleErrorText(e, 'Could not update radius'));
   }
 }
 
@@ -7594,6 +7597,22 @@ async function writeWithFallback(builder, payload) {
       throw new Error('SESSION_DEAD');   // recoverSession() has already signed them out and shown why
     }
 
+    // Every write points at the person's row in `profiles`. If that row is
+    // missing — which happens for any account created before the database
+    // was set up — the write fails with a foreign key error that mentions
+    // none of the words checked above, so it used to surface as a bare
+    // "Could not save. Try again." Create the row and retry instead.
+    if (/foreign key|violates foreign key constraint/i.test(error.message || '') &&
+        /profiles|author_id|owner_id|user_id/i.test((error.message || '') + (error.details || ''))) {
+      const made = await ensureProfileRow();
+      if (made) {
+        const retry = await withDeadline(builder(data), QUERY_TIMEOUT_MS, 'Save (after profile fix)');
+        if (!retry.error) return { dropped };
+        throw retry.error;
+      }
+      throw new Error('NO_PROFILE');
+    }
+
     const col = missingColumnFrom(error);
     if (col && Object.prototype.hasOwnProperty.call(data, col)) {
       delete data[col];
@@ -7604,6 +7623,39 @@ async function writeWithFallback(builder, payload) {
     throw error;
   }
   throw new Error('Too many missing columns — please run the latest SQL.');
+}
+
+// Creates the signed-in person's `profiles` row if it is missing. The signup
+// trigger normally does this, but it only runs at signup — accounts that
+// predate the database setup never got one.
+async function ensureProfileRow() {
+  if (!currentUser) return false;
+  try {
+    const { data: existing } = await withDeadline(
+      sb.from('profiles').select('id').eq('id', currentUser.id).maybeSingle(),
+      QUERY_TIMEOUT_MS, 'Profile check');
+    if (existing) return true;
+
+    const meta = currentUser.user_metadata || {};
+    const base = (meta.handle || (currentUser.email || 'user').split('@')[0] || 'user')
+      .toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 16) || 'user';
+    const seed = {
+      id: currentUser.id,
+      full_name: meta.full_name || (currentUser.email || '').split('@')[0] || 'PetXchange user',
+      handle: base + Math.floor(Math.random() * 9000 + 1000),
+      city: meta.city || null,
+      role: meta.role || 'owner'
+    };
+    const { error } = await withDeadline(
+      sb.from('profiles').insert(seed), QUERY_TIMEOUT_MS, 'Creating profile');
+    if (error) { console.log('[profile] could not create row:', error.message); return false; }
+    console.log('[profile] created the missing profile row');
+    currentProfile = seed;
+    return true;
+  } catch (e) {
+    console.log('[profile] ensureProfileRow failed:', e.message);
+    return false;
+  }
 }
 
 function gapNotice(dropped) {
@@ -7728,6 +7780,12 @@ function handleErrorText(e, fallback) {
   if (m.includes('column')) return 'Something went wrong saving that. Please try again.';
   if (m === 'TIMED_OUT') return 'That took too long to respond. Check your connection and try again.';
   if (m === 'SESSION_DEAD') return null;   // recoverSession() already explained this and moved to sign-in
+  if (m === 'NO_PROFILE') return 'Your account is missing its profile. Sign out and back in — if that does not fix it, contact petxchangeindia@gmail.com.';
+  if (/row-level security/i.test(m)) return "You don't have permission to save that.";
+  // Anything unrecognised: show the real reason rather than a dead end. A
+  // vague message here is what turned a one-line database fault into a long
+  // hunt, so the actual text is worth more than a tidy sentence.
+  if (m) return fallback + ' (' + m.slice(0, 120) + ')';
   return fallback;
 }
 
