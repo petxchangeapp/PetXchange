@@ -820,45 +820,85 @@ img{background:var(--surface-2)}
 /* ---------- 5. Splash ---------- */
 #s-splash{
   background:
-    radial-gradient(105% 62% at 50% 4%, rgba(224,101,54,.5) 0%, transparent 64%),
-    radial-gradient(88% 52% at 50% 108%, rgba(150,52,22,.42) 0%, transparent 62%),
-    linear-gradient(178deg,#33120A 0%,#220C06 100%);
+    radial-gradient(58% 40% at 12% 8%,  rgba(255,196,150,.55) 0%, transparent 62%),
+    radial-gradient(52% 38% at 92% 16%, rgba(168,225,208,.55) 0%, transparent 62%),
+    radial-gradient(60% 42% at 82% 92%, rgba(255,214,168,.5)  0%, transparent 62%),
+    radial-gradient(52% 38% at 8%  88%, rgba(198,214,255,.5)  0%, transparent 62%),
+    #FFFBF5;
   position:relative;
   overflow:hidden;
 }
+/* A soft scatter of paw prints, drawn once as a tiling pattern so it costs
+   nothing to render and never competes with the wordmark. */
 #s-splash::before{
-  content:'';position:absolute;width:340px;height:340px;left:50%;top:26%;
-  transform:translate(-50%,-50%);border-radius:50%;
-  background:radial-gradient(circle,rgba(240,120,75,.34) 0%,transparent 66%);
-  animation:px-breathe 7s ease-in-out infinite;pointer-events:none;
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cg fill='%23D85A30' fill-opacity='0.045'%3E%3Cellipse cx='40' cy='48' rx='7' ry='9'/%3E%3Cellipse cx='54' cy='41' rx='5' ry='6.5' transform='rotate(18 54 41)'/%3E%3Cellipse cx='66' cy='45' rx='5' ry='6.5' transform='rotate(34 66 45)'/%3E%3Cellipse cx='59' cy='59' rx='10' ry='8' transform='rotate(12 59 59)'/%3E%3C/g%3E%3Cg fill='%231D9E75' fill-opacity='0.04'%3E%3Cellipse cx='170' cy='168' rx='7' ry='9'/%3E%3Cellipse cx='184' cy='161' rx='5' ry='6.5' transform='rotate(18 184 161)'/%3E%3Cellipse cx='196' cy='165' rx='5' ry='6.5' transform='rotate(34 196 165)'/%3E%3Cellipse cx='189' cy='179' rx='10' ry='8' transform='rotate(12 189 179)'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:240px 240px;
+  animation:none;
+}
+/* Friendly silhouettes drifting behind the card — a dog, a cat, a bird,
+   a fish. Slow enough to read as calm rather than busy. */
+#s-splash .sp-pets{
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;
+}
+#s-splash .sp-pets i{
+  position:absolute;color:var(--coral);opacity:.20;
+  animation:px-float 9s ease-in-out infinite;
+}
+#s-splash .sp-pets i:nth-child(1){ font-size:74px;left:-4px;  top:12%;  animation-delay:0s;    color:#D85A30; }
+#s-splash .sp-pets i:nth-child(2){ font-size:60px;right:2px;  top:26%;  animation-delay:1.4s;  color:#E8A33C; }
+#s-splash .sp-pets i:nth-child(3){ font-size:52px;left:8%;    bottom:20%;animation-delay:2.6s; color:#1D9E75; }
+#s-splash .sp-pets i:nth-child(4){ font-size:58px;right:6%;   bottom:12%;animation-delay:3.8s; color:#3B82C4; }
+#s-splash .sp-pets i:nth-child(5){ font-size:44px;left:44%;   top:4%;   animation-delay:2s;    color:#9A6BD8; }
+@keyframes px-float{
+  0%,100%{ transform:translateY(0)    rotate(-4deg); }
+  50%    { transform:translateY(-14px) rotate(4deg); }
 }
 #s-splash > div{position:relative;z-index:1}
 .sp-logo{
-  width:82px;height:82px;border-radius:26px;
-  background:linear-gradient(155deg,#F0784B 0%,var(--coral) 55%,#B8451F 100%);
-  box-shadow:0 10px 34px -8px rgba(216,90,48,.75), inset 0 1px 0 rgba(255,255,255,.28);
+  width:88px;height:88px;border-radius:28px;
+  background:linear-gradient(155deg,#FF9463 0%,var(--coral) 58%,#C24E22 100%);
+  box-shadow:0 12px 30px -10px rgba(216,90,48,.5), inset 0 1px 0 rgba(255,255,255,.35);
   animation:px-pop .55s var(--ease-out) both;
 }
-.sp-logo i{font-size:44px}
-.sp-name{font-size:42px;letter-spacing:-1.6px;animation:px-rise .55s .1s var(--ease-out) both}
-.sp-tag{font-size:13px;color:rgba(255,255,255,.66);letter-spacing:.2px;animation:px-rise .55s .18s var(--ease-out) both}
-#s-splash > div > div:nth-child(4){animation:px-rise .55s .26s var(--ease-out) both;color:rgba(255,255,255,.5)!important}
-#s-splash > div > div:nth-child(4) span{color:rgba(255,255,255,.55)!important}
-.sp-actions{display:flex;flex-direction:column;gap:11px;max-width:290px;margin:44px auto 0}
+.sp-logo i{font-size:46px;color:#fff}
+.sp-name{
+  font-size:42px;letter-spacing:-1.6px;color:#2A1710;
+  animation:px-rise .55s .1s var(--ease-out) both;
+}
+.sp-tag{
+  font-size:13.5px;color:#7A6455;letter-spacing:.1px;
+  animation:px-rise .55s .18s var(--ease-out) both;
+}
+.sp-actions{display:flex;flex-direction:column;gap:11px;max-width:290px;margin:40px auto 0}
 .sp-btn{
   margin-top:0;width:100%;padding:17px 24px;font-size:16.5px;letter-spacing:-.01em;
-  background:linear-gradient(155deg,#F0784B,var(--coral));
-  box-shadow:0 8px 26px -8px rgba(216,90,48,.9);
-  animation:px-rise .55s .34s var(--ease-out) both;
+  background:linear-gradient(155deg,#FF9463,var(--coral));color:#fff;
+  box-shadow:0 8px 22px -8px rgba(216,90,48,.65);
+  animation:px-rise .55s .26s var(--ease-out) both;
   transition:transform .14s var(--ease),box-shadow .2s;
 }
-.sp-btn:active{transform:translateY(2px) scale(.985);box-shadow:0 4px 14px -6px rgba(216,90,48,.9)}
+.sp-btn:active{transform:translateY(2px) scale(.985);box-shadow:0 4px 12px -6px rgba(216,90,48,.65)}
 .sp-login{
   margin-top:0;width:100%;padding:16px 24px;font-size:15.5px;font-weight:600;
-  border-width:1.5px;border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.9);
-  animation:px-rise .55s .42s var(--ease-out) both;transition:background .18s,border-color .18s;
+  background:rgba(255,255,255,.85);border:1.5px solid rgba(58,32,20,.14);color:#5A4436;
+  backdrop-filter:blur(6px);
+  animation:px-rise .55s .34s var(--ease-out) both;
+  transition:background .18s,border-color .18s,transform .14s var(--ease);
 }
-.sp-login:active{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.4)}
+.sp-login:active{background:#fff;border-color:var(--coral);color:var(--coral);transform:translateY(1px)}
+
+[data-theme="dark"] #s-splash{
+  background:
+    radial-gradient(58% 40% at 12% 8%,  rgba(216,90,48,.20) 0%, transparent 62%),
+    radial-gradient(52% 38% at 92% 16%, rgba(29,158,117,.16) 0%, transparent 62%),
+    radial-gradient(60% 42% at 82% 92%, rgba(232,163,60,.14) 0%, transparent 62%),
+    #17120F;
+}
+[data-theme="dark"] .sp-name{color:#F6EFE9}
+[data-theme="dark"] .sp-tag{color:#A89C94}
+[data-theme="dark"] .sp-login{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16);color:#E8DFD8}
+[data-theme="dark"] #s-splash .sp-pets i{opacity:.10}
 
 /* ---------- 6. Loading + auth ---------- */
 #loading-overlay{background:var(--bg)}
@@ -1622,6 +1662,13 @@ img{background:var(--surface-2)}
 
 <!-- ===== SPLASH ===== -->
 <div id="s-splash" class="screen active" style="display:flex;">
+  <div class="sp-pets" aria-hidden="true">
+    <i class="ti ti-dog"></i>
+    <i class="ti ti-cat"></i>
+    <i class="ti ti-fish"></i>
+    <i class="ti ti-feather"></i>
+    <i class="ti ti-paw"></i>
+  </div>
   <div style="text-align:center;padding:0 24px;">
     <div class="sp-logo"><i class="ti ti-planet"></i></div>
     <div class="sp-name">PetXchange</div>
@@ -1682,10 +1729,10 @@ img{background:var(--surface-2)}
   <div class="disc-filters">
     <span class="chip on" onclick="filterSpecies('dogs',this)"><i class="ti ti-dog"></i>Dogs</span>
     <span class="chip" onclick="filterSpecies('cats',this)"><i class="ti ti-cat"></i>Cats</span>
-    <span class="chip" onclick="filterSpecies('birds',this)"><i class="ti ti-bird"></i>Birds</span>
+    <span class="chip" onclick="filterSpecies('birds',this)"><i class="ti ti-feather"></i>Birds</span>
     <span class="chip" onclick="filterSpecies('fish',this)"><i class="ti ti-fish"></i>Fish</span>
-    <span class="chip" onclick="filterSpecies('exotic',this)">Exotic</span>
-    <span class="chip" onclick="filterSpecies('farm',this)">Farm</span>
+    <span class="chip" onclick="filterSpecies('farm',this)"><i class="ti ti-horse"></i>Farm</span>
+    <span class="chip" onclick="filterSpecies('others',this)"><i class="ti ti-paw"></i>Other</span>
   </div>
 
   <div class="disc-intent">
@@ -1847,6 +1894,16 @@ img{background:var(--surface-2)}
       <input type="text" id="svc-search" placeholder="Search walkers, sitters, groomers…" oninput="searchSvc(this.value)">
     </div>
 
+    <!-- Bookings you've made, with their current status. Filled by
+         loadSvcBookings(); hidden entirely when there are none. -->
+    <div id="svc-bookings-sec" style="display:none;">
+      <div class="sec-hdr" style="padding-bottom:6px;">
+        <h3>Your bookings</h3>
+        <a onclick="openMyBookings()">See all</a>
+      </div>
+      <div id="svc-bookings" style="padding:0 12px;"></div>
+    </div>
+
     <div class="kind-toggle" id="svc-quick">
       <span class="chip on" onclick="quickFilter('all',this)">All</span>
       <span class="chip" onclick="quickFilterNear(this)"><i class="ti ti-map-pin"></i>Near me</span>
@@ -1945,6 +2002,12 @@ img{background:var(--surface-2)}
     <div class="hdr-acts"><i class="ti ti-refresh" onclick="loadInbox()"></i></div>
   </div>
   <div class="scroll-area">
+    <!-- Requests, both directions: things people asked you, and things you
+         asked others. Accept / decline happens right here. -->
+    <div id="inbox-req-sec" style="display:none;">
+      <div style="padding:12px 16px 4px;font-size:12px;font-weight:700;color:var(--t2);">REQUESTS</div>
+      <div id="inbox-requests" style="padding:0 12px;"></div>
+    </div>
     <div style="padding:12px 16px 4px;font-size:12px;font-weight:700;color:var(--t2);">FOLLOWING</div>
     <div class="match-scroll" id="conn-scroll"></div>
     <div style="padding:8px 16px 8px;font-size:12px;font-weight:700;color:var(--t2);">MESSAGES</div>
@@ -2253,7 +2316,7 @@ img{background:var(--surface-2)}
         <option value="cats">Cat</option>
         <option value="birds">Bird</option>
         <option value="fish">Fish / Aquatic</option>
-        <option value="exotic">Reptile / Rabbit / Exotic</option>
+        <option value="others">Other (rabbit, rodent, reptile…)</option>
         <option value="farm">Farm animal</option>
       </select>
     </div>
@@ -2303,7 +2366,7 @@ img{background:var(--surface-2)}
         <option value="cats">Cat</option>
         <option value="birds">Bird</option>
         <option value="fish">Fish / Aquatic</option>
-        <option value="exotic">Reptile / Rabbit / Exotic</option>
+        <option value="others">Other (rabbit, rodent, reptile…)</option>
         <option value="farm">Farm animal</option>
       </select>
     </div>
@@ -2459,9 +2522,9 @@ img{background:var(--surface-2)}
       <div id="bz-species" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
         <span class="chip" data-sp="dogs" onclick="this.classList.toggle('on')"><i class="ti ti-dog"></i>Dogs</span>
         <span class="chip" data-sp="cats" onclick="this.classList.toggle('on')"><i class="ti ti-cat"></i>Cats</span>
-        <span class="chip" data-sp="birds" onclick="this.classList.toggle('on')"><i class="ti ti-bird"></i>Birds</span>
+        <span class="chip" data-sp="birds" onclick="this.classList.toggle('on')"><i class="ti ti-feather"></i>Birds</span>
         <span class="chip" data-sp="fish" onclick="this.classList.toggle('on')"><i class="ti ti-fish"></i>Fish</span>
-        <span class="chip" data-sp="exotic" onclick="this.classList.toggle('on')"><i class="ti ti-paw"></i>Exotic</span>
+        <span class="chip" data-sp="others" onclick="this.classList.toggle('on')"><i class="ti ti-paw"></i>Other</span>
         <span class="chip" data-sp="farm" onclick="this.classList.toggle('on')"><i class="ti ti-star"></i>Farm</span>
       </div>
     </div>
@@ -3659,6 +3722,78 @@ async function doLogout() {
   showScreen('s-splash');
 }
 
+// ---------- Notification preferences ----------
+// Deliberately quiet by default: follows and anything a person must act on
+// or be told about (messages, requests, bookings, moderation) start ON.
+// Everything else — likes, someone you follow posting — starts OFF, so a
+// new account is not buried in noise on day one.
+const NOTIF_PREFS = [
+  ['follow',        'New followers',              'Someone starts following you',                 true ],
+  ['message',       'Messages',                   'A new chat message',                           true ],
+  ['response',      'Requests & offers',          'Someone answers a post of yours',              true ],
+  ['booking',       'Bookings',                   'A booking is made, confirmed or changed',      true ],
+  ['admin',         'Account & safety notices',   'Warnings or actions from moderators',          true ],
+  ['mention',       'Mentions',                   'You are mentioned with an @id',                true ],
+  ['tag',           'Tags',                       'One of your pets is tagged in a post',         true ],
+  ['comment',       'Comments',                   'Someone comments on your post',                false],
+  ['like',          'Likes',                      'Someone likes your post',                      false],
+  ['review',        'Reviews',                    'A new review on your listing',                 false],
+  ['follower_post', 'Posts from people you follow','Every time they post something new',          false],
+  ['follower_tag',  'Tags by people you follow',  'They tag a pet in a post',                     false]
+];
+
+function notifPrefDefaults() {
+  const o = {}; NOTIF_PREFS.forEach(([k,,,on]) => o[k] = on); return o;
+}
+function getNotifPrefs() {
+  const defaults = notifPrefDefaults();
+  let saved = (currentProfile && currentProfile.notif_prefs) || null;
+  if (!saved) { try { saved = JSON.parse(localStorage.getItem('px-notif-prefs') || 'null'); } catch(e) {} }
+  return Object.assign(defaults, saved || {});
+}
+function notifAllowed(type) {
+  if (!type) return true;
+  const prefs = getNotifPrefs();
+  // A type nobody has an opinion about still gets through — better to show
+  // something unexpected than to silently swallow it.
+  return Object.prototype.hasOwnProperty.call(prefs, type) ? !!prefs[type] : true;
+}
+
+function renderNotifPrefs() {
+  const wrap = document.getElementById('notif-prefs-list');
+  if (!wrap) return;
+  const prefs = getNotifPrefs();
+  wrap.innerHTML = NOTIF_PREFS.map(([k, label, hint]) => `
+    <label class="menu-item" style="cursor:pointer;margin-bottom:8px;">
+      <span style="flex:1;min-width:0;">
+        <span style="display:block;font-size:14px;font-weight:600;">${escHtml(label)}</span>
+        <span style="display:block;font-size:11.5px;color:var(--t2);font-weight:500;margin-top:2px;">${escHtml(hint)}</span>
+      </span>
+      <input type="checkbox" data-npref="${k}" ${prefs[k] ? 'checked' : ''}
+             style="width:20px;height:20px;accent-color:var(--coral);flex-shrink:0;cursor:pointer;">
+    </label>`).join('');
+}
+
+async function saveNotifPrefs() {
+  const out = {};
+  document.querySelectorAll('#notif-prefs-list input[data-npref]').forEach(i => {
+    out[i.getAttribute('data-npref')] = i.checked;
+  });
+  // Saved on the device immediately so the setting sticks even if the
+  // column is missing or the write fails.
+  try { localStorage.setItem('px-notif-prefs', JSON.stringify(out)); } catch(e) {}
+  if (currentProfile) currentProfile.notif_prefs = out;
+  try {
+    const { dropped } = await writeWithFallback(
+      d => sb.from('profiles').update(d).eq('id', currentUser.id), { notif_prefs: out });
+    showToast(dropped && dropped.length
+      ? 'Saved on this device'
+      : 'Notification settings saved');
+  } catch(e) {
+    showToast('Saved on this device');
+  }
+}
+
 function openSettings(){
   if (!currentUser) { showScreen('s-auth'); return; }
   const nameInp = document.getElementById('set-name-inp');
@@ -3667,6 +3802,7 @@ function openSettings(){
   const pwConfirm = document.getElementById('set-pw-confirm-inp');
   if (pwInp) pwInp.value = '';
   if (pwConfirm) pwConfirm.value = '';
+  renderNotifPrefs();
   showScreen('s-settings');
 }
 
@@ -3843,6 +3979,31 @@ function openEditProfile() {
 // ============================================================
 // FEED — typed posts (lost / found / adopt / help / moment / grievance)
 // ============================================================
+// The species list, in one place. Anything that shows a species reads
+// from here so the app and the database can never drift apart.
+const SPECIES = [
+  ['dogs',   'Dog',            'ti-dog'],
+  ['cats',   'Cat',            'ti-cat'],
+  ['birds',  'Bird',           'ti-feather'],
+  ['fish',   'Fish / aquatic', 'ti-fish'],
+  ['farm',   'Farm animal',    'ti-horse'],
+  ['others', 'Other',          'ti-paw']
+];
+const SPECIES_ICON = {
+  dogs:['ti-dog','var(--coral-l)','var(--coral)'],
+  cats:['ti-cat','var(--amber-l)','var(--amber)'],
+  birds:['ti-feather','var(--green-l)','var(--green)'],
+  fish:['ti-fish','var(--teal-l)','var(--teal)'],
+  farm:['ti-horse','var(--amber-l)','var(--amber)'],
+  others:['ti-paw','var(--purple-l)','var(--purple)'],
+  // kept so any pet saved before the rename still shows an icon
+  exotic:['ti-paw','var(--purple-l)','var(--purple)']
+};
+function speciesLabel(k){ const r = SPECIES.find(x => x[0] === k); return r ? r[1] : (k === 'exotic' ? 'Other' : 'Pet'); }
+function speciesOptions(sel){
+  return SPECIES.map(([k,l]) => `<option value="${k}"${sel===k||(sel==='exotic'&&k==='others')?' selected':''}>${l}</option>`).join('');
+}
+
 const POST_TYPES = {
   lost: {
     label:'Lost pet', banner:'LOST', icon:'ti-alert-triangle', card:'lost',
@@ -3850,7 +4011,7 @@ const POST_TYPES = {
     bodyLabel:'Anything else that helps?', bodyReq:false,
     fields:[
       {k:'pet_name', l:'Pet name', ph:'e.g. Bella', req:true},
-      {k:'species', l:'Species', type:'select', opts:[['dogs','Dog'],['cats','Cat'],['birds','Bird'],['fish','Fish / aquatic'],['exotic','Other']]},
+      {k:'species', l:'Species', type:'select', opts:SPECIES.map(x=>[x[0],x[1]])},
       {k:'breed', l:'Breed', ph:'e.g. Beagle'},
       {k:'marks', l:'Collar / identifying marks', ph:'e.g. Red collar, white chest patch'},
       {k:'last_seen', l:'Last seen where', ph:'e.g. Near KRS park, Vijayanagar 2nd Stage', req:true},
@@ -3864,7 +4025,7 @@ const POST_TYPES = {
     cta: () => 'This might be my pet', ctaKind:'claim',
     bodyLabel:'Condition of the pet, any other detail', bodyReq:false,
     fields:[
-      {k:'species', l:'Species', type:'select', opts:[['dogs','Dog'],['cats','Cat'],['birds','Bird'],['fish','Fish / aquatic'],['exotic','Other']]},
+      {k:'species', l:'Species', type:'select', opts:SPECIES.map(x=>[x[0],x[1]])},
       {k:'breed', l:'Looks like (breed)', ph:'e.g. Indie mix'},
       {k:'marks', l:'Collar / identifying marks', ph:'e.g. Blue collar, no tag'},
       {k:'found_at', l:'Found where', ph:'e.g. Outside Saraswathipuram market', req:true},
@@ -3878,7 +4039,7 @@ const POST_TYPES = {
     bodyLabel:'Temperament, history, why rehoming', bodyReq:false,
     fields:[
       {k:'pet_name', l:'Pet name', ph:'e.g. Tommy', req:true},
-      {k:'species', l:'Species', type:'select', opts:[['dogs','Dog'],['cats','Cat'],['birds','Bird'],['fish','Fish / aquatic'],['exotic','Other']]},
+      {k:'species', l:'Species', type:'select', opts:SPECIES.map(x=>[x[0],x[1]])},
       {k:'breed', l:'Breed', ph:'e.g. Indie mix'},
       {k:'age_text', l:'Age', ph:'e.g. 2y'},
       {k:'gender', l:'Gender', type:'select', opts:[['','Not specified'],['Male','Male'],['Female','Female']]},
@@ -3912,7 +4073,7 @@ const POST_TYPES = {
         ['transport','Transport to vet / travel'],
         ['other','Something else']]},
       {k:'pet_name', l:'Which pet', ph:'e.g. Bruno'},
-      {k:'species', l:'Species', type:'select', opts:[['dogs','Dog'],['cats','Cat'],['birds','Bird'],['fish','Fish / aquatic'],['exotic','Other']]},
+      {k:'species', l:'Species', type:'select', opts:SPECIES.map(x=>[x[0],x[1]])},
       {k:'from_date', l:'From', type:'date', req:true},
       {k:'to_date', l:'Until', type:'date'},
       {k:'budget', l:'Budget (optional)', ph:'e.g. ₹500/day, or "happy to discuss"'},
@@ -4411,15 +4572,6 @@ let activeSpecies='dogs', activeIntent='all', isDragging=false, startX=0, startY
 
 
 let discoverPets = [];
-const SPECIES_ICON = {
-  dogs:['ti-dog','var(--coral-l)','var(--coral)'],
-  cats:['ti-cat','var(--amber-l)','var(--amber)'],
-  birds:['ti-bird','var(--green-l)','var(--green)'],
-  fish:['ti-fish','var(--teal-l)','var(--teal)'],
-  exotic:['ti-paw','var(--purple-l)','var(--purple)'],
-  farm:['ti-star','var(--amber-l)','var(--amber)']
-};
-
 function calcAge(dob){
   if(!dob) return 'Age unknown';
   const b=new Date(dob), now=new Date();
@@ -5042,9 +5194,52 @@ let myBusinesses = [];
 // ---------- customer-facing directory ----------
 let distanceByBizId = {};
 
+// Bookings you've made, shown right at the top of Services so their
+// status is visible without digging into a menu.
+async function loadSvcBookings() {
+  const sec  = document.getElementById('svc-bookings-sec');
+  const wrap = document.getElementById('svc-bookings');
+  if (!sec || !wrap) return;
+  if (!currentUser) { sec.style.display = 'none'; return; }
+  try {
+    const { data } = await sbq(() => sb.from('bookings')
+      .select('id, status, service_name, booked_for, provider_name, business_id, businesses ( id, name ), pets ( name )')
+      .eq('user_id', currentUser.id)
+      .in('status', ['requested','confirmed'])
+      .order('booked_for', { ascending: true }).limit(5), 'Your bookings');
+    const rows = data || [];
+    if (!rows.length) { sec.style.display = 'none'; return; }
+    sec.style.display = '';
+    wrap.innerHTML = rows.map(b => {
+      const st = BK_STATUS[b.status] || BK_STATUS.requested;
+      const when = b.booked_for
+        ? (normalizeTs(b.booked_for) || new Date()).toLocaleString([], { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })
+        : 'Time to be confirmed';
+      const who = (b.businesses && b.businesses.name) || b.provider_name || 'Provider';
+      return `<div class="bk-card" style="margin:0 0 8px;">
+        <div style="display:flex;align-items:center;gap:9px;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;font-weight:700;">${escHtml(b.service_name || 'Service')}</div>
+            <div style="font-size:11.5px;color:var(--t2);margin-top:2px;">${escHtml(who)} · ${escHtml(when)}${b.pets ? ' · ' + escHtml(b.pets.name) : ''}</div>
+          </div>
+          <span class="bk-status" style="background:${st[1]};color:${st[2]};">${st[0]}</span>
+        </div>
+        <div class="bk-acts">
+          ${b.businesses ? `<button style="background:var(--gray-l);color:var(--text);" onclick="openBusiness('${b.businesses.id}','s-services')">View</button>` : ''}
+          <button style="background:var(--gray-l);color:var(--red);" onclick="cancelBooking('${b.id}')">Cancel</button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    console.log('svc bookings:', e);
+    sec.style.display = 'none';   // never let this block the rest of Services
+  }
+}
+
 async function loadServices() {
   const list = document.getElementById('prov-list');
   if (!list) return;
+  loadSvcBookings();   // runs alongside; its failure can't affect the list
   list.innerHTML = '<div style="text-align:center;padding:26px;color:var(--t3);font-size:13px;"><div class="loading-spin" style="margin:0 auto 8px;"></div>Finding providers…</div>';
   distanceByBizId = {};
   try {
@@ -5859,15 +6054,18 @@ const NOTIF_ICONS = {
   follower_tag:['ti-at','var(--purple)'], interest:['ti-heart','var(--coral)'], tag:['ti-at','var(--purple)'], mention:['ti-at','var(--purple)'], message:['ti-mail','var(--teal)'],
   interest:['ti-heart','var(--coral)'],
   response:['ti-hand-love-you','var(--purple)'], booking:['ti-calendar','var(--amber)'],
-  review:['ti-star-filled','var(--amber)']
+  review:['ti-star-filled','var(--amber)'],
+  admin:['ti-shield-exclamation','var(--red)']
 };
 
 async function refreshNotifCount() {
   if (!currentUser) return;
   try {
-    const { count } = await sbq(() => sb.from('notifications')
-      .select('id', { count:'exact', head:true }).eq('user_id', currentUser.id).eq('is_read', false), 'Bell count');
-    const total = count || 0;
+    const { data: unread } = await sbq(() => sb.from('notifications')
+      .select('type').eq('user_id', currentUser.id).eq('is_read', false).limit(200), 'Bell count');
+    // Counted client-side against the person's settings so the badge can
+    // never advertise notifications the list will filter out.
+    const total = (unread || []).filter(n => notifAllowed(n.type)).length;
     ['bell-dot','bell-dot-2'].forEach(id => {
       const el = document.getElementById(id);
       if (el) { el.textContent = total > 99 ? '99+' : total; el.style.display = total ? 'flex' : 'none'; }
@@ -5907,6 +6105,7 @@ async function loadNotifications() {
     // read as a single line.
     const seen = new Set();
     notifs = (data || []).filter(n => {
+      if (!notifAllowed(n.type)) return false;      // honour the person's settings
       const key = [n.type, n.actor_id, n.type === 'message' ? '' : n.entity_id].join('|');
       if (seen.has(key)) return false;
       seen.add(key);
@@ -8849,10 +9048,202 @@ async function getMyFollowing() {
 }
 
 
+// ---------- Requests in the inbox, both directions ----------
+// Two things count as a "request": someone offering help / enquiring on a
+// post (post_responses), and a service booking (bookings). Each shows up
+// for BOTH people — the one who sent it and the one who has to answer —
+// so nobody has to guess where a request went.
+const REQ_STATUS = {
+  open:      ['Waiting',   'var(--amber-l)', 'var(--amber-m)'],
+  accepted:  ['Accepted',  'var(--teal-l)',  'var(--teal-m)'],
+  declined:  ['Declined',  'var(--gray-l)',  'var(--t2)'],
+  closed:    ['Closed',    'var(--gray-l)',  'var(--t2)'],
+  requested: ['Waiting',   'var(--amber-l)', 'var(--amber-m)'],
+  confirmed: ['Confirmed', 'var(--teal-l)',  'var(--teal-m)'],
+  completed: ['Done',      'var(--gray-l)',  'var(--t2)'],
+  cancelled: ['Cancelled', 'var(--gray-l)',  'var(--t2)']
+};
+
+async function loadInboxRequests() {
+  const sec  = document.getElementById('inbox-req-sec');
+  const wrap = document.getElementById('inbox-requests');
+  if (!sec || !wrap || !currentUser) return;
+  const me = currentUser.id;
+  const items = [];
+
+  // 0. Moderator warnings and account actions — surfaced here as well as in
+  // notifications, because they matter more than anything else in the list.
+  try {
+    const { data } = await sb.from('notifications')
+      .select('id, title, body, created_at, is_read')
+      .eq('user_id', me).eq('type', 'admin')
+      .order('created_at', { ascending:false }).limit(5);
+    (data || []).forEach(n => items.push({
+      id: n.id, dir: 'admin', kind: 'admin', status: 'admin',
+      at: n.created_at, otherId: null, otherName: 'PetXchange',
+      title: n.title, sub: n.body || '', unread: !n.is_read
+    }));
+  } catch(e) { console.log('admin notices:', e); }
+
+  // 1. Offers/enquiries I SENT on other people's posts
+  try {
+    const { data } = await sb.from('post_responses')
+      .select('id, kind, status, created_at, post_id, posts ( id, post_type, body, author_id, details, profiles:author_id ( full_name, avatar_url ) )')
+      .eq('responder_id', me).order('created_at', { ascending:false }).limit(20);
+    (data || []).forEach(r => {
+      const po = r.posts || {};
+      const other = po.profiles || {};
+      items.push({
+        id: r.id, dir: 'sent', kind: 'response', status: r.status || 'open',
+        at: r.created_at, otherId: po.author_id, otherName: other.full_name || 'Someone',
+        avatar: other.avatar_url,
+        title: r.kind === 'help_offer' ? 'You offered to help' : 'You sent an enquiry',
+        sub: (po.body || (po.details && po.details.pet_name) || 'their post'),
+        postId: r.post_id
+      });
+    });
+  } catch(e) { console.log('req sent:', e); }
+
+  // 2. Offers/enquiries I RECEIVED on my own posts
+  try {
+    const { data: mine } = await sb.from('posts').select('id, body, details').eq('author_id', me).limit(50);
+    const ids = (mine || []).map(p => p.id);
+    if (ids.length) {
+      const byId = {}; (mine || []).forEach(p => byId[p.id] = p);
+      const { data } = await sb.from('post_responses')
+        .select('id, kind, status, created_at, post_id, responder_id, profiles:responder_id ( full_name, avatar_url )')
+        .in('post_id', ids).order('created_at', { ascending:false }).limit(30);
+      (data || []).forEach(r => {
+        const who = r.profiles || {};
+        const po = byId[r.post_id] || {};
+        items.push({
+          id: r.id, dir: 'received', kind: 'response', status: r.status || 'open',
+          at: r.created_at, otherId: r.responder_id, otherName: who.full_name || 'Someone',
+          avatar: who.avatar_url,
+          title: (who.full_name || 'Someone') + (r.kind === 'help_offer' ? ' offered to help' : ' sent an enquiry'),
+          sub: (po.body || (po.details && po.details.pet_name) || 'your post'),
+          postId: r.post_id
+        });
+      });
+    }
+  } catch(e) { console.log('req received:', e); }
+
+  // 3. Bookings I MADE
+  try {
+    const { data } = await sb.from('bookings')
+      .select('id, status, service_name, booked_for, provider_name, provider_id, businesses ( id, name )')
+      .eq('user_id', me).order('created_at', { ascending:false }).limit(20);
+    (data || []).forEach(b => items.push({
+      id: b.id, dir: 'sent', kind: 'booking', status: b.status || 'requested',
+      at: b.booked_for, otherId: b.provider_id,
+      otherName: (b.businesses && b.businesses.name) || b.provider_name || 'Provider',
+      title: 'You booked ' + (b.service_name || 'a service'),
+      sub: (b.businesses && b.businesses.name) || b.provider_name || ''
+    }));
+  } catch(e) { console.log('bookings sent:', e); }
+
+  // 4. Bookings people made WITH me
+  try {
+    const { data } = await sb.from('bookings')
+      .select('id, status, service_name, booked_for, user_id, profiles:user_id ( full_name, avatar_url ), pets ( name )')
+      .eq('provider_id', me).order('created_at', { ascending:false }).limit(20);
+    (data || []).forEach(b => {
+      const who = b.profiles || {};
+      items.push({
+        id: b.id, dir: 'received', kind: 'booking', status: b.status || 'requested',
+        at: b.booked_for, otherId: b.user_id, otherName: who.full_name || 'Customer',
+        avatar: who.avatar_url,
+        title: (who.full_name || 'Someone') + ' booked ' + (b.service_name || 'a service'),
+        sub: b.pets ? 'For ' + b.pets.name : ''
+      });
+    });
+  } catch(e) { console.log('bookings received:', e); }
+
+  if (!items.length) { sec.style.display = 'none'; return; }
+
+  // Waiting ones first — those are the ones needing an answer.
+  const pending = st => ['open','requested'].includes(st);
+  const rank = r => r.kind === 'admin' ? 2 : (pending(r.status) ? 1 : 0);
+  items.sort((a, b) => (rank(b) - rank(a)) || (new Date(b.at || 0) - new Date(a.at || 0)));
+
+  sec.style.display = '';
+  wrap.innerHTML = items.slice(0, 12).map(r => {
+    if (r.kind === 'admin') {
+      return `<div class="bk-card" style="margin:0 0 8px;border-left:3px solid var(--red);background:var(--red-l);"
+                   onclick="openNotifications()">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:34px;height:34px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="ti ti-shield-exclamation" style="color:var(--red);font-size:18px;"></i>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13.5px;font-weight:700;color:var(--red-d);">${escHtml(r.title)}</div>
+            <div style="font-size:11.5px;color:var(--red);margin-top:2px;line-height:1.45;">${escHtml((r.sub || '').slice(0,110))}</div>
+            <div style="font-size:10.5px;color:var(--red);opacity:.8;margin-top:3px;">${r.at ? getTimeAgo(r.at) : ''}</div>
+          </div>
+        </div>
+      </div>`;
+    }
+    const st = REQ_STATUS[r.status] || REQ_STATUS.open;
+    const initial = (r.otherName || '?').trim().charAt(0).toUpperCase();
+    const canAnswer = r.dir === 'received' && pending(r.status);
+    const acceptFn = r.kind === 'booking'
+      ? `inboxSetBooking('${r.id}','confirmed')`
+      : `inboxSetResponse('${r.id}','accepted')`;
+    const declineFn = r.kind === 'booking'
+      ? `inboxSetBooking('${r.id}','declined')`
+      : `inboxSetResponse('${r.id}','declined')`;
+    return `<div class="bk-card" style="margin:0 0 8px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="msg-avi" style="width:38px;height:38px;flex-shrink:0;">
+          ${r.avatar ? `<img src="${escAttr(r.avatar)}" alt="">` : escHtml(initial)}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13.5px;font-weight:700;">${escHtml(r.title)}</div>
+          <div style="font-size:11.5px;color:var(--t2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+            ${escHtml((r.sub || '').slice(0, 70))}${r.at ? ' · ' + getTimeAgo(r.at) : ''}
+          </div>
+        </div>
+        <span class="bk-status" style="background:${st[1]};color:${st[2]};flex-shrink:0;">
+          ${r.dir === 'sent' ? 'Sent · ' : ''}${st[0]}
+        </span>
+      </div>
+      <div class="bk-acts">
+        ${canAnswer ? `
+          <button style="background:var(--teal);color:#fff;" onclick="${acceptFn}">Accept</button>
+          <button style="background:var(--gray-l);color:var(--red);" onclick="${declineFn}">Decline</button>` : ''}
+        ${r.otherId ? `<button style="background:var(--gray-l);color:var(--text);" onclick="openChatWith('${r.otherId}')">Message</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function inboxSetResponse(id, status) {
+  try {
+    const { error } = await withDeadline(
+      sb.from('post_responses').update({ status }).eq('id', id), QUERY_TIMEOUT_MS, 'Update request');
+    if (error) throw error;
+    showToast(status === 'accepted' ? 'Accepted — say hello in chat' : 'Declined');
+    buzz(8);
+    loadInboxRequests();
+  } catch(e) { showToast(handleErrorText(e, 'Could not update that request')); }
+}
+
+async function inboxSetBooking(id, status) {
+  try {
+    const { error } = await withDeadline(
+      sb.from('bookings').update({ status }).eq('id', id), QUERY_TIMEOUT_MS, 'Update booking');
+    if (error) throw error;
+    showToast(status === 'confirmed' ? 'Booking confirmed' : 'Booking declined');
+    buzz(8);
+    loadInboxRequests();
+  } catch(e) { showToast(handleErrorText(e, 'Could not update that booking')); }
+}
+
 async function loadInbox() {
   const connWrap = document.getElementById('conn-scroll');
   const msgWrap = document.getElementById('msg-list');
   if (!currentUser) return;
+  loadInboxRequests();   // independent; its failure can't block messages
   if (connWrap) connWrap.innerHTML = '<div style="padding:6px 2px;color:var(--t3);font-size:12px;">Loading…</div>';
 
   try {
@@ -9506,6 +9897,15 @@ selectRole('owner');
       <input type="text" class="finp" id="set-name-inp" placeholder="Your name">
     </div>
     <button class="sbtn" onclick="saveAccountName()">Save name</button>
+
+    <div style="height:28px;"></div>
+    <div class="mtitle">Notifications</div>
+    <div style="font-size:12.5px;color:var(--t2);line-height:1.55;margin:-10px 0 14px;">
+      Choose what you want to be told about. Follows and important alerts are
+      on to start with; the rest are off so your notifications stay quiet.
+    </div>
+    <div id="notif-prefs-list"></div>
+    <button class="sbtn" onclick="saveNotifPrefs()">Save notification settings</button>
 
     <div style="height:28px;"></div>
     <div class="mtitle">Change password</div>
