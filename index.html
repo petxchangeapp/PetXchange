@@ -1504,6 +1504,61 @@ img{background:var(--surface-2)}
 .set-body.open{max-height:1400px;opacity:1;padding:2px 15px 16px}
 .set-body .sbtn{margin-top:4px}
 
+/* ---------- Role picker (signup + edit profile) ---------- */
+.role-pick{display:flex;flex-direction:column;gap:8px}
+.role-opt{
+  display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+  padding:12px 13px;border-radius:var(--r);cursor:pointer;
+  background:var(--surface-2);border:1.5px solid transparent;
+  font-family:inherit;color:var(--text);
+  transition:background .16s,border-color .16s,transform .14s var(--ease);
+}
+.role-opt:active{transform:scale(.985)}
+.role-opt > .ti:first-child{font-size:20px;color:var(--t2);flex-shrink:0;transition:color .16s}
+.role-opt.on{background:var(--coral-l);border-color:var(--coral)}
+.role-opt.on > .ti:first-child{color:var(--coral)}
+.role-opt.locked{opacity:.8;cursor:default}
+.role-opt-txt{flex:1;min-width:0;display:block}
+.role-opt-lbl{display:block;font-size:14px;font-weight:700;letter-spacing:-.01em}
+.role-opt-hint{display:block;font-size:11.5px;color:var(--t2);font-weight:500;margin-top:2px;line-height:1.35}
+.role-opt-tick{font-size:21px;color:var(--bd-strong);flex-shrink:0;transition:color .18s,transform .18s var(--ease-out)}
+.role-opt.on .role-opt-tick{color:var(--coral);transform:scale(1.05)}
+
+/* ---------- Provider dashboard tabs ---------- */
+.pv-tabs{
+  display:flex;gap:6px;padding:10px 12px;overflow-x:auto;scrollbar-width:none;
+  border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5;
+}
+.pv-tabs::-webkit-scrollbar{display:none}
+@supports (backdrop-filter:blur(1px)){
+  .pv-tabs{background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px)}
+}
+.pv-tab{
+  flex-shrink:0;display:flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:100px;font-size:12.5px;font-weight:600;
+  background:var(--card);border:1px solid var(--bd);color:var(--t2);cursor:pointer;
+  font-family:inherit;transition:background .18s,color .18s,border-color .18s,transform .14s var(--ease);
+}
+.pv-tab:active{transform:scale(.95)}
+.pv-tab.on{background:var(--brand-solid);color:#fff;border-color:transparent;box-shadow:0 4px 12px -4px rgba(216,90,48,.55)}
+[data-theme="dark"] .pv-tab.on{color:#17120F}
+.pv-tab .cnt{
+  background:var(--amber);color:#2A1710;border-radius:100px;
+  font-size:10px;font-weight:800;padding:1px 6px;min-width:16px;text-align:center;
+}
+.pv-tab.on .cnt{background:rgba(255,255,255,.9);color:var(--brand-solid)}
+.pv-pane{display:none;padding-bottom:20px}
+.pv-pane.on{display:block;animation:px-screen-in .26s var(--ease-out) both}
+.svc-manage-card{
+  background:var(--card);border:1px solid var(--bd);border-radius:var(--r);
+  box-shadow:var(--e1);padding:13px 14px;margin:0 12px 10px;
+}
+.svc-manage-card.paused{opacity:.72}
+.svc-paused-tag{
+  background:var(--gray-l);color:var(--t2);font-size:10px;font-weight:800;
+  padding:3px 9px;border-radius:100px;letter-spacing:.03em;
+}
+
 </style>
 </head>
 <body>
@@ -1592,6 +1647,16 @@ img{background:var(--surface-2)}
 
     <!-- Signup form -->
     <div id="form-signup" style="display:none;">
+      <div class="fgrp"><label class="flbl">How will you use PetXchange? *</label>
+        <div id="signup-roles" class="role-pick"></div>
+        <select class="fsel" id="signup-role" style="display:none;">
+          <option value="owner">Pet parent</option>
+          <option value="provider">Service provider</option>
+          <option value="community">Community member</option>
+        </select>
+        <div class="pf-hint">Pick everything that applies — most people are more than one. You can change it any time in Edit profile.</div>
+      </div>
+
       <div class="fgrp"><label class="flbl">Full name *</label>
         <input class="finp" type="text" id="s-name" placeholder="Your name" autocomplete="name" oninput="suggestUserHandle()">
       </div>
@@ -1635,15 +1700,7 @@ img{background:var(--surface-2)}
           <option value="99999">Any distance</option>
         </select>
       </div>
-      <div class="fgrp"><label class="flbl">You are</label>
-        <div id="signup-roles-recap" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
-        <select class="fsel" id="signup-role" style="display:none;">
-          <option value="owner">Pet parent</option>
-          <option value="provider">Service provider</option>
-          <option value="community">Community member</option>
-        </select>
-        <div class="pf-hint">Chosen on the first step — <span style="text-decoration:underline;cursor:pointer;" onclick="showScreen('s-role')">change it</span>. You can also edit this later in your profile.</div>
-      </div>
+
       <button class="sbtn" id="btn-signup" onclick="doSignup()">Create account</button>
     </div>
 
@@ -2008,16 +2065,20 @@ img{background:var(--surface-2)}
     <div class="hdr-acts"><i class="ti ti-refresh" onclick="loadInbox()"></i></div>
   </div>
   <div class="scroll-area">
-    <!-- Requests, both directions: things people asked you, and things you
-         asked others. Accept / decline happens right here. -->
-    <div id="inbox-req-sec" style="display:none;">
-      <div style="padding:12px 16px 4px;font-size:12px;font-weight:700;color:var(--t2);">REQUESTS</div>
-      <div id="inbox-requests" style="padding:0 12px;"></div>
-    </div>
+    <!-- People first: who you follow, then your conversations. Requests and
+         bookings sit below — they matter, but they're admin, not company. -->
     <div style="padding:12px 16px 4px;font-size:12px;font-weight:700;color:var(--t2);">FOLLOWING</div>
     <div class="match-scroll" id="conn-scroll"></div>
     <div style="padding:8px 16px 8px;font-size:12px;font-weight:700;color:var(--t2);">MESSAGES</div>
     <div class="msg-list" id="msg-list"></div>
+
+    <div id="inbox-req-sec" style="display:none;">
+      <div style="display:flex;align-items:center;gap:8px;padding:20px 16px 4px;">
+        <div style="font-size:12px;font-weight:700;color:var(--t2);">REQUESTS &amp; BOOKINGS</div>
+        <span id="inbox-req-count" class="pill" style="background:var(--amber-l);color:var(--amber-m);font-size:10px;display:none;"></span>
+      </div>
+      <div id="inbox-requests" style="padding:0 12px;"></div>
+    </div>
   </div>
 
   <nav class="tabbar">
@@ -2866,6 +2927,10 @@ img{background:var(--surface-2)}
         <div class="pf-hint">JPG or PNG, up to 5 MB.</div>
       </div>
     </div>
+    <div class="fgrp"><label class="flbl">How you use PetXchange</label>
+      <div id="edit-roles" class="role-pick"></div>
+      <div class="pf-hint" id="edit-roles-hint">Pick everything that applies. Listing a service adds Service provider on its own.</div>
+    </div>
     <div class="fgrp"><label class="flbl">Full name</label><input class="finp" id="edit-name" type="text" placeholder="Your name"></div>
     <div class="fgrp"><label class="flbl">Your ID (unique handle)</label>
       <div style="display:flex;align-items:center;gap:6px;">
@@ -3428,7 +3493,9 @@ function startLogin() {
 // you?" before a form is the part people can actually answer.
 function startSignup() {
   authIntent = 'signup';
-  showScreen('s-role');
+  authSwitch('signup');
+  showScreen('s-auth');
+  renderSignupRoles();
 }
 
 // Role screen → carry the choice into the signup form.
@@ -3835,44 +3902,37 @@ function toggleSetSec(id){
   buzz(5);
 }
 
-function renderMyRoles(){
-  const wrap = document.getElementById('set-roles-list');
-  if (!wrap) return;
-  const mine = rolesOf(currentProfile);
-  const locked = isProvider() && (myBusinesses && myBusinesses.length > 0);
-  wrap.innerHTML = [
-    ['owner','Pet parent','Follow pets, find mates, book services','ti-heart'],
-    ['provider','Service provider','Vet, groomer, boarder, walker, trainer','ti-briefcase'],
-    ['community','Community member','Adopt, volunteer, explore, dog-walk','ti-users']
-  ].map(([k,label,hint,icon]) => {
-    const on = mine.includes(k);
-    const isLocked = (k === 'provider' && locked);
-    return `<label class="menu-item" style="cursor:${isLocked?'default':'pointer'};margin-bottom:8px;${isLocked?'opacity:.75;':''}">
-      <i class="lead ti ${icon}"></i>
-      <span style="flex:1;min-width:0;">
-        <span style="display:block;font-size:14px;font-weight:600;">${escHtml(label)}</span>
-        <span style="display:block;font-size:11.5px;color:var(--t2);font-weight:500;margin-top:2px;">${
-          isLocked ? 'Active because you have a service listed' : escHtml(hint)}</span>
-      </span>
-      <input type="checkbox" data-role="${k}" ${on?'checked':''} ${isLocked?'disabled':''}
-             style="width:20px;height:20px;accent-color:var(--coral);flex-shrink:0;">
-    </label>`;
-  }).join('');
+// Roles live in Edit profile now — they describe who you are, which belongs
+// with your name and photo rather than buried in settings.
+let editRoles = [];
+
+// Someone can't drop the provider badge while a service is still live —
+// otherwise their listing would sit in Services with no provider behind it.
+function activeServiceCount() {
+  return (myBusinesses || []).filter(b => b.is_active !== false).length;
 }
 
-async function saveMyRoles(){
-  const picked = [...document.querySelectorAll('#set-roles-list input[data-role]')]
-    .filter(i => i.checked || i.disabled).map(i => i.getAttribute('data-role'));
-  if (!picked.length) { showToast('Pick at least one'); return; }
-  const payload = { roles: picked, role: picked[0] };
-  if (currentProfile) Object.assign(currentProfile, payload);
-  try {
-    const { dropped } = await writeWithFallback(
-      d => sb.from('profiles').update(d).eq('id', currentUser.id), payload);
-    showToast(dropped && dropped.length ? 'Saved (run the latest SQL for full support)' : 'Saved');
-    updateMyProfileScreen();
-    renderMyRoles();
-  } catch(e) { showToast(handleErrorText(e, 'Could not save that')); }
+function renderEditRoles() {
+  const locked = activeServiceCount() > 0;
+  renderRolePicker('edit-roles', editRoles, 'toggleEditRole', locked);
+  const hint = document.getElementById('edit-roles-hint');
+  if (hint) {
+    hint.innerHTML = locked
+      ? 'Service provider stays on while you have a live service. To remove it, pause or delete your services in <span style="text-decoration:underline;cursor:pointer;" onclick="closeModal(\'m-edit-profile\');openProviderHub()">Manage my business</span>.'
+      : 'Pick everything that applies. Listing a service adds Service provider on its own.';
+  }
+}
+
+function toggleEditRole(r) {
+  const i = editRoles.indexOf(r);
+  if (i > -1) {
+    if (editRoles.length === 1) { showToast('Pick at least one'); return; }
+    editRoles.splice(i, 1);
+  } else {
+    editRoles.push(r);
+  }
+  renderEditRoles();
+  buzz(5);
 }
 
 function openSettings(){
@@ -3884,7 +3944,6 @@ function openSettings(){
   if (pwInp) pwInp.value = '';
   if (pwConfirm) pwConfirm.value = '';
   renderNotifPrefs();
-  renderMyRoles();
   showScreen('s-settings');
 }
 
@@ -3987,11 +4046,17 @@ function updateHeaderAvatar() {
 
 async function saveProfile() {
   if (!currentUser) return;
+  // A live service always keeps the provider badge on, whatever the
+  // checkboxes say — the listing has to have someone behind it.
+  let roles = (editRoles && editRoles.length) ? editRoles.slice() : rolesOf(currentProfile);
+  if (activeServiceCount() > 0 && !roles.includes('provider')) roles.push('provider');
   const patch = {
     id: currentUser.id,
     full_name: document.getElementById('edit-name').value.trim(),
     bio: document.getElementById('edit-bio').value.trim() || null,
     city: document.getElementById('edit-city').value.trim() || null,
+    roles: roles,
+    role: roles[0],
     updated_at: new Date().toISOString()
   };
   try { patch.handle = readHandle('edit-handle'); }
@@ -4161,6 +4226,8 @@ function openEditProfile() {
   if (locLbl) locLbl.textContent = hasLocation(p) ? (p.location_text || p.city || 'Location set') : 'Set your location';
   const h = document.getElementById('edit-handle');
   if (h) { h.value = p.handle || ''; h.dataset.valid = '1'; }
+  editRoles = rolesOf(p).slice();
+  renderEditRoles();
   openModal('m-edit-profile');
 }
 
@@ -6738,183 +6805,346 @@ function postCareRequest()  { openPostComposer('care_request'); }
 let bizImages = { logo:null, cover:null };
 let adMediaUrl = null;
 
+// ============================================================
+// MANAGE MY BUSINESS
+// Four clear tabs instead of one long scroll: what needs answering,
+// the services you offer, how you get found, and how you're doing.
+// ============================================================
+let pvTab = 'inbox';
+let pvData = { listings: [], bookings: [], offers: [], sent: [], received: 0 };
+
 async function loadProviderDash() {
   const wrap = document.getElementById('prov-dash');
   if (!wrap || !currentUser) return;
-  wrap.innerHTML = '<div style="text-align:center;padding:30px;color:var(--t3);font-size:13px;"><div class="loading-spin" style="margin:0 auto 8px;"></div>Loading…</div>';
+  wrap.innerHTML = '<div class="skel-card" style="height:84px;margin:12px;"></div>' +
+                   '<div class="skel-card" style="height:120px;margin:0 12px;"></div>';
 
-  let listings = [];
-  try {
-    const { data } = await sb.from('businesses').select('*').eq('owner_id', currentUser.id).order('created_at');
-    listings = data || [];
-  } catch(e) { console.log('listings:', e); }
-  myBusinesses = listings;
-
-  // Everything below works whether you're a clinic or a student with free time.
-  let bookings = [], myOffers = [], sentOffers = [], received = 0;
-  try {
-    const { data } = await sb.from('bookings')
-      .select('*, pets ( name, species ), profiles:user_id ( full_name, avatar_url )')
-      .eq('provider_id', currentUser.id).order('booked_for', { ascending: true }).limit(50);
-    bookings = data || [];
-  } catch(e) {}
-  try {
-    const { data } = await sb.from('posts')
-      .select('id, post_type, body, details, is_resolved, created_at, likes_count, comments_count')
+  const [listings, bookings, offers, sent] = await Promise.all([
+    sb.from('businesses').select('*').eq('owner_id', currentUser.id).order('created_at')
+      .then(r => r.data || []).catch(() => []),
+    sb.from('bookings').select('*, pets ( name, species ), profiles:user_id ( full_name, avatar_url )')
+      .eq('provider_id', currentUser.id).order('booked_for', { ascending: true }).limit(60)
+      .then(r => r.data || []).catch(() => []),
+    sb.from('posts').select('id, post_type, body, details, is_resolved, created_at, likes_count, comments_count')
       .eq('author_id', currentUser.id).in('post_type', ['service_offer'])
-      .order('created_at', { ascending: false }).limit(10);
-    myOffers = data || [];
-  } catch(e) {}
+      .order('created_at', { ascending: false }).limit(20)
+      .then(r => r.data || []).catch(() => []),
+    sb.from('post_responses').select('id, post_id, kind, status, created_at, posts ( post_type, details, author_id, body )')
+      .eq('responder_id', currentUser.id).order('created_at', { ascending: false }).limit(20)
+      .then(r => r.data || []).catch(() => [])
+  ]);
+
+  let received = 0;
   try {
-    const { data } = await sb.from('post_responses')
-      .select('id, post_id, kind, status, created_at, posts ( post_type, details, author_id, body )')
-      .eq('responder_id', currentUser.id).order('created_at', { ascending: false }).limit(20);
-    sentOffers = data || [];
-  } catch(e) {}
-  try {
-    const ids = myOffers.map(o => o.id);
+    const ids = offers.map(o => o.id);
     if (ids.length) {
-      const { count } = await sb.from('post_responses').select('id', { count:'exact', head:true }).in('post_id', ids);
+      const { count } = await sb.from('post_responses')
+        .select('id', { count:'exact', head:true }).in('post_id', ids);
       received = count || 0;
     }
   } catch(e) {}
 
-  const pending   = bookings.filter(b => b.status === 'requested');
-  const upcoming  = bookings.filter(b => b.status === 'confirmed');
-  const completed = bookings.filter(b => b.status === 'completed');
-  const revenue   = completed.reduce((n, b) => n + (Number(b.price) || 0), 0);
-  const accepted  = sentOffers.filter(r => r.status === 'accepted').length;
-  const helped    = completed.length + accepted;
-  const ratingCt  = listings.reduce((n, b) => n + (b.rating_count || 0), 0);
-  const avgRating = ratingCt
-    ? (listings.reduce((n, b) => n + Number(b.rating_avg || 0) * (b.rating_count || 0), 0) / ratingCt).toFixed(1)
-    : '—';
+  myBusinesses = listings;
+  pvData = { listings, bookings, offers, sent, received };
+  // A live listing means provider, whatever the profile says — keep the two in step.
+  if (listings.length && !hasRole(currentProfile, 'provider')) ensureProviderRole();
+
+  // Nothing set up yet — one screen, two clear ways in.
+  if (!listings.length && !offers.length) { renderProviderEmpty(); return; }
+  renderProviderShell();
+}
+
+function renderProviderEmpty() {
   const name = (currentProfile && currentProfile.full_name || '').split(' ')[0] || 'there';
-  const hasPaid = listings.some(l => l.pricing_type === 'paid') || revenue > 0;
-
-  // ---------- nothing listed yet ----------
-  if (!listings.length && !myOffers.length) {
-    wrap.innerHTML = `
-      <div class="dash-hero">
-        <h2>Hi ${escHtml(name)} 👋</h2>
-        <p>Whether you run a clinic or just have free evenings to walk a dog, you can offer it here. No fees, no commission.</p>
-      </div>
-      <div style="padding:0 12px;">
-        <div class="req-card" style="border-left-color:var(--green);cursor:pointer;" onclick="postAvailability()">
-          <div style="font-size:15px;font-weight:700;"><i class="ti ti-hand-stop" style="color:var(--green);"></i> Just tell the community you're free</div>
-          <div style="font-size:12.5px;color:var(--t2);line-height:1.5;margin-top:4px;">
-            Post to the feed — "I can walk dogs near campus, ₹10/hour or free". Takes 30 seconds, no listing needed.
-          </div>
-          <div style="margin-top:8px;"><span class="helper-badge">Best for students & neighbours</span></div>
-        </div>
-        <div class="req-card" style="border-left-color:var(--coral);cursor:pointer;" onclick="openAddBusiness()">
-          <div style="font-size:15px;font-weight:700;"><i class="ti ti-building-store" style="color:var(--coral);"></i> Create a proper listing</div>
-          <div style="font-size:12.5px;color:var(--t2);line-height:1.5;margin-top:4px;">
-            Get a permanent page in Services with your rates, hours and reviews. For regular sitters, walkers, groomers and clinics.
-          </div>
-        </div>
-      </div>
-      <div class="sec-hdr" style="margin-top:6px;"><h3>People who need help right now</h3></div>
-      <div id="dash-requests"></div>`;
-    loadCommunityRequests('dash-requests', 5);
-    return;
-  }
-
-  // ---------- active helper / provider ----------
-  wrap.innerHTML = `
+  document.getElementById('prov-dash').innerHTML = `
     <div class="dash-hero">
       <h2>Hi ${escHtml(name)} 👋</h2>
-      <p>${pending.length ? pending.length + ' booking request' + (pending.length > 1 ? 's' : '') + ' waiting on you.'
-          : received ? received + ' enquir' + (received > 1 ? 'ies' : 'y') + ' on your posts.'
-          : 'Nothing needs your attention. Here\'s who could use a hand today.'}</p>
+      <p>Whether you run a clinic or just have free evenings to walk a dog, you can offer it here. No fees, no commission.</p>
     </div>
-
-    <div class="impact-row">
-      <div class="impact"><div class="impact-n">${helped}</div><div class="impact-l">Pets helped</div></div>
-      <div class="impact"><div class="impact-n">${pending.length + received}</div><div class="impact-l">Waiting on you</div></div>
-      <div class="impact"><div class="impact-n">${avgRating}</div><div class="impact-l">Rating</div></div>
-      ${hasPaid ? `<div class="impact"><div class="impact-n">${revenue ? '₹' + (revenue >= 1000 ? Math.round(revenue/1000) + 'k' : revenue) : '₹0'}</div><div class="impact-l">Earned</div></div>`
-                : `<div class="impact"><div class="impact-n">${myOffers.length}</div><div class="impact-l">Offers posted</div></div>`}
+    <div style="padding:0 12px;">
+      <div class="req-card" style="border-left-color:var(--green);cursor:pointer;" onclick="postAvailability()">
+        <div style="font-size:15px;font-weight:700;"><i class="ti ti-hand-stop" style="color:var(--green);"></i> Tell the community you're free</div>
+        <div style="font-size:12.5px;color:var(--t2);line-height:1.5;margin-top:4px;">
+          Post to the feed — "I can walk dogs near campus, ₹100/hour or free". Takes 30 seconds, no listing needed.
+        </div>
+        <div style="margin-top:8px;"><span class="helper-badge">Best for students &amp; neighbours</span></div>
+      </div>
+      <div class="req-card" style="border-left-color:var(--coral);cursor:pointer;" onclick="openAddBusiness()">
+        <div style="font-size:15px;font-weight:700;"><i class="ti ti-building-store" style="color:var(--coral);"></i> Create a proper listing</div>
+        <div style="font-size:12.5px;color:var(--t2);line-height:1.5;margin-top:4px;">
+          A permanent page in Services with your rates, hours and reviews. For regular sitters, walkers, groomers and clinics.
+        </div>
+      </div>
     </div>
+    <div class="sec-hdr" style="margin-top:6px;"><h3>People who need help right now</h3></div>
+    <div id="dash-requests"></div>`;
+  loadCommunityRequests('dash-requests', 5);
+}
 
-    <div class="sec-hdr" style="margin-top:10px;"><h3>People who need help</h3><a onclick="showScreen('s-feed');filterFeed('care_request',document.querySelectorAll('.feed-filters .chip')[1])">See all</a></div>
-    <div id="dash-requests"></div>
+function renderProviderShell() {
+  const { bookings, received } = pvData;
+  const waiting = bookings.filter(b => b.status === 'requested').length + received;
+  document.getElementById('prov-dash').innerHTML = `
+    <div class="pv-tabs">
+      <button class="pv-tab" data-pv="inbox"    onclick="pvGo('inbox')"><i class="ti ti-inbox"></i>To answer${waiting ? `<span class="cnt">${waiting}</span>` : ''}</button>
+      <button class="pv-tab" data-pv="services" onclick="pvGo('services')"><i class="ti ti-briefcase"></i>My services</button>
+      <button class="pv-tab" data-pv="promote"  onclick="pvGo('promote')"><i class="ti ti-speakerphone"></i>Get found</button>
+      <button class="pv-tab" data-pv="stats"    onclick="pvGo('stats')"><i class="ti ti-chart-bar"></i>How I'm doing</button>
+    </div>
+    <div class="pv-pane" id="pv-inbox"></div>
+    <div class="pv-pane" id="pv-services"></div>
+    <div class="pv-pane" id="pv-promote"></div>
+    <div class="pv-pane" id="pv-stats"></div>`;
+  pvGo(pvTab);
+}
 
-    ${pending.length ? `<div class="sec-hdr" style="margin-top:8px;"><h3>Booking requests</h3></div>${pending.map(bookingCardHtml).join('')}` : ''}
-    ${upcoming.length ? `<div class="sec-hdr" style="margin-top:8px;"><h3>Upcoming</h3></div>${upcoming.map(bookingCardHtml).join('')}` : ''}
+function pvGo(tab) {
+  pvTab = tab;
+  document.querySelectorAll('.pv-tab').forEach(t => t.classList.toggle('on', t.getAttribute('data-pv') === tab));
+  document.querySelectorAll('.pv-pane').forEach(p => p.classList.remove('on'));
+  const pane = document.getElementById('pv-' + tab);
+  if (pane) pane.classList.add('on');
+  ({ inbox: pvInbox, services: pvServices, promote: pvPromote, stats: pvStats }[tab] || pvInbox)();
+  buzz(5);
+}
 
-    ${myOffers.length ? `
-      <div class="sec-hdr" style="margin-top:8px;"><h3>Your posts to the community</h3></div>
-      ${myOffers.map(o => {
+// ---------- Tab 1: everything waiting on you ----------
+function pvInbox() {
+  const { bookings, offers } = pvData;
+  const pending  = bookings.filter(b => b.status === 'requested');
+  const upcoming = bookings.filter(b => b.status === 'confirmed');
+  const el = document.getElementById('pv-inbox');
+
+  el.innerHTML = `
+    ${pending.length ? `
+      <div class="sec-hdr" style="padding-top:14px;"><h3>Booking requests</h3>
+        <span class="cnt" style="font-size:12px;color:var(--t2);">${pending.length} waiting</span></div>
+      ${pending.map(pvBookingCard).join('')}` : ''}
+
+    ${upcoming.length ? `
+      <div class="sec-hdr" style="padding-top:${pending.length ? '10px' : '14px'};"><h3>Coming up</h3></div>
+      ${upcoming.map(pvBookingCard).join('')}` : ''}
+
+    ${offers.length ? `
+      <div class="sec-hdr" style="padding-top:10px;"><h3>Enquiries on your posts</h3></div>
+      ${offers.map(o => {
         const d = o.details || {};
-        return `<div class="req-card" style="border-left-color:var(--green);">
+        return `<div class="svc-manage-card">
           <div style="display:flex;align-items:center;gap:9px;">
             <div style="flex:1;min-width:0;">
               <div style="font-size:14px;font-weight:700;">${escHtml(CARE_LABELS[d.offer_type] || 'Available to help')}</div>
-              <div style="font-size:11.5px;color:var(--t2);margin-top:2px;">${getTimeAgo(o.created_at)}${d.availability ? ' · ' + escHtml(d.availability) : ''}${o.is_resolved ? ' · Closed' : ''}</div>
+              <div style="font-size:11.5px;color:var(--t2);margin-top:2px;">${getTimeAgo(o.created_at)}${o.is_resolved ? ' · Closed' : ''}</div>
             </div>
             ${d.rate ? `<span class="rate-pill">${escHtml(d.rate)}</span>` : ''}
           </div>
           <div class="bk-acts">
-            <button style="background:var(--coral-l);color:var(--coral-m);" onclick="viewResponses('${o.id}')">See enquiries</button>
-            <button style="background:var(--gray-l);color:var(--text);" onclick="showScreen('s-feed')">View post</button>
+            <button style="background:var(--coral-l);color:var(--coral-m);" onclick="viewResponses('${o.id}')">See who replied</button>
           </div>
         </div>`;
       }).join('')}` : ''}
 
-    ${sentOffers.length ? `
-      <div class="sec-hdr" style="margin-top:8px;"><h3>Help you've offered</h3></div>
-      ${sentOffers.slice(0, 6).map(r => {
-        const p = r.posts || {};
-        const d = p.details || {};
-        const st = { open:['Waiting','var(--amber-l)','var(--amber-m)'], accepted:['Accepted','var(--teal-l)','var(--teal-m)'],
-                     declined:['Passed','var(--gray-l)','var(--t2)'], closed:['Closed','var(--gray-l)','var(--t2)'] }[r.status || 'open'];
-        return `<div class="req-card">
-          <div style="display:flex;align-items:center;gap:9px;">
-            <div style="flex:1;min-width:0;">
-              <div style="font-size:13.5px;font-weight:700;">${escHtml(CARE_LABELS[d.care_type] || 'Request')}${d.pet_name ? ' — ' + escHtml(d.pet_name) : ''}</div>
-              <div style="font-size:11px;color:var(--t2);margin-top:2px;">You offered ${getTimeAgo(r.created_at)}</div>
-            </div>
-            <span class="bk-status" style="background:${st[1]};color:${st[2]};">${st[0]}</span>
-          </div>
-          ${p.author_id ? `<div class="bk-acts"><button style="background:var(--gray-l);color:var(--text);" onclick="openChatWith('${p.author_id}')">Message</button></div>` : ''}
-        </div>`;
-      }).join('')}` : ''}
+    ${!pending.length && !upcoming.length && !offers.length ? `
+      <div class="list-empty" style="padding:40px 26px;">
+        <i class="ti ti-checkbox"></i><p>You're all caught up</p>
+        <span>New booking requests and enquiries will land here.</span>
+      </div>` : ''}
 
-    ${listings.length ? `
-      <div class="sec-hdr" style="margin-top:8px;"><h3>Your listings</h3><a onclick="openAddBusiness()">Add</a></div>
-      ${listings.map(b => {
-        const t = bizTheme(b.category);
-        const free = b.pricing_type === 'free';
-        return `<div class="biz-mini" onclick="openBusiness('${b.id}','s-provider')">
-          <div class="biz-mini-logo" style="background:${t[2]};">
-            ${b.logo_url ? `<img src="${escAttr(b.logo_url)}" alt="">` : `<i class="ti ${t[1]}" style="color:${t[3]};"></i>`}
+    <div class="sec-hdr" style="padding-top:10px;"><h3>People who need help</h3>
+      <a onclick="showScreen('s-feed')">See all</a></div>
+    <div id="dash-requests"></div>`;
+  loadCommunityRequests('dash-requests', 4);
+}
+
+function pvBookingCard(b) {
+  const st = BK_STATUS[b.status] || BK_STATUS.requested;
+  const who = (b.profiles && b.profiles.full_name) || 'Customer';
+  const when = b.booked_for
+    ? (normalizeTs(b.booked_for) || new Date()).toLocaleString([], { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })
+    : 'Time to be agreed';
+  return `<div class="svc-manage-card">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="msg-avi" style="width:38px;height:38px;flex-shrink:0;">
+        ${b.profiles && b.profiles.avatar_url ? `<img src="${escAttr(b.profiles.avatar_url)}" alt="">` : escHtml(who[0].toUpperCase())}
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:700;">${escHtml(b.service_name || 'Service')}</div>
+        <div style="font-size:11.5px;color:var(--t2);margin-top:2px;">${escHtml(who)} · ${escHtml(when)}${b.pets ? ' · ' + escHtml(b.pets.name) : ''}</div>
+      </div>
+      <span class="bk-status" style="background:${st[1]};color:${st[2]};flex-shrink:0;">${st[0]}</span>
+    </div>
+    ${b.notes ? `<div style="font-size:12px;color:var(--t2);line-height:1.45;margin-top:7px;">${escHtml(b.notes)}</div>` : ''}
+    <div class="bk-acts">
+      ${b.status === 'requested' ? `
+        <button style="background:var(--teal);color:#fff;" onclick="pvSetBooking('${b.id}','confirmed')">Accept</button>
+        <button style="background:var(--gray-l);color:var(--red);" onclick="pvSetBooking('${b.id}','declined')">Decline</button>` : ''}
+      ${b.status === 'confirmed' ? `
+        <button style="background:var(--teal-l);color:var(--teal-m);" onclick="pvSetBooking('${b.id}','completed')">Mark done</button>` : ''}
+      <button style="background:var(--gray-l);color:var(--text);" onclick="openChatWith('${b.user_id}')"><i class="ti ti-message-circle" style="font-size:13px;"></i> Chat</button>
+    </div>
+  </div>`;
+}
+
+async function pvSetBooking(id, status) {
+  try {
+    const { error } = await withDeadline(
+      sb.from('bookings').update({ status }).eq('id', id), QUERY_TIMEOUT_MS, 'Update booking');
+    if (error) throw error;
+    showToast(status === 'confirmed' ? 'Accepted — the customer has been told'
+            : status === 'completed' ? 'Marked as done' : 'Declined');
+    buzz(8);
+    loadProviderDash();
+  } catch(e) { showToast(handleErrorText(e, 'Could not update that booking')); }
+}
+
+// ---------- Tab 2: your services, with pause and delete ----------
+function pvServices() {
+  const { listings } = pvData;
+  const el = document.getElementById('pv-services');
+  el.innerHTML = `
+    <div style="padding:14px 12px 6px;">
+      <button class="sbtn" style="margin:0;" onclick="openAddBusiness()"><i class="ti ti-plus" style="vertical-align:-2px;"></i> Add a service</button>
+    </div>
+    ${listings.length ? listings.map(b => {
+      const paused = b.is_active === false;
+      return `<div class="svc-manage-card${paused ? ' paused' : ''}">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="mypet-avi" style="background:var(--teal-l);width:44px;height:44px;flex-shrink:0;">
+            ${b.logo_url ? `<img src="${escAttr(b.logo_url)}" alt="">` : `<i class="ti ti-briefcase" style="color:var(--teal);"></i>`}
           </div>
           <div style="flex:1;min-width:0;">
-            <div style="font-size:14px;font-weight:700;">${escHtml(b.name)}</div>
-            <div style="font-size:11.5px;color:var(--t2);margin-top:2px;">${escHtml(t[0])}${b.city ? ' · ' + escHtml(b.city) : ''} · ${b.rating_count ? Number(b.rating_avg).toFixed(1) + '★' : 'No reviews yet'}</div>
-            <div style="margin-top:4px;display:flex;gap:5px;flex-wrap:wrap;">
-              ${b.listing_kind === 'individual' ? '<span class="helper-badge">Individual</span>' : ''}
-              ${b.listing_kind === 'volunteer' ? '<span class="helper-badge">Volunteer</span>' : ''}
-              ${free ? '<span class="free-badge">Free</span>' : ''}
-              ${b.is_active ? '' : '<span class="resolved-tag">Hidden</span>'}
+            <div style="font-size:14.5px;font-weight:700;">${escHtml(b.name || 'Service')}</div>
+            <div style="font-size:11.5px;color:var(--t2);margin-top:2px;">
+              ${escHtml(b.category || '')}${b.city ? ' · ' + escHtml(b.city) : ''}${b.rating_count ? ' · ★ ' + Number(b.rating_avg||0).toFixed(1) + ' (' + b.rating_count + ')' : ''}
             </div>
           </div>
-          <i class="ti ti-chevron-right" style="color:var(--t3);"></i>
-        </div>`;
-      }).join('')}` : ''}
-
-    <div class="sec-hdr" style="margin-top:8px;"><h3>Quick actions</h3></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 12px 16px;">
-      <button class="dash-act" onclick="postAvailability()"><i class="ti ti-hand-stop" style="color:var(--green);"></i>Post availability</button>
-      <button class="dash-act" onclick="openAddBusiness()"><i class="ti ti-plus" style="color:var(--coral);"></i>New listing</button>
-      ${listings.length ? `
-        <button class="dash-act" onclick="openAddService('${listings[0].id}')"><i class="ti ti-list" style="color:var(--coral);"></i>Add service</button>
-        <button class="dash-act" onclick="openAddAd('${listings[0].id}')"><i class="ti ti-speakerphone" style="color:var(--coral);"></i>Post offer</button>` : ''}
-      <button class="dash-act" onclick="switchToOwner()"><i class="ti ti-user" style="color:var(--coral);"></i>Pet parent</button>
+          ${paused ? '<span class="svc-paused-tag">Paused</span>' : ''}
+        </div>
+        <div style="font-size:11.5px;color:var(--t2);margin-top:8px;line-height:1.5;">
+          ${paused ? 'Hidden from Services. Nothing is deleted — turn it back on any time.'
+                   : 'Live in Services. People can find and book you.'}
+        </div>
+        <div class="bk-acts">
+          <button style="background:var(--gray-l);color:var(--text);" onclick="openBusiness('${b.id}','s-provider')">View</button>
+          <button style="background:var(--gray-l);color:var(--text);" onclick="openEditBusiness('${b.id}')">Edit</button>
+          <button style="background:${paused ? 'var(--teal-l)' : 'var(--amber-l)'};color:${paused ? 'var(--teal-m)' : 'var(--amber-m)'};"
+                  onclick="pvToggleService('${b.id}',${paused ? 'true' : 'false'})">
+            ${paused ? 'Make live' : 'Pause'}
+          </button>
+          <button style="background:var(--gray-l);color:var(--red);" onclick="pvDeleteService('${b.id}','${escAttr(b.name || 'this service')}')">Delete</button>
+        </div>
+      </div>`;
+    }).join('') : `
+      <div class="list-empty" style="padding:34px 26px;">
+        <i class="ti ti-briefcase"></i><p>No services listed</p>
+        <span>Add one so people nearby can find and book you.</span>
+      </div>`}
+    <div style="padding:6px 14px 0;font-size:11.5px;color:var(--t2);line-height:1.55;">
+      Pausing keeps everything — your details, reviews and history — but hides the
+      listing from Services. Deleting removes it for good.
     </div>`;
+}
 
-  loadCommunityRequests('dash-requests', 4);
+async function pvToggleService(id, makeLive) {
+  try {
+    const { error } = await withDeadline(
+      sb.from('businesses').update({ is_active: makeLive }).eq('id', id).eq('owner_id', currentUser.id),
+      QUERY_TIMEOUT_MS, 'Update service');
+    if (error) throw error;
+    showToast(makeLive ? 'Service is live again' : 'Service paused — it is hidden from Services');
+    buzz(8);
+    loadProviderDash();
+  } catch(e) { showToast(handleErrorText(e, 'Could not update that service')); }
+}
+
+async function pvDeleteService(id, name) {
+  if (!confirm('Delete "' + name + '" permanently?\n\nThis cannot be undone. If you only want to take a break, use Pause instead.')) return;
+  try {
+    const { error } = await withDeadline(
+      sb.from('businesses').delete().eq('id', id).eq('owner_id', currentUser.id),
+      QUERY_TIMEOUT_MS, 'Delete service');
+    if (error) throw error;
+    showToast('Service deleted');
+    buzz(8);
+    loadProviderDash();
+  } catch(e) { showToast(handleErrorText(e, 'Could not delete that service')); }
+}
+
+// ---------- Tab 3: getting found ----------
+function pvPromote() {
+  const { listings, offers } = pvData;
+  document.getElementById('pv-promote').innerHTML = `
+    <div class="sec-hdr" style="padding-top:14px;"><h3>Reach more people</h3></div>
+    <div style="padding:0 12px;">
+      <div class="req-card" style="border-left-color:var(--green);cursor:pointer;" onclick="postAvailability()">
+        <div style="font-size:15px;font-weight:700;"><i class="ti ti-hand-stop" style="color:var(--green);"></i> Post that you're available</div>
+        <div style="font-size:12.5px;color:var(--t2);line-height:1.5;margin-top:4px;">
+          Goes straight into the community feed. Best when you have a free weekend or a last-minute slot.
+        </div>
+      </div>
+      <div class="req-card" style="border-left-color:var(--purple);cursor:pointer;" onclick="showScreen('s-feed')">
+        <div style="font-size:15px;font-weight:700;"><i class="ti ti-message-2" style="color:var(--purple);"></i> Answer questions in the feed</div>
+        <div style="font-size:12.5px;color:var(--t2);line-height:1.5;margin-top:4px;">
+          The most reliable way to get booked. People hire the person who helped them first.
+        </div>
+      </div>
+      ${listings.length ? `
+      <div class="req-card" style="border-left-color:var(--coral);cursor:pointer;" onclick="openEditBusiness('${listings[0].id}')">
+        <div style="font-size:15px;font-weight:700;"><i class="ti ti-photo" style="color:var(--coral);"></i> Add photos and hours</div>
+        <div style="font-size:12.5px;color:var(--t2);line-height:1.5;margin-top:4px;">
+          Listings with a photo and opening hours get opened far more often than those without.
+        </div>
+      </div>` : ''}
+    </div>
+    ${offers.length ? `
+      <div class="sec-hdr" style="padding-top:10px;"><h3>Your posts</h3></div>
+      ${offers.map(o => {
+        const d = o.details || {};
+        return `<div class="svc-manage-card">
+          <div style="display:flex;align-items:center;gap:9px;">
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:14px;font-weight:700;">${escHtml(CARE_LABELS[d.offer_type] || 'Available to help')}</div>
+              <div style="font-size:11.5px;color:var(--t2);margin-top:2px;">${getTimeAgo(o.created_at)} · ${o.likes_count || 0} likes · ${o.comments_count || 0} comments</div>
+            </div>
+            ${d.rate ? `<span class="rate-pill">${escHtml(d.rate)}</span>` : ''}
+          </div>
+        </div>`;
+      }).join('')}` : ''}`;
+}
+
+// ---------- Tab 4: how you're doing ----------
+function pvStats() {
+  const { listings, bookings, offers, sent, received } = pvData;
+  const completed = bookings.filter(b => b.status === 'completed');
+  const revenue   = completed.reduce((n, b) => n + (Number(b.price) || 0), 0);
+  const accepted  = sent.filter(r => r.status === 'accepted').length;
+  const ratingCt  = listings.reduce((n, b) => n + (b.rating_count || 0), 0);
+  const avgRating = ratingCt
+    ? (listings.reduce((n, b) => n + Number(b.rating_avg || 0) * (b.rating_count || 0), 0) / ratingCt).toFixed(1)
+    : '—';
+  const hasPaid = listings.some(l => l.pricing_type === 'paid') || revenue > 0;
+  document.getElementById('pv-stats').innerHTML = `
+    ${hasPaid ? `
+    <div class="earn-banner">
+      <div style="font-size:12px;opacity:.9;color:#fff;">Earned from completed bookings</div>
+      <div class="earn-n">${revenue ? money(revenue) : '₹0'}</div>
+      <div style="font-size:11.5px;opacity:.85;color:#fff;">PetXchange takes no commission.</div>
+    </div>` : ''}
+    <div class="impact-row" style="margin-top:${hasPaid ? '0' : '14px'};">
+      <div class="impact"><div class="impact-n">${completed.length + accepted}</div><div class="impact-l">Pets helped</div></div>
+      <div class="impact"><div class="impact-n">${bookings.filter(b => b.status === 'requested').length + received}</div><div class="impact-l">Waiting on you</div></div>
+      <div class="impact"><div class="impact-n">${avgRating}</div><div class="impact-l">Rating</div></div>
+      <div class="impact"><div class="impact-n">${listings.filter(l => l.is_active !== false).length}</div><div class="impact-l">Live services</div></div>
+    </div>
+    ${completed.length ? `
+      <div class="sec-hdr" style="padding-top:10px;"><h3>Recently completed</h3></div>
+      ${completed.slice(0, 6).map(pvBookingCard).join('')}` : `
+      <div class="list-empty" style="padding:34px 26px;">
+        <i class="ti ti-chart-bar"></i><p>No completed jobs yet</p>
+        <span>Once you finish a booking it'll be counted here.</span>
+      </div>`}
+    <div style="padding:14px 12px 0;">
+      <button class="cbtn" onclick="switchToOwner()"><i class="ti ti-user" style="vertical-align:-2px;"></i> Back to pet parent view</button>
+    </div>`;
 }
 
 const BK_STATUS = {
@@ -9412,6 +9642,13 @@ async function loadInboxRequests() {
   items.sort((a, b) => (rank(b) - rank(a)) || (new Date(b.at || 0) - new Date(a.at || 0)));
 
   sec.style.display = '';
+  const needsYou = items.filter(r => r.dir === 'received' && pending(r.status)).length
+                 + items.filter(r => r.kind === 'admin' && r.unread).length;
+  const badge = document.getElementById('inbox-req-count');
+  if (badge) {
+    badge.textContent = needsYou ? needsYou + ' need' + (needsYou > 1 ? '' : 's') + ' you' : '';
+    badge.style.display = needsYou ? '' : 'none';
+  }
   wrap.innerHTML = items.slice(0, 12).map(r => {
     if (r.kind === 'admin') {
       return `<div class="bk-card" style="margin:0 0 8px;border-left:3px solid var(--red);background:var(--red-l);"
@@ -10053,6 +10290,33 @@ function switchToProvider(){
   showScreen('s-provider');
   loadProviderDash();
 }
+
+// The single way into Manage my business, from anywhere in the app.
+// Opening it is itself the moment a pet parent becomes a provider — no
+// separate settings trip, which is what "offering a service" already means.
+async function openProviderHub(tab){
+  if(!currentUser){showToast('Sign in first');showScreen('s-auth');return;}
+  pvTab = tab || 'inbox';
+  showScreen('s-provider');
+  loadProviderDash();
+  if (!hasRole(currentProfile, 'provider')) await ensureProviderRole();
+}
+
+// Adds the provider role if it isn't already there. Called when someone
+// starts offering a service, so the badge and business section unlock
+// without them having to find a switch.
+async function ensureProviderRole(){
+  if (!currentUser || !currentProfile) return;
+  if (hasRole(currentProfile, 'provider')) return;
+  const roles = rolesOf(currentProfile).slice();
+  roles.push('provider');
+  currentProfile.roles = roles;
+  try {
+    await writeWithFallback(d => sb.from('profiles').update(d).eq('id', currentUser.id),
+                            { roles: roles });
+    updateMyProfileScreen();
+  } catch(e) { console.log('unlock provider:', e); }
+}
 function switchToOwner(){showScreen('s-me');showToast('Back to pet parent mode');}
 let selRole='owner';
 // Someone can be a pet parent AND a provider, or a community member AND a
@@ -10072,13 +10336,37 @@ function toggleRole(r){
   syncRoleUI();
 }
 
-function renderRoleRecap(){
-  const wrap = document.getElementById('signup-roles-recap');
+const ROLE_META = {
+  owner:     ['ti-heart',     'Pet parent',        'Follow pets, find mates, book services'],
+  provider:  ['ti-briefcase', 'Service provider',  'Vet, groomer, boarder, walker, trainer'],
+  community: ['ti-users',     'Community member',  'Adopt, volunteer, explore, dog-walk']
+};
+
+// Used on the signup form and in Edit profile — same picker, same rules.
+function renderRolePicker(containerId, roles, onToggle, lockedProvider){
+  const wrap = document.getElementById(containerId);
   if (!wrap) return;
-  wrap.innerHTML = (selRoles.length ? selRoles : ['owner']).map(r =>
-    `<span class="pill" style="background:var(--coral-l);color:var(--coral-m);font-size:12px;padding:6px 12px;">
-       ${escHtml(ROLE_LABEL[r] || r)}</span>`).join('');
+  wrap.innerHTML = Object.keys(ROLE_META).map(k => {
+    const [icon, label, hint] = ROLE_META[k];
+    const on = roles.includes(k);
+    const locked = (k === 'provider' && lockedProvider);
+    return `<button type="button" class="role-opt${on ? ' on' : ''}${locked ? ' locked' : ''}"
+              onclick="${locked ? `showToast('Pause or delete your services first')` : `${onToggle}('${k}')`}">
+      <i class="ti ${icon}"></i>
+      <span class="role-opt-txt">
+        <span class="role-opt-lbl">${escHtml(label)}</span>
+        <span class="role-opt-hint">${locked ? 'Active — you have a service listed' : escHtml(hint)}</span>
+      </span>
+      <i class="ti ${on ? 'ti-circle-check-filled' : 'ti-circle'} role-opt-tick"></i>
+    </button>`;
+  }).join('');
 }
+
+function renderSignupRoles(){
+  renderRolePicker('signup-roles', selRoles, 'toggleRole', false);
+}
+
+function renderRoleRecap(){ renderSignupRoles(); }
 
 function syncRoleUI(){
   ['owner','provider','community'].forEach(r => {
@@ -10194,19 +10482,6 @@ syncRoleUI();
           <input type="text" class="finp" id="set-name-inp" placeholder="Your name">
         </div>
         <button class="sbtn" onclick="saveAccountName()">Save name</button>
-      </div>
-    </div>
-
-    <div class="set-sec">
-      <button class="set-head" onclick="toggleSetSec('sec-roles')">
-        <i class="lead ti ti-id-badge-2"></i><span>How you use PetXchange</span><i class="chev ti ti-chevron-down"></i>
-      </button>
-      <div class="set-body" id="sec-roles">
-        <div style="font-size:12.5px;color:var(--t2);line-height:1.55;margin-bottom:12px;">
-          Pick everything that applies. Listing a service adds Service provider on its own.
-        </div>
-        <div id="set-roles-list"></div>
-        <button class="sbtn" onclick="saveMyRoles()">Save</button>
       </div>
     </div>
 
