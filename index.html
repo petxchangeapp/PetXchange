@@ -819,46 +819,27 @@ img{background:var(--surface-2)}
 
 /* ---------- 5. Splash ---------- */
 #s-splash{
-  background:
-    radial-gradient(58% 40% at 12% 8%,  rgba(255,196,150,.55) 0%, transparent 62%),
-    radial-gradient(52% 38% at 92% 16%, rgba(168,225,208,.55) 0%, transparent 62%),
-    radial-gradient(60% 42% at 82% 92%, rgba(255,214,168,.5)  0%, transparent 62%),
-    radial-gradient(52% 38% at 8%  88%, rgba(198,214,255,.5)  0%, transparent 62%),
-    #FFFBF5;
+  /* Plain warm cream — no colour washes. The only colour is the brand. */
+  background:#FDF6EC;
   position:relative;
   overflow:hidden;
 }
-/* A soft scatter of paw prints, drawn once as a tiling pattern so it costs
-   nothing to render and never competes with the wordmark. */
+/* Subtle line-drawn pattern: paws, bones, fish, feathers, a collar tag and a
+   vet cross, all in one repeating tile at low opacity so it reads as texture
+   rather than decoration competing with the wordmark. */
 #s-splash::before{
   content:'';position:absolute;inset:0;pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cg fill='%23D85A30' fill-opacity='0.045'%3E%3Cellipse cx='40' cy='48' rx='7' ry='9'/%3E%3Cellipse cx='54' cy='41' rx='5' ry='6.5' transform='rotate(18 54 41)'/%3E%3Cellipse cx='66' cy='45' rx='5' ry='6.5' transform='rotate(34 66 45)'/%3E%3Cellipse cx='59' cy='59' rx='10' ry='8' transform='rotate(12 59 59)'/%3E%3C/g%3E%3Cg fill='%231D9E75' fill-opacity='0.04'%3E%3Cellipse cx='170' cy='168' rx='7' ry='9'/%3E%3Cellipse cx='184' cy='161' rx='5' ry='6.5' transform='rotate(18 184 161)'/%3E%3Cellipse cx='196' cy='165' rx='5' ry='6.5' transform='rotate(34 196 165)'/%3E%3Cellipse cx='189' cy='179' rx='10' ry='8' transform='rotate(12 189 179)'/%3E%3C/g%3E%3C/svg%3E");
-  background-size:240px 240px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260' viewBox='0 0 260 260' fill='none' stroke='%23C2703F' stroke-opacity='0.20' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cg%3E%3Cellipse cx='34' cy='40' rx='4.5' ry='6'/%3E%3Cellipse cx='45' cy='34' rx='3.4' ry='4.6'/%3E%3Cellipse cx='55' cy='38' rx='3.4' ry='4.6'/%3E%3Cellipse cx='47' cy='51' rx='7.5' ry='6'/%3E%3C/g%3E%3Cg transform='translate(120 26)'%3E%3Cpath d='M4 8 L20 8 M4 8 a4 4 0 1 1 0-6 a4 4 0 1 1 4.5 3 M20 8 a4 4 0 1 0 0-6 a4 4 0 1 0-4.5 3'/%3E%3C/g%3E%3Cg transform='translate(196 44)'%3E%3Cpath d='M0 8 C6 0 20 0 26 8 C20 16 6 16 0 8 Z M26 8 L33 3 L33 13 Z'/%3E%3Ccircle cx='8' cy='8' r='1.2'/%3E%3C/g%3E%3Cg transform='translate(28 130)'%3E%3Cpath d='M8 0 C14 6 14 16 8 22 C2 16 2 6 8 0 Z M8 3 L8 20'/%3E%3C/g%3E%3Cg transform='translate(112 122)'%3E%3Cpath d='M10 2 a8 8 0 1 1 0 16 a8 8 0 1 1 0-16 Z M10 6 L10 14 M6 10 L14 10'/%3E%3C/g%3E%3Cg transform='translate(196 138)'%3E%3Cpath d='M6 4 L18 4 L18 14 a6 6 0 0 1-12 0 Z M12 14 L12 20'/%3E%3Ccircle cx='12' cy='9' r='1.5'/%3E%3C/g%3E%3Cg transform='translate(40 208)'%3E%3Cellipse cx='4' cy='6' rx='4' ry='5.4'/%3E%3Cellipse cx='14' cy='2' rx='3' ry='4'/%3E%3Cellipse cx='23' cy='5' rx='3' ry='4'/%3E%3Cellipse cx='15' cy='16' rx='6.6' ry='5.4'/%3E%3C/g%3E%3Cg transform='translate(140 200)'%3E%3Cpath d='M2 14 C2 6 8 2 14 2 C20 2 26 6 26 14 M8 14 L8 20 M20 14 L20 20 M14 2 L14 -3'/%3E%3C/g%3E%3Cg transform='translate(212 208)'%3E%3Cpath d='M0 6 C5 0 17 0 22 6 C17 12 5 12 0 6 Z M22 6 L28 2 L28 10 Z'/%3E%3Ccircle cx='7' cy='6' r='1'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:260px 260px;
   animation:none;
 }
-/* Friendly silhouettes drifting behind the card — a dog, a cat, a bird,
-   a fish. Slow enough to read as calm rather than busy. */
-#s-splash .sp-pets{
-  position:absolute;inset:0;pointer-events:none;overflow:hidden;
-}
-#s-splash .sp-pets i{
-  position:absolute;color:var(--coral);opacity:.20;
-  animation:px-float 9s ease-in-out infinite;
-}
-#s-splash .sp-pets i:nth-child(1){ font-size:74px;left:-4px;  top:12%;  animation-delay:0s;    color:#D85A30; }
-#s-splash .sp-pets i:nth-child(2){ font-size:60px;right:2px;  top:26%;  animation-delay:1.4s;  color:#E8A33C; }
-#s-splash .sp-pets i:nth-child(3){ font-size:52px;left:8%;    bottom:20%;animation-delay:2.6s; color:#1D9E75; }
-#s-splash .sp-pets i:nth-child(4){ font-size:58px;right:6%;   bottom:12%;animation-delay:3.8s; color:#3B82C4; }
-#s-splash .sp-pets i:nth-child(5){ font-size:44px;left:44%;   top:4%;   animation-delay:2s;    color:#9A6BD8; }
-@keyframes px-float{
-  0%,100%{ transform:translateY(0)    rotate(-4deg); }
-  50%    { transform:translateY(-14px) rotate(4deg); }
-}
 #s-splash > div{position:relative;z-index:1}
+#s-splash .sp-pets{display:none}   /* the drifting icons are gone — the pattern carries it now */
+
 .sp-logo{
   width:88px;height:88px;border-radius:28px;
   background:linear-gradient(155deg,#FF9463 0%,var(--coral) 58%,#C24E22 100%);
-  box-shadow:0 12px 30px -10px rgba(216,90,48,.5), inset 0 1px 0 rgba(255,255,255,.35);
+  box-shadow:0 12px 30px -10px rgba(216,90,48,.45), inset 0 1px 0 rgba(255,255,255,.35);
   animation:px-pop .55s var(--ease-out) both;
 }
 .sp-logo i{font-size:46px;color:#fff}
@@ -867,38 +848,31 @@ img{background:var(--surface-2)}
   animation:px-rise .55s .1s var(--ease-out) both;
 }
 .sp-tag{
-  font-size:13.5px;color:#7A6455;letter-spacing:.1px;
+  font-size:13.5px;color:#8A7059;letter-spacing:.1px;
   animation:px-rise .55s .18s var(--ease-out) both;
 }
 .sp-actions{display:flex;flex-direction:column;gap:11px;max-width:290px;margin:40px auto 0}
 .sp-btn{
   margin-top:0;width:100%;padding:17px 24px;font-size:16.5px;letter-spacing:-.01em;
   background:linear-gradient(155deg,#FF9463,var(--coral));color:#fff;
-  box-shadow:0 8px 22px -8px rgba(216,90,48,.65);
+  box-shadow:0 8px 22px -8px rgba(216,90,48,.55);
   animation:px-rise .55s .26s var(--ease-out) both;
   transition:transform .14s var(--ease),box-shadow .2s;
 }
-.sp-btn:active{transform:translateY(2px) scale(.985);box-shadow:0 4px 12px -6px rgba(216,90,48,.65)}
+.sp-btn:active{transform:translateY(2px) scale(.985);box-shadow:0 4px 12px -6px rgba(216,90,48,.55)}
 .sp-login{
   margin-top:0;width:100%;padding:16px 24px;font-size:15.5px;font-weight:600;
-  background:rgba(255,255,255,.85);border:1.5px solid rgba(58,32,20,.14);color:#5A4436;
-  backdrop-filter:blur(6px);
+  background:#fff;border:1.5px solid rgba(58,32,20,.16);color:#5A4436;
   animation:px-rise .55s .34s var(--ease-out) both;
   transition:background .18s,border-color .18s,transform .14s var(--ease);
 }
-.sp-login:active{background:#fff;border-color:var(--coral);color:var(--coral);transform:translateY(1px)}
+.sp-login:active{border-color:var(--coral);color:var(--coral);transform:translateY(1px)}
 
-[data-theme="dark"] #s-splash{
-  background:
-    radial-gradient(58% 40% at 12% 8%,  rgba(216,90,48,.20) 0%, transparent 62%),
-    radial-gradient(52% 38% at 92% 16%, rgba(29,158,117,.16) 0%, transparent 62%),
-    radial-gradient(60% 42% at 82% 92%, rgba(232,163,60,.14) 0%, transparent 62%),
-    #17120F;
-}
+[data-theme="dark"] #s-splash{background:#17120F}
+[data-theme="dark"] #s-splash::before{opacity:.5}
 [data-theme="dark"] .sp-name{color:#F6EFE9}
 [data-theme="dark"] .sp-tag{color:#A89C94}
 [data-theme="dark"] .sp-login{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16);color:#E8DFD8}
-[data-theme="dark"] #s-splash .sp-pets i{opacity:.10}
 
 /* ---------- 6. Loading + auth ---------- */
 #loading-overlay{background:var(--bg)}
@@ -955,6 +929,9 @@ img{background:var(--surface-2)}
   transition:border-color .18s,box-shadow .18s,transform .14s var(--ease),background .18s;
 }
 .role-card:active{transform:scale(.985)}
+.role-card{display:flex;align-items:center;gap:13px;margin-bottom:10px}
+.role-tick{font-size:23px;color:var(--bd-strong);flex-shrink:0;transition:color .18s,transform .18s var(--ease-out)}
+.role-tick.on{color:var(--coral);transform:scale(1.06)}
 .role-card.sel{border-color:var(--coral);background:var(--coral-l);box-shadow:0 0 0 3px var(--coral-ring),var(--e1)}
 .role-icon{width:48px;height:48px;border-radius:15px}
 .role-lbl{font-size:16px}
@@ -1503,6 +1480,30 @@ img{background:var(--surface-2)}
   background:var(--coral-l);padding:4px 12px;border-radius:100px;
 }
 
+/* ---------- Collapsible settings sections ---------- */
+.set-sec{
+  background:var(--card);border:1px solid var(--bd);border-radius:var(--r);
+  box-shadow:var(--e1);margin-bottom:10px;overflow:hidden;
+}
+.set-head{
+  width:100%;display:flex;align-items:center;gap:12px;
+  padding:15px 15px;background:none;border:none;cursor:pointer;
+  font-family:inherit;font-size:14.5px;font-weight:600;color:var(--text);text-align:left;
+  transition:background .16s;
+}
+.set-head:active{background:var(--press)}
+.set-head .lead{font-size:19px;color:var(--coral);flex-shrink:0}
+.set-head span{flex:1;min-width:0}
+.set-head .chev{font-size:18px;color:var(--t3);transition:transform .24s var(--ease-out)}
+.set-head.open .chev{transform:rotate(180deg);color:var(--coral)}
+.set-body{
+  max-height:0;opacity:0;overflow:hidden;
+  padding:0 15px;
+  transition:max-height .3s var(--ease-out),opacity .2s,padding .3s var(--ease-out);
+}
+.set-body.open{max-height:1400px;opacity:1;padding:2px 15px 16px}
+.set-body .sbtn{margin-top:4px}
+
 </style>
 </head>
 <body>
@@ -1634,13 +1635,14 @@ img{background:var(--surface-2)}
           <option value="99999">Any distance</option>
         </select>
       </div>
-      <div class="fgrp"><label class="flbl">I am a</label>
-        <select class="fsel" id="signup-role">
+      <div class="fgrp"><label class="flbl">You are</label>
+        <div id="signup-roles-recap" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+        <select class="fsel" id="signup-role" style="display:none;">
           <option value="owner">Pet parent</option>
           <option value="provider">Service provider</option>
           <option value="community">Community member</option>
         </select>
-        <div class="pf-hint">Chosen on the previous step — change it here if you like.</div>
+        <div class="pf-hint">Chosen on the first step — <span style="text-decoration:underline;cursor:pointer;" onclick="showScreen('s-role')">change it</span>. You can also edit this later in your profile.</div>
       </div>
       <button class="sbtn" id="btn-signup" onclick="doSignup()">Create account</button>
     </div>
@@ -1682,21 +1684,25 @@ img{background:var(--surface-2)}
 
 <!-- ===== ROLE ===== -->
 <div id="s-role" class="screen" style="display:none;flex-direction:column;">
-  <div style="padding:48px 24px 24px;flex:1;">
-    <div class="role-title">Who are you?</div>
-    <div class="role-sub">Step 1 of 2 — pick your role. You can switch later.</div>
-    <div class="role-card" id="role-owner" onclick="selectRole('owner')">
+  <div style="padding:44px 24px 24px;flex:1;">
+    <div class="role-title">How will you use PetXchange?</div>
+    <div class="role-sub">Pick everything that applies — most people are more than one. You can change this any time.</div>
+    <div class="role-card" id="role-owner" onclick="toggleRole('owner')">
       <div class="role-icon" style="background:var(--coral-l);"><i class="ti ti-heart" style="color:var(--coral);"></i></div>
-      <div><div class="role-lbl">Pet parent</div><div class="role-desc">Follow pets, find mates, book services, community</div></div>
+      <div style="flex:1;min-width:0;"><div class="role-lbl">Pet parent</div><div class="role-desc">Follow pets, find mates, book services, community</div></div>
+      <i class="ti ti-circle role-tick" id="tick-owner"></i>
     </div>
-    <div class="role-card" id="role-provider" onclick="selectRole('provider')">
+    <div class="role-card" id="role-provider" onclick="toggleRole('provider')">
       <div class="role-icon" style="background:var(--teal-l);"><i class="ti ti-briefcase" style="color:var(--teal);"></i></div>
-      <div><div class="role-lbl">Service provider</div><div class="role-desc">Vet, groomer, boarder, walker, trainer</div></div>
+      <div style="flex:1;min-width:0;"><div class="role-lbl">Service provider</div><div class="role-desc">Vet, groomer, boarder, walker, trainer</div></div>
+      <i class="ti ti-circle role-tick" id="tick-provider"></i>
     </div>
-    <div class="role-card" id="role-other" onclick="selectRole('other')">
+    <div class="role-card" id="role-community" onclick="toggleRole('community')">
       <div class="role-icon" style="background:var(--purple-l);"><i class="ti ti-users" style="color:var(--purple);"></i></div>
-      <div><div class="role-lbl">Community member</div><div class="role-desc">Adopt, volunteer, explore, dog-walk</div></div>
+      <div style="flex:1;min-width:0;"><div class="role-lbl">Community member</div><div class="role-desc">Adopt, volunteer, explore, dog-walk</div></div>
+      <i class="ti ti-circle role-tick" id="tick-community"></i>
     </div>
+    <div id="role-hint" style="font-size:12px;color:var(--t2);line-height:1.55;margin:14px 2px 0;"></div>
     <button class="role-next" onclick="roleContinue()">Continue</button>
     <button class="cbtn" style="margin-top:10px;" onclick="startLogin()">I already have an account</button>
   </div>
@@ -2204,7 +2210,23 @@ img{background:var(--surface-2)}
       </div>
     </div>
 
-    <div class="pets-sec">
+    <!-- Providers can lead with their services instead of their pets.
+         Hidden entirely for anyone who isn't a provider. -->
+    <div id="me-layout-bar" style="display:none;padding:4px 14px 0;">
+      <div class="kind-toggle" style="padding:0 0 8px;">
+        <span class="chip" data-layout="pets_first"     onclick="setProviderLayout('pets_first')"><i class="ti ti-heart"></i>Pets first</span>
+        <span class="chip" data-layout="services_first" onclick="setProviderLayout('services_first')"><i class="ti ti-briefcase"></i>Services first</span>
+        <span class="chip" data-layout="services_only"  onclick="setProviderLayout('services_only')"><i class="ti ti-eye-off"></i>Hide pets</span>
+      </div>
+    </div>
+
+    <div class="pets-sec" id="me-services-sec" style="display:none;">
+      <div class="pets-tr"><div class="pets-ttl">My services</div>
+        <button class="add-pet-btn" onclick="openProviderHub()"><i class="ti ti-plus" style="font-size:13px;"></i> Add service</button></div>
+      <div id="my-services-list"></div>
+    </div>
+
+    <div class="pets-sec" id="me-pets-sec">
       <div class="pets-tr"><div class="pets-ttl">My pets</div><button class="add-pet-btn" onclick="openAddPet()"><i class="ti ti-plus" style="font-size:13px;"></i> Add pet</button></div>
       <div id="my-pets-list">
         <div class="skel-card" style="height:72px;margin:0 0 8px;border-radius:16px;"></div><div class="skel-card" style="height:72px;margin:0;border-radius:16px;"></div>
@@ -3482,6 +3504,7 @@ async function doSignup() {
   const email = document.getElementById('s-email').value.trim();
   const pass  = document.getElementById('s-pass').value;
   const role  = document.getElementById('signup-role').value;
+  const roles = (selRoles && selRoles.length ? selRoles : [role]).join(',');
   const radius = parseInt(document.getElementById('su-loc-radius').value, 10) || 25;
   document.getElementById('auth-err').classList.remove('show');
 
@@ -3527,7 +3550,7 @@ async function doSignup() {
       // account row is created, which works whether or not a session
       // exists yet — unlike a write from this browser tab.
       options: { data: {
-        full_name: name, city, role, handle,
+        full_name: name, city, role, roles, handle,
         latitude: signupLocation.lat, longitude: signupLocation.lng,
         location_text: signupLocation.label, search_radius_km: radius
       } }
@@ -3735,7 +3758,7 @@ const NOTIF_PREFS = [
   ['admin',         'Account & safety notices',   'Warnings or actions from moderators',          true ],
   ['mention',       'Mentions',                   'You are mentioned with an @id',                true ],
   ['tag',           'Tags',                       'One of your pets is tagged in a post',         true ],
-  ['comment',       'Comments',                   'Someone comments on your post',                false],
+  ['comment',       'Comments',                   'Someone comments on your post',                true ],
   ['like',          'Likes',                      'Someone likes your post',                      false],
   ['review',        'Reviews',                    'A new review on your listing',                 false],
   ['follower_post', 'Posts from people you follow','Every time they post something new',          false],
@@ -3794,6 +3817,64 @@ async function saveNotifPrefs() {
   }
 }
 
+// One section open at a time — opening one closes the rest, so the page
+// never becomes a long scroll of every field at once.
+function toggleSetSec(id){
+  const body = document.getElementById(id);
+  if (!body) return;
+  const opening = !body.classList.contains('open');
+  document.querySelectorAll('#s-settings .set-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('#s-settings .set-head').forEach(h => h.classList.remove('open'));
+  if (opening) {
+    body.classList.add('open');
+    body.previousElementSibling.classList.add('open');
+    // Bring the whole section into view so its contents are all visible
+    // rather than opening below the fold.
+    setTimeout(() => body.parentNode.scrollIntoView({ behavior:'smooth', block:'start' }), 60);
+  }
+  buzz(5);
+}
+
+function renderMyRoles(){
+  const wrap = document.getElementById('set-roles-list');
+  if (!wrap) return;
+  const mine = rolesOf(currentProfile);
+  const locked = isProvider() && (myBusinesses && myBusinesses.length > 0);
+  wrap.innerHTML = [
+    ['owner','Pet parent','Follow pets, find mates, book services','ti-heart'],
+    ['provider','Service provider','Vet, groomer, boarder, walker, trainer','ti-briefcase'],
+    ['community','Community member','Adopt, volunteer, explore, dog-walk','ti-users']
+  ].map(([k,label,hint,icon]) => {
+    const on = mine.includes(k);
+    const isLocked = (k === 'provider' && locked);
+    return `<label class="menu-item" style="cursor:${isLocked?'default':'pointer'};margin-bottom:8px;${isLocked?'opacity:.75;':''}">
+      <i class="lead ti ${icon}"></i>
+      <span style="flex:1;min-width:0;">
+        <span style="display:block;font-size:14px;font-weight:600;">${escHtml(label)}</span>
+        <span style="display:block;font-size:11.5px;color:var(--t2);font-weight:500;margin-top:2px;">${
+          isLocked ? 'Active because you have a service listed' : escHtml(hint)}</span>
+      </span>
+      <input type="checkbox" data-role="${k}" ${on?'checked':''} ${isLocked?'disabled':''}
+             style="width:20px;height:20px;accent-color:var(--coral);flex-shrink:0;">
+    </label>`;
+  }).join('');
+}
+
+async function saveMyRoles(){
+  const picked = [...document.querySelectorAll('#set-roles-list input[data-role]')]
+    .filter(i => i.checked || i.disabled).map(i => i.getAttribute('data-role'));
+  if (!picked.length) { showToast('Pick at least one'); return; }
+  const payload = { roles: picked, role: picked[0] };
+  if (currentProfile) Object.assign(currentProfile, payload);
+  try {
+    const { dropped } = await writeWithFallback(
+      d => sb.from('profiles').update(d).eq('id', currentUser.id), payload);
+    showToast(dropped && dropped.length ? 'Saved (run the latest SQL for full support)' : 'Saved');
+    updateMyProfileScreen();
+    renderMyRoles();
+  } catch(e) { showToast(handleErrorText(e, 'Could not save that')); }
+}
+
 function openSettings(){
   if (!currentUser) { showScreen('s-auth'); return; }
   const nameInp = document.getElementById('set-name-inp');
@@ -3803,6 +3884,7 @@ function openSettings(){
   if (pwInp) pwInp.value = '';
   if (pwConfirm) pwConfirm.value = '';
   renderNotifPrefs();
+  renderMyRoles();
   showScreen('s-settings');
 }
 
@@ -3931,9 +4013,105 @@ async function saveProfile() {
   }
 }
 
+// ---------- roles ----------
+// Reads the full list where it exists, and falls back to the single `role`
+// so accounts created before multiple roles existed still work.
+function rolesOf(p) {
+  if (!p) return ['owner'];
+  if (Array.isArray(p.roles) && p.roles.length) return p.roles;
+  return [p.role || 'owner'];
+}
+function hasRole(p, r) { return rolesOf(p).includes(r); }
+function isProvider(p) {
+  p = p || currentProfile;
+  return hasRole(p, 'provider') || (myBusinesses && myBusinesses.length > 0);
+}
+function roleLineFor(p) {
+  const order = ['owner','provider','community'];
+  const names = order.filter(r => rolesOf(p).includes(r)).map(r => ROLE_LABEL[r]);
+  return names.join(' · ') || 'Pet parent';
+}
+
+// ---------- provider layout on the Me page ----------
+// A provider decides whether their page leads with pets or with services,
+// or hides pets entirely. Saved to the profile, with the device as a
+// fallback so the choice sticks even if the column is missing.
+function currentProviderLayout() {
+  const p = currentProfile || {};
+  if (p.provider_layout) return p.provider_layout;
+  try { return localStorage.getItem('px-provider-layout') || 'pets_first'; }
+  catch(e) { return 'pets_first'; }
+}
+
+async function setProviderLayout(mode) {
+  if (currentProfile) currentProfile.provider_layout = mode;
+  try { localStorage.setItem('px-provider-layout', mode); } catch(e) {}
+  applyProviderLayout();
+  buzz(6);
+  try {
+    await writeWithFallback(d => sb.from('profiles').update(d).eq('id', currentUser.id),
+                            { provider_layout: mode });
+  } catch(e) { console.log('provider layout save:', e); }
+}
+
+function applyProviderLayout() {
+  const bar      = document.getElementById('me-layout-bar');
+  const petsSec  = document.getElementById('me-pets-sec');
+  const svcSec   = document.getElementById('me-services-sec');
+  if (!bar || !petsSec || !svcSec) return;
+
+  if (!isProvider()) {                 // not a provider: pets only, no toggle
+    bar.style.display = 'none';
+    svcSec.style.display = 'none';
+    petsSec.style.display = '';
+    return;
+  }
+
+  const mode = currentProviderLayout();
+  bar.style.display = '';
+  bar.querySelectorAll('[data-layout]').forEach(c =>
+    c.classList.toggle('on', c.getAttribute('data-layout') === mode));
+
+  svcSec.style.display  = '';
+  petsSec.style.display = (mode === 'services_only') ? 'none' : '';
+
+  // Services above pets unless the person asked for pets first.
+  const parent = petsSec.parentNode;
+  if (mode === 'pets_first') parent.insertBefore(petsSec, svcSec);
+  else                       parent.insertBefore(svcSec, petsSec);
+
+  renderMyServices();
+}
+
+function renderMyServices() {
+  const wrap = document.getElementById('my-services-list');
+  if (!wrap) return;
+  const list = myBusinesses || [];
+  if (!list.length) {
+    wrap.innerHTML = `<div class="list-empty" style="padding:22px;">
+      <i class="ti ti-briefcase"></i><p>No services listed yet</p>
+      <span>Add what you offer so people nearby can find and book you.</span></div>`;
+    return;
+  }
+  wrap.innerHTML = list.map(b => `
+    <div class="mypet-card" onclick="openBusiness('${b.id}','s-me')">
+      <div class="mypet-avi" style="background:var(--teal-l);">
+        ${b.logo_url ? `<img src="${escAttr(b.logo_url)}" alt="">`
+                     : `<i class="ti ti-briefcase" style="color:var(--teal);"></i>`}
+      </div>
+      <div class="mypet-info">
+        <div class="mypet-name">${escHtml(b.name || 'Service')}</div>
+        <div class="mypet-meta">${escHtml(b.category || '')}${b.city ? ' · ' + escHtml(b.city) : ''}${
+          b.rating_count ? ' · ★ ' + Number(b.rating_avg || 0).toFixed(1) : ''}</div>
+      </div>
+      <i class="ti ti-chevron-right" style="color:var(--t3);"></i>
+    </div>`).join('');
+}
+
 function updateMyProfileScreen() {
   const p = currentProfile;
   if (!p) return;
+  applyProviderLayout();
   const nameEl = document.getElementById('me-name');
   const subEl = document.getElementById('me-sub');
   const aviEl = document.getElementById('me-avi');
@@ -3941,19 +4119,29 @@ function updateMyProfileScreen() {
   const name = p.full_name || currentUser?.email || 'Your name';
   if (nameEl) nameEl.textContent = name;
   if (subEl) subEl.innerHTML = (p.handle ? '<span class="handle">@' + escHtml(p.handle) + '</span> · ' : '')
-    + escHtml((p.role === 'provider' ? 'Service provider' : 'Pet parent') + (p.city ? ' · ' + p.city : ''));
+    + escHtml(roleLineFor(p) + (p.city ? ' · ' + p.city : ''));
   if (aviEl) aviEl.innerHTML = p.avatar_url
     ? `<img src="${escAttr(p.avatar_url)}" alt="">`
     : escHtml(name[0] ? name[0].toUpperCase() : '·');
   const provLbl = document.getElementById('me-prov-label');
-  if (provLbl) provLbl.textContent = (p.role === 'provider' || (myBusinesses && myBusinesses.length)) ? 'My business' : 'Offer a service';
+  if (provLbl) provLbl.textContent = isProvider(p) ? 'My business' : 'Offer a service';
   const hpItem = document.getElementById('menu-passports');
   if (hpItem) hpItem.style.display = myPets.some(hasHealthRecord) ? 'flex' : 'none';
   if (badgeEl) {
     const badges = [];
+    const ROLE_CHIP = {
+      owner:     ['ti-heart',     'var(--coral-l)',  'var(--coral-m)'],
+      provider:  ['ti-briefcase', 'var(--teal-l)',   'var(--teal-m)'],
+      community: ['ti-users',     'var(--purple-l)', 'var(--purple-m)']
+    };
+    ['owner','provider','community'].filter(r => rolesOf(p).includes(r)).forEach(r => {
+      const c = ROLE_CHIP[r];
+      badges.push(`<span class="pill" style="background:${c[1]};color:${c[2]};font-size:10px;">
+        <i class="ti ${c[0]}" style="font-size:10px;"></i>${escHtml(ROLE_LABEL[r])}</span>`);
+    });
     if (p.is_verified) badges.push(`<span class="pill" style="background:var(--teal-l);color:var(--teal-m);font-size:10px;"><i class="ti ti-shield-check" style="font-size:10px;"></i>Verified</span>`);
     if (p.bio) badges.push(`<span class="pill" style="background:var(--gray-l);color:var(--t2);font-size:10px;">${escHtml(p.bio.slice(0, 60))}${p.bio.length > 60 ? '…' : ''}</span>`);
-    if (!badges.length) badges.push(`<span class="pill" style="background:var(--gray-l);color:var(--t2);font-size:10px;cursor:pointer;" onclick="openEditProfile()"><i class="ti ti-plus" style="font-size:10px;"></i>Add a short bio</span>`);
+    if (!p.bio) badges.push(`<span class="pill" style="background:var(--gray-l);color:var(--t2);font-size:10px;cursor:pointer;" onclick="openEditProfile()"><i class="ti ti-plus" style="font-size:10px;"></i>Add a short bio</span>`);
     badgeEl.innerHTML = badges.join('');
   }
 }
@@ -7285,37 +7473,94 @@ async function openMyBookings() {
   if (!currentUser) return;
   const wrap = document.getElementById('mybk-list');
   openModal('m-mybookings');
-  wrap.innerHTML = '<div style="text-align:center;padding:20px;color:var(--t3);font-size:13px;">Loading…</div>';
+  wrap.innerHTML = '<div class="skel-card" style="height:78px;margin:0 0 8px;border-radius:16px;"></div><div class="skel-card" style="height:78px;margin:0;border-radius:16px;"></div>';
+
+  const made = [], received = [];
   try {
     const { data } = await sb.from('bookings')
-      .select('*, businesses ( id, name, category ), pets ( name )')
-      .eq('user_id', currentUser.id).order('booked_for', { ascending: false }).limit(40);
-    const rows = data || [];
-    if (!rows.length) {
-      wrap.innerHTML = '<div class="list-empty" style="padding:26px;"><i class="ti ti-calendar"></i><p>No bookings yet</p><span>Find a vet, groomer or walker in Services.</span></div>';
-      return;
-    }
-    wrap.innerHTML = rows.map(b => {
-      const st = BK_STATUS[b.status] || BK_STATUS.requested;
-      const when = b.booked_for ? (normalizeTs(b.booked_for) || new Date()).toLocaleString([], { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : '—';
-      return `<div class="bk-card" style="margin:0 0 8px;">
-        <div style="display:flex;align-items:center;gap:9px;">
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:14px;font-weight:700;">${escHtml(b.service_name || 'Service')}</div>
-            <div style="font-size:11.5px;color:var(--t2);margin-top:2px;">${escHtml((b.businesses && b.businesses.name) || b.provider_name || '')} · ${escHtml(when)}${b.pets ? ' · ' + escHtml(b.pets.name) : ''}</div>
-          </div>
-          <span class="bk-status" style="background:${st[1]};color:${st[2]};">${st[0]}</span>
-        </div>
-        <div class="bk-acts">
-          ${b.businesses ? `<button style="background:var(--gray-l);color:var(--text);" onclick="closeModal('m-mybookings');openBusiness('${b.businesses.id}','s-me')">View</button>` : ''}
-          ${['requested','confirmed'].includes(b.status) ? `<button style="background:var(--gray-l);color:var(--red);" onclick="cancelBooking('${b.id}')">Cancel</button>` : ''}
-          ${b.status === 'completed' && b.businesses ? `<button style="background:var(--amber-l);color:var(--amber-m);" onclick="closeModal('m-mybookings');openReview('${b.businesses.id}')">Review</button>` : ''}
-        </div>
-      </div>`;
-    }).join('');
-  } catch(e) {
-    wrap.innerHTML = '<div class="list-empty" style="padding:26px;"><i class="ti ti-calendar"></i><p>Bookings not set up yet</p><span>Could not load this right now. Pull down to refresh.</span></div>';
+      .select('*, businesses ( id, name ), pets ( name )')
+      .eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(40);
+    (data || []).forEach(b => made.push(b));
+  } catch(e) { console.log('bookings made:', e); }
+  try {
+    const { data } = await sb.from('bookings')
+      .select('*, pets ( name ), profiles:user_id ( full_name, avatar_url )')
+      .eq('provider_id', currentUser.id).order('created_at', { ascending: false }).limit(40);
+    (data || []).forEach(b => received.push(b));
+  } catch(e) { console.log('bookings received:', e); }
+
+  if (!made.length && !received.length) {
+    wrap.innerHTML = '<div class="list-empty" style="padding:26px;"><i class="ti ti-calendar"></i>' +
+      '<p>No bookings yet</p><span>Find a vet, groomer or walker in Services — and any bookings people make with you will appear here too.</span></div>';
+    return;
   }
+
+  // Two clearly separated lists: what you asked of others, and what others
+  // asked of you. Same card, different actions.
+  const section = (title, rows, mine) => {
+    if (!rows.length) return '';
+    const waiting = rows.filter(b => b.status === 'requested').length;
+    return `<div style="margin:2px 0 8px;display:flex;align-items:center;gap:8px;">
+        <div style="font-size:12px;font-weight:800;letter-spacing:.04em;color:var(--t2);text-transform:uppercase;">${title}</div>
+        ${waiting ? `<span class="pill" style="background:var(--amber-l);color:var(--amber-m);font-size:10px;">${waiting} waiting</span>` : ''}
+      </div>` + rows.map(b => bookingRowHtml(b, mine)).join('');
+  };
+  wrap.innerHTML = section('Bookings you made', made, true) +
+                   (made.length && received.length ? '<div style="height:14px;"></div>' : '') +
+                   section('Bookings you received', received, false);
+}
+
+// One row, used for both directions. `mine` = I am the customer.
+function bookingRowHtml(b, mine) {
+  const st = BK_STATUS[b.status] || BK_STATUS.requested;
+  const when = b.booked_for
+    ? (normalizeTs(b.booked_for) || new Date()).toLocaleString([], { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })
+    : 'Time to be agreed';
+  const who = mine
+    ? ((b.businesses && b.businesses.name) || b.provider_name || 'Provider')
+    : ((b.profiles && b.profiles.full_name) || 'Customer');
+  // What the status means depends on which side you're on.
+  const label = mine
+    ? ({ requested:'Request sent', confirmed:'Accepted', completed:'Done',
+         declined:'Declined', cancelled:'Cancelled' }[b.status] || st[0])
+    : ({ requested:'Needs your answer', confirmed:'You accepted', completed:'Done',
+         declined:'You declined', cancelled:'Cancelled' }[b.status] || st[0]);
+  const other = mine ? b.provider_id : b.user_id;
+  return `<div class="bk-card" style="margin:0 0 8px;">
+    <div style="display:flex;align-items:center;gap:9px;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:700;">${escHtml(b.service_name || 'Service')}</div>
+        <div style="font-size:11.5px;color:var(--t2);margin-top:2px;">
+          ${mine ? 'With ' : 'From '}${escHtml(who)} · ${escHtml(when)}${b.pets ? ' · ' + escHtml(b.pets.name) : ''}
+        </div>
+      </div>
+      <span class="bk-status" style="background:${st[1]};color:${st[2]};flex-shrink:0;">${escHtml(label)}</span>
+    </div>
+    ${b.notes ? `<div style="font-size:12px;color:var(--t2);line-height:1.45;margin-top:6px;">${escHtml(b.notes)}</div>` : ''}
+    <div class="bk-acts">
+      ${!mine && b.status === 'requested' ? `
+        <button style="background:var(--teal);color:#fff;" onclick="myBookingSet('${b.id}','confirmed')">Accept</button>
+        <button style="background:var(--gray-l);color:var(--red);" onclick="myBookingSet('${b.id}','declined')">Decline</button>` : ''}
+      ${!mine && b.status === 'confirmed' ? `
+        <button style="background:var(--teal-l);color:var(--teal-m);" onclick="myBookingSet('${b.id}','completed')">Mark done</button>` : ''}
+      ${mine && b.businesses ? `<button style="background:var(--gray-l);color:var(--text);" onclick="closeModal('m-mybookings');openBusiness('${b.businesses.id}','s-me')">View</button>` : ''}
+      ${mine && ['requested','confirmed'].includes(b.status) ? `<button style="background:var(--gray-l);color:var(--red);" onclick="cancelBooking('${b.id}')">Cancel</button>` : ''}
+      ${mine && b.status === 'completed' && b.businesses ? `<button style="background:var(--amber-l);color:var(--amber-m);" onclick="closeModal('m-mybookings');openReview('${b.businesses.id}')">Review</button>` : ''}
+      ${other ? `<button style="background:var(--gray-l);color:var(--text);" onclick="closeModal('m-mybookings');openChatWith('${other}')">Message</button>` : ''}
+    </div>
+  </div>`;
+}
+
+async function myBookingSet(id, status) {
+  try {
+    const { error } = await withDeadline(
+      sb.from('bookings').update({ status }).eq('id', id), QUERY_TIMEOUT_MS, 'Update booking');
+    if (error) throw error;
+    showToast(status === 'confirmed' ? 'Booking accepted'
+            : status === 'completed' ? 'Marked as done' : 'Booking declined');
+    buzz(8);
+    openMyBookings();
+  } catch(e) { showToast(handleErrorText(e, 'Could not update that booking')); }
 }
 
 async function cancelBooking(id) {
@@ -9810,12 +10055,58 @@ function switchToProvider(){
 }
 function switchToOwner(){showScreen('s-me');showToast('Back to pet parent mode');}
 let selRole='owner';
-function selectRole(r){
-  selRole = r;
-  document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('sel'));
-  document.getElementById('role-'+r)?.classList.add('sel');
+// Someone can be a pet parent AND a provider, or a community member AND a
+// provider. selRoles holds every one they picked; selRole stays as the
+// primary (first picked) so older code that reads a single role still works.
+let selRoles = ['owner'];
+const ROLE_LABEL = { owner:'Pet parent', provider:'Service provider', community:'Community member' };
+
+function toggleRole(r){
+  const i = selRoles.indexOf(r);
+  if (i > -1) {
+    if (selRoles.length === 1) { showToast('Pick at least one'); return; }
+    selRoles.splice(i, 1);
+  } else {
+    selRoles.push(r);
+  }
+  syncRoleUI();
+}
+
+function renderRoleRecap(){
+  const wrap = document.getElementById('signup-roles-recap');
+  if (!wrap) return;
+  wrap.innerHTML = (selRoles.length ? selRoles : ['owner']).map(r =>
+    `<span class="pill" style="background:var(--coral-l);color:var(--coral-m);font-size:12px;padding:6px 12px;">
+       ${escHtml(ROLE_LABEL[r] || r)}</span>`).join('');
+}
+
+function syncRoleUI(){
+  ['owner','provider','community'].forEach(r => {
+    const card = document.getElementById('role-' + r);
+    const tick = document.getElementById('tick-' + r);
+    const on = selRoles.includes(r);
+    if (card) card.classList.toggle('sel', on);
+    if (tick) tick.className = 'ti role-tick ' + (on ? 'ti-circle-check-filled on' : 'ti-circle');
+  });
+  selRole = selRoles[0] || 'owner';
   const sel = document.getElementById('signup-role');
-  if (sel) sel.value = (r === 'other' ? 'community' : r);
+  if (sel) sel.value = selRole;
+  renderRoleRecap();
+  const hint = document.getElementById('role-hint');
+  if (hint) {
+    hint.textContent = selRoles.length > 1
+      ? 'You\'ll be shown as: ' + selRoles.map(r => ROLE_LABEL[r]).join(' + ') + '.'
+      : (selRoles[0] === 'provider'
+          ? 'You can add your pets later too — listing a service is all it takes to be a provider.'
+          : 'Listing a service later automatically adds Service provider.');
+  }
+}
+
+// kept so any older call site still works
+function selectRole(r){
+  if (r === 'other') r = 'community';
+  selRoles = [r];
+  syncRoleUI();
 }
 // Kept for any older call site: sends signed-in users to their home screen,
 // and everyone else into the signup flow rather than a dead end.
@@ -9880,7 +10171,7 @@ document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',functio
   if(this.closest('.disc-filters')||this.closest('.feed-filters')||this.closest('.modal-sheet'))return;
   this.classList.toggle('on');
 }));
-selectRole('owner');
+syncRoleUI();
 </script>
 
 <div class="screen" id="s-settings">
@@ -9891,35 +10182,66 @@ selectRole('owner');
     </div>
   </div>
   <div class="scroll-area" style="padding:16px;">
-    <div class="mtitle">Account</div>
-    <div class="fgrp">
-      <label class="flbl">Full name</label>
-      <input type="text" class="finp" id="set-name-inp" placeholder="Your name">
+    <!-- Each section is a closed row until tapped, so the page opens short
+         and readable instead of one long wall of inputs. -->
+    <div class="set-sec">
+      <button class="set-head" onclick="toggleSetSec('sec-account')">
+        <i class="lead ti ti-user"></i><span>Account</span><i class="chev ti ti-chevron-down"></i>
+      </button>
+      <div class="set-body" id="sec-account">
+        <div class="fgrp">
+          <label class="flbl">Full name</label>
+          <input type="text" class="finp" id="set-name-inp" placeholder="Your name">
+        </div>
+        <button class="sbtn" onclick="saveAccountName()">Save name</button>
+      </div>
     </div>
-    <button class="sbtn" onclick="saveAccountName()">Save name</button>
 
-    <div style="height:28px;"></div>
-    <div class="mtitle">Notifications</div>
-    <div style="font-size:12.5px;color:var(--t2);line-height:1.55;margin:-10px 0 14px;">
-      Choose what you want to be told about. Follows and important alerts are
-      on to start with; the rest are off so your notifications stay quiet.
+    <div class="set-sec">
+      <button class="set-head" onclick="toggleSetSec('sec-roles')">
+        <i class="lead ti ti-id-badge-2"></i><span>How you use PetXchange</span><i class="chev ti ti-chevron-down"></i>
+      </button>
+      <div class="set-body" id="sec-roles">
+        <div style="font-size:12.5px;color:var(--t2);line-height:1.55;margin-bottom:12px;">
+          Pick everything that applies. Listing a service adds Service provider on its own.
+        </div>
+        <div id="set-roles-list"></div>
+        <button class="sbtn" onclick="saveMyRoles()">Save</button>
+      </div>
     </div>
-    <div id="notif-prefs-list"></div>
-    <button class="sbtn" onclick="saveNotifPrefs()">Save notification settings</button>
 
-    <div style="height:28px;"></div>
-    <div class="mtitle">Change password</div>
-    <div class="fgrp">
-      <label class="flbl">New password</label>
-      <input type="password" class="finp" id="set-pw-inp" placeholder="At least 6 characters">
+    <div class="set-sec">
+      <button class="set-head" onclick="toggleSetSec('sec-notifs')">
+        <i class="lead ti ti-bell"></i><span>Notifications</span><i class="chev ti ti-chevron-down"></i>
+      </button>
+      <div class="set-body" id="sec-notifs">
+        <div style="font-size:12.5px;color:var(--t2);line-height:1.55;margin-bottom:12px;">
+          Choose what you want to be told about. Follows and anything needing your
+          attention are on to start with; the noisier ones are off.
+        </div>
+        <div id="notif-prefs-list"></div>
+        <button class="sbtn" onclick="saveNotifPrefs()">Save notification settings</button>
+      </div>
     </div>
-    <div class="fgrp">
-      <label class="flbl">Confirm new password</label>
-      <input type="password" class="finp" id="set-pw-confirm-inp" placeholder="Re-enter new password">
-    </div>
-    <button class="sbtn" onclick="saveAccountPassword()">Update password</button>
 
-    <div style="height:28px;"></div>
+    <div class="set-sec">
+      <button class="set-head" onclick="toggleSetSec('sec-password')">
+        <i class="lead ti ti-lock"></i><span>Change password</span><i class="chev ti ti-chevron-down"></i>
+      </button>
+      <div class="set-body" id="sec-password">
+        <div class="fgrp">
+          <label class="flbl">New password</label>
+          <input type="password" class="finp" id="set-pw-inp" placeholder="At least 6 characters">
+        </div>
+        <div class="fgrp">
+          <label class="flbl">Confirm new password</label>
+          <input type="password" class="finp" id="set-pw-confirm-inp" placeholder="Re-enter new password">
+        </div>
+        <button class="sbtn" onclick="saveAccountPassword()">Update password</button>
+      </div>
+    </div>
+
+    <div style="height:20px;"></div>
     <button class="cbtn" style="color:var(--red);border-color:var(--red);" onclick="doLogout()">Log out</button>
   </div>
 </div>
