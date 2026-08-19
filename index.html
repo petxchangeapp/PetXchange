@@ -1559,6 +1559,44 @@ img{background:var(--surface-2)}
   padding:3px 9px;border-radius:100px;letter-spacing:.03em;
 }
 
+/* ---------- Inline comments (Instagram/Facebook style) ---------- */
+.cmt-preview{margin-top:10px;padding-top:10px;border-top:1px solid var(--bd)}
+.cmt-mini-del{
+  font-size:11px;color:var(--t3);font-weight:600;margin-left:8px;cursor:pointer;
+}
+.cmt-mini-del:active{color:var(--red)}
+.cmt-compose{
+  display:flex;align-items:center;gap:9px;margin-top:10px;
+}
+.cmt-compose .cmt-mini-avi{width:30px;height:30px;flex-shrink:0;font-size:12px}
+.cmt-inline-inp{
+  width:100%;border:1.5px solid transparent;background:var(--surface-2);
+  border-radius:100px;padding:10px 15px;font-size:14px;font-family:inherit;
+  color:var(--text);outline:none;
+  transition:background .16s,border-color .16s,box-shadow .16s;
+}
+.cmt-inline-inp::placeholder{color:var(--t3)}
+.cmt-inline-inp:focus{background:var(--card);border-color:var(--coral);box-shadow:0 0 0 3px var(--coral-ring)}
+.cmt-send-btn{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;border:none;cursor:pointer;
+  background:var(--brand-solid);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:17px;box-shadow:var(--e-brand);
+  transition:transform .16s var(--ease),opacity .18s;
+}
+[data-theme="dark"] .cmt-send-btn{color:#17120F}
+.cmt-send-btn:active{transform:scale(.88)}
+.cmt-mention-box{
+  position:absolute;left:0;right:0;bottom:calc(100% + 6px);z-index:30;
+  background:var(--card);border:1px solid var(--bd);border-radius:var(--r);
+  box-shadow:var(--e3);overflow:hidden;max-height:210px;overflow-y:auto;
+}
+.cmt-mention-box:empty{display:none}
+.cmt-more{
+  font-size:12.5px;color:var(--t2);font-weight:600;cursor:pointer;
+  padding:2px 0 8px;
+}
+.cmt-more:active{color:var(--coral)}
+
 </style>
 </head>
 <body>
@@ -1956,6 +1994,11 @@ img{background:var(--surface-2)}
       <i class="ti ti-search"></i>
       <input type="text" id="svc-search" placeholder="Search walkers, sitters, groomers…" oninput="searchSvc(this.value)">
     </div>
+
+    <!-- Providers get straight into Manage my business from here, since
+         Services is where they think about their work. Shown to anyone with
+         the provider role or a listing; also lets a pet parent start one. -->
+    <div id="svc-mybiz" style="display:none;padding:10px 12px 2px;"></div>
 
     <!-- Bookings you've made, with their current status. Filled by
          loadSvcBookings(); hidden entirely when there are none. -->
@@ -2899,23 +2942,6 @@ img{background:var(--surface-2)}
 </div>
 
 <!-- Comments -->
-<div class="modal-bg" id="m-comments">
-  <div class="modal-sheet"><div class="mhandle"></div>
-    <div class="mtitle" id="cmt-title">Comments</div>
-    <div class="cmt-list" id="cmt-list"></div>
-    <div style="position:relative;">
-      <div id="cmt-mention-results"></div>
-    </div>
-    <div class="cmt-inp-row">
-      <input class="cmt-inp" id="cmt-inp" type="text" placeholder="Write a comment… type @ to tag" autocomplete="off"
-             oninput="handleCommentMention(this)" onkeydown="if(event.key==='Enter')sendComment()">
-      <button class="chat-send" onclick="sendComment()"><i class="ti ti-send"></i></button>
-    </div>
-    <button class="cbtn" onclick="closeModal('m-comments')">Close</button>
-  </div>
-</div>
-
-<!-- Edit profile -->
 <div class="modal-bg" id="m-edit-profile">
   <div class="modal-sheet"><div class="mhandle"></div><div class="mtitle">Edit profile</div>
     <div class="avi-pick">
@@ -4494,7 +4520,7 @@ function actionRow(post, tone) {
   const c = tone || 'var(--t2)';
   return `<div class="post-acts" style="margin-top:12px;">
       <button class="post-act${myLikes.has(post.id) ? ' liked' : ''}" style="color:${myLikes.has(post.id) ? 'var(--coral)' : c};" onclick="event.stopPropagation();likePost(this,'${post.id}')"><i class="ti ti-heart${myLikes.has(post.id) ? '-filled' : ''}"></i> ${post.likes_count || 0}</button>
-      <button class="post-act" style="color:${c};" onclick="openComments('${post.id}')"><i class="ti ti-message-circle"></i> ${post.comments_count || 0}</button>
+      <button class="post-act" style="color:${c};" onclick="event.stopPropagation();goToComments('${post.id}')"><i class="ti ti-message-circle"></i> <span data-cmt-count="${post.id}">${post.comments_count || 0}</span></button>
       <button class="post-act" style="color:${c};" onclick="sharePost('${post.id}')"><i class="ti ti-share"></i></button>
     </div>`;
 }
@@ -5491,10 +5517,62 @@ async function loadSvcBookings() {
   }
 }
 
+// The Services page is where a provider naturally goes to think about their
+// work, so their business lives one tap away from here.
+function renderSvcMyBiz() {
+  const el = document.getElementById('svc-mybiz');
+  if (!el) return;
+  if (!currentUser) { el.style.display = 'none'; return; }
+
+  const live = (myBusinesses || []).filter(b => b.is_active !== false).length;
+  const provider = isProvider();
+
+  if (provider) {
+    el.style.display = '';
+    el.innerHTML = `
+      <div class="svc-manage-card" style="margin:0;cursor:pointer;background:var(--teal-l);border-color:color-mix(in srgb,var(--teal) 30%,transparent);"
+           onclick="openProviderHub('home')">
+        <div style="display:flex;align-items:center;gap:11px;">
+          <div style="width:40px;height:40px;border-radius:13px;background:var(--card);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="ti ti-briefcase" style="color:var(--teal);font-size:20px;"></i>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14.5px;font-weight:700;color:var(--teal-d);">My business</div>
+            <div style="font-size:11.5px;color:var(--teal-m);margin-top:2px;">
+              ${live ? live + ' live service' + (live > 1 ? 's' : '') + ' · bookings, enquiries and reviews'
+                     : 'Add a service so people can find you'}
+            </div>
+          </div>
+          <i class="ti ti-chevron-right" style="color:var(--teal-m);"></i>
+        </div>
+      </div>`;
+    return;
+  }
+
+  // Not a provider yet — a quiet invitation rather than a hard sell.
+  el.style.display = '';
+  el.innerHTML = `
+    <div class="svc-manage-card" style="margin:0;cursor:pointer;" onclick="openProviderHub('home')">
+      <div style="display:flex;align-items:center;gap:11px;">
+        <div style="width:40px;height:40px;border-radius:13px;background:var(--coral-l);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="ti ti-plus" style="color:var(--coral);font-size:20px;"></i>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14.5px;font-weight:700;">Offer a service yourself</div>
+          <div style="font-size:11.5px;color:var(--t2);margin-top:2px;">
+            Walk dogs, foster, groom or run a clinic — no fees, no commission.
+          </div>
+        </div>
+        <i class="ti ti-chevron-right" style="color:var(--t3);"></i>
+      </div>
+    </div>`;
+}
+
 async function loadServices() {
   const list = document.getElementById('prov-list');
   if (!list) return;
   loadSvcBookings();   // runs alongside; its failure can't affect the list
+  renderSvcMyBiz();
   list.innerHTML = '<div style="text-align:center;padding:26px;color:var(--t3);font-size:13px;"><div class="loading-spin" style="margin:0 auto 8px;"></div>Finding providers…</div>';
   distanceByBizId = {};
   try {
@@ -6400,7 +6478,7 @@ async function openNotification(id) {
     try { await sb.from('notifications').update({ is_read: true }).eq('id', id); n.is_read = true; refreshNotifCount(); } catch(e) {}
   }
   if (n.entity_type === 'post' && n.entity_id) {
-    if (n.type === 'comment') { showScreen('s-feed'); setTimeout(() => openComments(n.entity_id), 400); }
+    if (n.type === 'comment') { showScreen('s-feed'); setTimeout(() => goToComments(n.entity_id), 400); }
     else showScreen('s-feed');
   } else if (n.entity_type === 'chat' && n.actor_id) {
     openChatWith(n.actor_id);
@@ -6587,7 +6665,7 @@ async function doSearch(q) {
         const cfg = POST_TYPES[p.post_type] || POST_TYPES.general;
         const d = p.details || {};
         const snippet = p.body || d.pet_name || cfg.label;
-        return `<div class="sres" onclick="openComments('${p.id}')">
+        return `<div class="sres" onclick="goToComments('${p.id}')">
           <div class="sres-avi">${p.media_url ? `<img src="${escAttr(p.media_url)}" alt="">` : `<i class="ti ${cfg.icon}" style="color:var(--t2);font-size:20px;"></i>`}</div>
           <div style="flex:1;min-width:0;">
             <div class="sres-t" style="font-weight:500;">${escHtml(String(snippet).slice(0, 70))}${String(snippet).length > 70 ? '…' : ''}</div>
@@ -6810,7 +6888,7 @@ let adMediaUrl = null;
 // Four clear tabs instead of one long scroll: what needs answering,
 // the services you offer, how you get found, and how you're doing.
 // ============================================================
-let pvTab = 'inbox';
+let pvTab = 'home';
 let pvData = { listings: [], bookings: [], offers: [], sent: [], received: 0 };
 
 async function loadProviderDash() {
@@ -6886,11 +6964,13 @@ function renderProviderShell() {
   const waiting = bookings.filter(b => b.status === 'requested').length + received;
   document.getElementById('prov-dash').innerHTML = `
     <div class="pv-tabs">
+      <button class="pv-tab" data-pv="home"     onclick="pvGo('home')"><i class="ti ti-home"></i>Home</button>
       <button class="pv-tab" data-pv="inbox"    onclick="pvGo('inbox')"><i class="ti ti-inbox"></i>To answer${waiting ? `<span class="cnt">${waiting}</span>` : ''}</button>
       <button class="pv-tab" data-pv="services" onclick="pvGo('services')"><i class="ti ti-briefcase"></i>My services</button>
       <button class="pv-tab" data-pv="promote"  onclick="pvGo('promote')"><i class="ti ti-speakerphone"></i>Get found</button>
       <button class="pv-tab" data-pv="stats"    onclick="pvGo('stats')"><i class="ti ti-chart-bar"></i>How I'm doing</button>
     </div>
+    <div class="pv-pane" id="pv-home"></div>
     <div class="pv-pane" id="pv-inbox"></div>
     <div class="pv-pane" id="pv-services"></div>
     <div class="pv-pane" id="pv-promote"></div>
@@ -6904,8 +6984,107 @@ function pvGo(tab) {
   document.querySelectorAll('.pv-pane').forEach(p => p.classList.remove('on'));
   const pane = document.getElementById('pv-' + tab);
   if (pane) pane.classList.add('on');
-  ({ inbox: pvInbox, services: pvServices, promote: pvPromote, stats: pvStats }[tab] || pvInbox)();
+  ({ home: pvHome, inbox: pvInbox, services: pvServices, promote: pvPromote, stats: pvStats }[tab] || pvHome)();
   buzz(5);
+}
+
+// ---------- Tab 0: Home — the whole business at a glance ----------
+function pvHome() {
+  const { listings, bookings, offers, sent, received } = pvData;
+  const pending   = bookings.filter(b => b.status === 'requested');
+  const upcoming  = bookings.filter(b => b.status === 'confirmed');
+  const completed = bookings.filter(b => b.status === 'completed');
+  const revenue   = completed.reduce((n, b) => n + (Number(b.price) || 0), 0);
+  const accepted  = sent.filter(r => r.status === 'accepted').length;
+  const live      = listings.filter(l => l.is_active !== false);
+  const paused    = listings.filter(l => l.is_active === false);
+  const ratingCt  = listings.reduce((n, b) => n + (b.rating_count || 0), 0);
+  const avgRating = ratingCt
+    ? (listings.reduce((n, b) => n + Number(b.rating_avg || 0) * (b.rating_count || 0), 0) / ratingCt).toFixed(1)
+    : '—';
+  const name    = (currentProfile && currentProfile.full_name || '').split(' ')[0] || 'there';
+  const waiting = pending.length + received;
+  const hasPaid = listings.some(l => l.pricing_type === 'paid') || revenue > 0;
+
+  document.getElementById('pv-home').innerHTML = `
+    <div class="dash-hero">
+      <h2>Hi ${escHtml(name)} 👋</h2>
+      <p>${waiting
+        ? waiting + ' thing' + (waiting > 1 ? 's need' : ' needs') + ' your answer.'
+        : live.length
+          ? 'Nothing waiting. ' + live.length + ' service' + (live.length > 1 ? 's are' : ' is') + ' live in Services.'
+          : 'Nothing live yet — add a service so people can find you.'}</p>
+    </div>
+
+    <div class="impact-row">
+      <div class="impact" onclick="pvGo('inbox')" style="cursor:pointer;">
+        <div class="impact-n" style="color:${waiting ? 'var(--amber-m)' : 'var(--text)'};">${waiting}</div>
+        <div class="impact-l">To answer</div></div>
+      <div class="impact" onclick="pvGo('services')" style="cursor:pointer;">
+        <div class="impact-n">${live.length}</div><div class="impact-l">Live services</div></div>
+      <div class="impact"><div class="impact-n">${completed.length + accepted}</div><div class="impact-l">Pets helped</div></div>
+      <div class="impact"><div class="impact-n">${avgRating}</div><div class="impact-l">Rating</div></div>
+    </div>
+
+    ${hasPaid ? `<div class="earn-banner" style="margin-top:4px;">
+      <div style="font-size:12px;opacity:.9;color:#fff;">Earned from completed bookings</div>
+      <div class="earn-n">${revenue ? money(revenue) : '₹0'}</div>
+      <div style="font-size:11.5px;opacity:.85;color:#fff;">PetXchange takes no commission.</div>
+    </div>` : ''}
+
+    ${pending.length ? `
+      <div class="sec-hdr" style="margin-top:8px;"><h3>Waiting for your answer</h3>
+        <a onclick="pvGo('inbox')">See all</a></div>
+      ${pending.slice(0, 3).map(pvBookingCard).join('')}` : ''}
+
+    ${upcoming.length ? `
+      <div class="sec-hdr" style="margin-top:8px;"><h3>Coming up</h3>
+        <a onclick="pvGo('inbox')">See all</a></div>
+      ${upcoming.slice(0, 2).map(pvBookingCard).join('')}` : ''}
+
+    <div class="sec-hdr" style="margin-top:8px;"><h3>Your services</h3>
+      <a onclick="pvGo('services')">Manage</a></div>
+    ${listings.length ? listings.slice(0, 4).map(b => {
+      const off = b.is_active === false;
+      return `<div class="svc-manage-card${off ? ' paused' : ''}" style="cursor:pointer;" onclick="openBusiness('${b.id}','s-provider')">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="mypet-avi" style="background:var(--teal-l);width:42px;height:42px;flex-shrink:0;">
+            ${b.logo_url ? `<img src="${escAttr(b.logo_url)}" alt="">` : `<i class="ti ti-briefcase" style="color:var(--teal);"></i>`}
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;font-weight:700;">${escHtml(b.name || 'Service')}</div>
+            <div style="font-size:11.5px;color:var(--t2);margin-top:2px;">
+              ${escHtml(b.category || '')}${b.rating_count ? ' · ★ ' + Number(b.rating_avg||0).toFixed(1) : ''}${b.booking_count ? ' · ' + b.booking_count + ' bookings' : ''}
+            </div>
+          </div>
+          ${off ? '<span class="svc-paused-tag">Paused</span>'
+                : '<i class="ti ti-chevron-right" style="color:var(--t3);"></i>'}
+        </div>
+      </div>`;
+    }).join('') : `
+      <div style="padding:0 12px;">
+        <div class="req-card" style="border-left-color:var(--coral);cursor:pointer;" onclick="openAddBusiness()">
+          <div style="font-size:15px;font-weight:700;"><i class="ti ti-building-store" style="color:var(--coral);"></i> Add your first service</div>
+          <div style="font-size:12.5px;color:var(--t2);line-height:1.5;margin-top:4px;">
+            Get a page in Services with your rates, hours and reviews.
+          </div>
+        </div>
+      </div>`}
+    ${paused.length ? `<div style="padding:2px 14px 0;font-size:11.5px;color:var(--t2);">
+      ${paused.length} paused — hidden from Services until you turn ${paused.length > 1 ? 'them' : 'it'} back on.</div>` : ''}
+
+    <div class="sec-hdr" style="margin-top:10px;"><h3>Quick actions</h3></div>
+    <div class="dash-acts" style="padding:0 12px;">
+      <button class="dash-act" onclick="openAddBusiness()"><i class="ti ti-plus" style="color:var(--coral);"></i>Add service</button>
+      <button class="dash-act" onclick="postAvailability()"><i class="ti ti-hand-stop" style="color:var(--green);"></i>Post availability</button>
+      <button class="dash-act" onclick="pvGo('promote')"><i class="ti ti-speakerphone" style="color:var(--purple);"></i>Get found</button>
+      <button class="dash-act" onclick="switchToOwner()"><i class="ti ti-user" style="color:var(--coral);"></i>Pet parent</button>
+    </div>
+
+    <div class="sec-hdr" style="margin-top:8px;"><h3>People who need help</h3>
+      <a onclick="showScreen('s-feed')">See all</a></div>
+    <div id="home-requests"></div>`;
+  loadCommunityRequests('home-requests', 3);
 }
 
 // ---------- Tab 1: everything waiting on you ----------
@@ -8749,37 +8928,199 @@ async function loadFeedComments(postIds) {
   } catch(e) { console.log('feed comments:', e); }
 }
 
+// Comments live inside the post card itself — tap the comment button and a
+// box opens under that post, the way Instagram and Facebook work. No sheet
+// slides over the feed, so you never lose your place while reading.
+const openComments = new Set();   // post ids currently expanded
+
 function commentPreviewHtml(post) {
   const all = feedComments[post.id] || [];
   const total = post.comments_count || all.length;
-  if (!all.length) {
-    return `<div class="cmt-preview">
-      <button class="cmt-add-btn" onclick="event.stopPropagation();openComments('${post.id}')">
-        <i class="ti ti-message-circle"></i> Add a comment
-      </button></div>`;
-  }
-  const show = all.slice(-3);           // three most recent
+  const expanded = openComments.has(post.id);
+  const show = expanded ? all : all.slice(-2);
   const hidden = Math.max(0, total - show.length);
-  return `<div class="cmt-preview">
-    ${hidden > 0 ? `<div class="cmt-more" onclick="event.stopPropagation();openComments('${post.id}')">View all ${total} comments</div>` : ''}
-    ${show.map(c => {
-      const pr = c.profiles || {};
-      const nm = pr.full_name || 'User';
-      return `<div class="cmt-mini">
-        <div class="cmt-mini-avi" onclick="event.stopPropagation();openUserProfile('${c.author_id}',{back:'s-feed'})">
-          ${pr.avatar_url ? `<img src="${escAttr(pr.avatar_url)}" alt="">` : escHtml(nm[0].toUpperCase())}
-        </div>
-        <div class="cmt-mini-txt">
-          <span class="cmt-mini-name" onclick="event.stopPropagation();openUserProfile('${c.author_id}',{back:'s-feed'})">${escHtml(nm)}</span>
-          ${linkifyMentions(c.body, post)}
-          <span class="cmt-mini-time">${getTimeAgo(c.created_at)}</span>
-        </div>
-      </div>`;
-    }).join('')}
-    <button class="cmt-add-btn" onclick="event.stopPropagation();openComments('${post.id}')">
-      <i class="ti ti-message-circle"></i> Add a comment
-    </button>
+
+  return `<div class="cmt-preview" id="cmts-${post.id}">
+    ${hidden > 0 && !expanded ? `<div class="cmt-more" onclick="event.stopPropagation();expandComments('${post.id}')">View all ${total} comments</div>` : ''}
+    ${show.map(c => commentLineHtml(c, post)).join('')}
+    ${expanded ? commentComposerHtml(post.id) : `
+      <button class="cmt-add-btn" onclick="event.stopPropagation();expandComments('${post.id}')">
+        <i class="ti ti-message-circle"></i> ${all.length ? 'Add a comment' : 'Be the first to comment'}
+      </button>`}
   </div>`;
+}
+
+function commentLineHtml(c, post) {
+  const pr = c.profiles || {};
+  const nm = pr.full_name || 'User';
+  const mine = currentUser && c.author_id === currentUser.id;
+  return `<div class="cmt-mini">
+    <div class="cmt-mini-avi" onclick="event.stopPropagation();openUserProfile('${c.author_id}',{back:'s-feed'})">
+      ${pr.avatar_url ? `<img src="${escAttr(pr.avatar_url)}" alt="">` : escHtml(nm[0].toUpperCase())}
+    </div>
+    <div class="cmt-mini-txt">
+      <span class="cmt-mini-name" onclick="event.stopPropagation();openUserProfile('${c.author_id}',{back:'s-feed'})">${escHtml(nm)}</span>
+      ${linkifyMentions(c.body, post)}
+      <span class="cmt-mini-time">${getTimeAgo(c.created_at)}</span>
+      ${mine ? `<span class="cmt-mini-del" onclick="event.stopPropagation();deleteComment('${c.id}','${post.id}')">Delete</span>` : ''}
+    </div>
+  </div>`;
+}
+
+function commentComposerHtml(postId) {
+  const me = currentProfile || {};
+  const nm = me.full_name || 'You';
+  return `<div class="cmt-compose" onclick="event.stopPropagation();">
+    <div class="cmt-mini-avi">${me.avatar_url ? `<img src="${escAttr(me.avatar_url)}" alt="">` : escHtml(nm[0].toUpperCase())}</div>
+    <div style="flex:1;min-width:0;position:relative;">
+      <input class="cmt-inline-inp" id="ci-${postId}" type="text" autocomplete="off"
+             placeholder="Add a comment… type @ to tag"
+             oninput="handleInlineMention(this,'${postId}')"
+             onkeydown="if(event.key==='Enter')sendInlineComment('${postId}')">
+      <div class="cmt-mention-box" id="cm-${postId}"></div>
+    </div>
+    <button class="cmt-send-btn" onclick="sendInlineComment('${postId}')"><i class="ti ti-send"></i></button>
+  </div>`;
+}
+
+// Called from anywhere (notifications, search, a pet's timeline). Gets you
+// to the feed and opens that post's comments inline.
+function goToComments(postId) {
+  const onFeed = document.getElementById('s-feed')?.classList.contains('active');
+  if (!onFeed) {
+    showScreen('s-feed');
+    setTimeout(() => scrollToPostComments(postId), 500);
+    return;
+  }
+  scrollToPostComments(postId);
+}
+
+function scrollToPostComments(postId) {
+  expandComments(postId);
+  const block = document.getElementById('cmts-' + postId);
+  if (block) block.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+function expandComments(postId) {
+  if (!currentUser) { showToast('Sign in to comment'); showScreen('s-auth'); return; }
+  openComments.add(postId);
+  refreshCommentBlock(postId);
+  setTimeout(() => {
+    const inp = document.getElementById('ci-' + postId);
+    if (inp) inp.focus();
+  }, 60);
+}
+
+// Redraws just this post's comment block, so typing in one post never
+// re-renders the whole feed and scrolls you away.
+function refreshCommentBlock(postId) {
+  const post = feedPosts.find(p => p.id === postId);
+  const block = document.getElementById('cmts-' + postId);
+  if (!post || !block) return;
+  const keep = document.getElementById('ci-' + postId);
+  const text = keep ? keep.value : '';
+  block.outerHTML = commentPreviewHtml(post);
+  const inp = document.getElementById('ci-' + postId);
+  if (inp && text) inp.value = text;
+}
+
+async function sendInlineComment(postId) {
+  const inp = document.getElementById('ci-' + postId);
+  if (!inp) return;
+  const txt = inp.value.trim();
+  if (!txt || !currentUser) return;
+  inp.value = '';
+  const box = document.getElementById('cm-' + postId);
+  if (box) box.innerHTML = '';
+  try {
+    const { error } = await withDeadline(
+      sb.from('post_comments').insert({ post_id: postId, author_id: currentUser.id, body: txt }),
+      QUERY_TIMEOUT_MS, 'Post comment');
+    if (error) throw error;
+    bumpCommentCount(postId, 1);
+    await loadFeedComments([postId]);
+    refreshCommentBlock(postId);
+    buzz(6);
+  } catch(e) {
+    console.log('comment:', e);
+    showToast(handleErrorText(e, 'Could not post that comment'));
+    inp.value = txt;
+  }
+}
+
+async function deleteComment(id, postId) {
+  if (!confirm('Delete this comment?')) return;
+  try {
+    const { error } = await sb.from('post_comments').delete().eq('id', id).eq('author_id', currentUser.id);
+    if (error) throw error;
+    if (postId) {
+      bumpCommentCount(postId, -1);
+      await loadFeedComments([postId]);
+      refreshCommentBlock(postId);
+    }
+    showToast('Comment deleted');
+  } catch(e) { showToast('Could not delete that comment'); }
+}
+
+// ---------- @mentions in the inline box: pets, people AND businesses ----------
+let inlineMentionTimer = null;
+
+function handleInlineMention(inp, postId) {
+  const upto = inp.value.slice(0, inp.selectionStart);
+  const m = upto.match(/(?:^|\s)@([a-zA-Z0-9_]{0,20})$/);
+  const box = document.getElementById('cm-' + postId);
+  clearTimeout(inlineMentionTimer);
+  if (!box) return;
+  if (!m) { box.innerHTML = ''; return; }
+  const term = m[1];
+  if (term.length < 1) {
+    box.innerHTML = '<div style="padding:10px 12px;font-size:12px;color:var(--t3);">Keep typing a name or @id…</div>';
+    return;
+  }
+  inlineMentionTimer = setTimeout(async () => {
+    try {
+      const [pets, people, biz] = await Promise.all([
+        sb.from('pets').select('id, name, handle, species, photo_url')
+          .or(`handle.ilike.%${term}%,name.ilike.%${term}%`).not('handle','is',null).limit(3),
+        sb.from('profiles').select('id, full_name, handle, avatar_url')
+          .or(`handle.ilike.%${term}%,full_name.ilike.%${term}%`).not('handle','is',null).limit(3),
+        sb.from('businesses').select('id, name, handle, category, logo_url')
+          .or(`handle.ilike.%${term}%,name.ilike.%${term}%`).not('handle','is',null)
+          .eq('is_active', true).limit(3)
+      ]);
+      const items = [];
+      (pets.data || []).forEach(p => items.push({ kind:'Pet', label:p.name, handle:p.handle,
+        img:p.photo_url, icon:(SPECIES_ICON[p.species]||['ti-paw'])[0] }));
+      (people.data || []).forEach(p => items.push({ kind:'Pet parent', label:p.full_name || 'User',
+        handle:p.handle, img:p.avatar_url, icon:'ti-user' }));
+      (biz.data || []).forEach(b => items.push({ kind:'Business', label:b.name, handle:b.handle,
+        img:b.logo_url, icon:'ti-briefcase' }));
+      if (!items.length) {
+        box.innerHTML = '<div style="padding:10px 12px;font-size:12px;color:var(--t3);">No matches</div>';
+        return;
+      }
+      box.innerHTML = items.map(it => `
+        <div class="tag-res" onmousedown='event.preventDefault();insertInlineMention("${escAttr(it.handle)}","${postId}")'>
+          <div class="tag-res-avi">${it.img ? `<img src="${escAttr(it.img)}" alt="">` : `<i class="ti ${it.icon}"></i>`}</div>
+          <div style="min-width:0;">
+            <div style="font-size:13px;font-weight:600;">${escHtml(it.label)}</div>
+            <div style="font-size:11px;color:var(--t2);">@${escHtml(it.handle)} · ${it.kind}</div>
+          </div>
+        </div>`).join('');
+    } catch(e) { console.log('mention search:', e); }
+  }, 220);
+}
+
+function insertInlineMention(handle, postId) {
+  const inp = document.getElementById('ci-' + postId);
+  const box = document.getElementById('cm-' + postId);
+  if (!inp) return;
+  const pos = inp.selectionStart;
+  const before = inp.value.slice(0, pos).replace(/@([a-zA-Z0-9_]{0,20})$/, '@' + handle + ' ');
+  inp.value = before + inp.value.slice(pos);
+  if (box) box.innerHTML = '';
+  inp.focus();
+  inp.selectionStart = inp.selectionEnd = before.length;
 }
 
 // ============================================================
@@ -8959,7 +9300,7 @@ function petTimelineCard(post, why) {
   const isVideo = (post.media_type || '').startsWith('video');
   const text = post.body || (post.details && post.details.pet_name) || cfg.label;
   return `
-  <div class="post-card" style="margin:0 12px 10px;cursor:pointer;" onclick="openComments('${post.id}')">
+  <div class="post-card" style="margin:0 12px 10px;cursor:pointer;" onclick="goToComments('${post.id}')">
     <span class="tl-why ${w[0]}"><i class="ti ${w[1]}"></i>${w[2]}</span>
     ${post.is_resolved ? '<span class="resolved-tag" style="margin-left:6px;">Resolved</span>' : ''}
     <div class="post-hdr" style="margin-bottom:9px;">
@@ -9079,7 +9420,7 @@ function openPostMenu(postId) {
     items.push(`<div class="sheet-act" onclick="closeModal('m-post-actions');openChatWith('${post.author_id}')"><i class="ti ti-message-circle"></i> Message author</div>`);
   }
 
-  items.push(`<div class="sheet-act" onclick="closeModal('m-post-actions');openComments('${postId}')"><i class="ti ti-messages"></i> Comments</div>`);
+  items.push(`<div class="sheet-act" onclick="closeModal('m-post-actions');goToComments('${postId}')"><i class="ti ti-messages"></i> Comments</div>`);
   items.push(`<div class="sheet-act" onclick="closeModal('m-post-actions');sharePost('${postId}')"><i class="ti ti-share"></i> Share post</div>`);
 
   if (mine)
@@ -9170,134 +9511,15 @@ function resetComposer() {
 let commentPostId = null;
 let commentsCache = [];
 
-async function openComments(postId) {
-  if (!currentUser) { showToast('Sign in to comment'); showScreen('s-auth'); return; }
-  commentPostId = postId;
-  const post = feedPosts.find(p => p.id === postId);
-  const cfg = post ? (POST_TYPES[post.post_type] || POST_TYPES.general) : null;
-  document.getElementById('cmt-title').textContent = cfg ? 'Comments · ' + cfg.label : 'Comments';
-  document.getElementById('cmt-list').innerHTML = '<div style="text-align:center;padding:22px;color:var(--t3);font-size:12px;">Loading…</div>';
-  document.getElementById('cmt-inp').value = '';
-  openModal('m-comments');
-  await loadComments();
-}
-
-async function loadComments() {
-  const wrap = document.getElementById('cmt-list');
-  if (!wrap || !commentPostId) return;
-  try {
-    const { data, error } = await sb.from('post_comments')
-      .select('id, post_id, author_id, body, created_at, profiles ( full_name, avatar_url )')
-      .eq('post_id', commentPostId)
-      .order('created_at', { ascending: true })
-      .limit(200);
-    if (error) throw error;
-    commentsCache = data || [];
-    if (!commentsCache.length) {
-      wrap.innerHTML = '<div class="list-empty" style="padding:26px 12px;"><i class="ti ti-message-circle"></i><p>No comments yet</p><span>Be the first to say something.</span></div>';
-      return;
-    }
-    wrap.innerHTML = commentsCache.map(c => {
-      const pr = c.profiles || {};
-      const name = pr.full_name || 'PetXchange user';
-      const mine = currentUser && c.author_id === currentUser.id;
-      return `<div class="cmt-row">
-        <div class="cmt-avi" onclick="closeModal('m-comments');openUserProfile('${c.author_id}',{back:'s-feed'})">
-          ${pr.avatar_url ? `<img src="${escAttr(pr.avatar_url)}" alt="">` : escHtml(name[0].toUpperCase())}
-        </div>
-        <div class="cmt-body">
-          <div><span class="cmt-name" onclick="closeModal('m-comments');openUserProfile('${c.author_id}',{back:'s-feed'})">${escHtml(name)}</span><span class="cmt-time">${getTimeAgo(c.created_at)}</span></div>
-          <div class="cmt-text">${linkifyMentions(c.body, feedPosts.find(p => p.id === commentPostId))}</div>
-        </div>
-        ${mine ? `<button class="cmt-del" onclick="deleteComment('${c.id}')"><i class="ti ti-trash"></i></button>` : ''}
-      </div>`;
-    }).join('');
-    wrap.scrollTop = wrap.scrollHeight;
-  } catch(e) {
-    console.log('comments error:', e);
-    wrap.innerHTML = '<div class="list-empty" style="padding:26px 12px;"><i class="ti ti-message-circle"></i><p>Comments not set up yet</p><span>Comments are unavailable right now. Please try again.</span></div>';
-  }
-}
-
-// ---------- @mentions inside comments ----------
-let cmtMentionTimer = null;
-
-function handleCommentMention(inp) {
-  const upto = inp.value.slice(0, inp.selectionStart);
-  const m = upto.match(/(?:^|\s)@([a-zA-Z0-9_]{0,20})$/);
-  const box = document.getElementById('cmt-mention-results');
-  clearTimeout(cmtMentionTimer);
-  if (!m) { if (box) box.innerHTML = ''; return; }
-  const term = m[1];
-  if (term.length < 1) { if (box) box.innerHTML = '<div style="padding:10px 12px;font-size:12px;color:var(--t3);">Keep typing a name or @id…</div>'; return; }
-  cmtMentionTimer = setTimeout(async () => {
-    try {
-      const [pets, people] = await Promise.all([
-        sb.from('pets').select('id, name, handle, species, photo_url').or(`handle.ilike.%${term}%,name.ilike.%${term}%`).not('handle','is',null).limit(4),
-        sb.from('profiles').select('id, full_name, handle, avatar_url').or(`handle.ilike.%${term}%,full_name.ilike.%${term}%`).not('handle','is',null).limit(4)
-      ]);
-      const items = [];
-      (pets.data || []).forEach(p => items.push({ kind:'pet', label:p.name, handle:p.handle, img:p.photo_url, icon:(SPECIES_ICON[p.species]||['ti-paw'])[0] }));
-      (people.data || []).forEach(p => items.push({ kind:'user', label:p.full_name || 'User', handle:p.handle, img:p.avatar_url, icon:'ti-user' }));
-      if (!items.length) { box.innerHTML = '<div style="padding:10px 12px;font-size:12px;color:var(--t3);">No matches</div>'; return; }
-      box.innerHTML = items.map(it => `
-        <div class="tag-res" onmousedown='event.preventDefault();insertCommentMention("${escAttr(it.handle)}")'>
-          <div class="tag-res-avi">${it.img ? `<img src="${escAttr(it.img)}" alt="">` : `<i class="ti ${it.icon}"></i>`}</div>
-          <div style="min-width:0;">
-            <div style="font-size:13px;font-weight:600;">${escHtml(it.label)}</div>
-            <div style="font-size:11px;color:var(--t2);">@${escHtml(it.handle)} · ${it.kind === 'pet' ? 'Pet' : 'Pet parent'}</div>
-          </div>
-        </div>`).join('');
-    } catch(e) { box.innerHTML = ''; }
-  }, 250);
-}
-
-function insertCommentMention(handle) {
-  const inp = document.getElementById('cmt-inp');
-  if (!inp || !handle) return;
-  const pos = inp.selectionStart;
-  const before = inp.value.slice(0, pos).replace(/@([a-zA-Z0-9_]{0,20})$/, '@' + handle + ' ');
-  inp.value = before + inp.value.slice(pos);
-  inp.focus();
-  inp.setSelectionRange(before.length, before.length);
-  document.getElementById('cmt-mention-results').innerHTML = '';
-}
-
-async function sendComment() {
-  const inp = document.getElementById('cmt-inp');
-  const txt = inp.value.trim();
-  if (!txt || !commentPostId || !currentUser) return;
-  inp.value = '';
-  const mbox = document.getElementById('cmt-mention-results');
-  if (mbox) mbox.innerHTML = '';
-  try {
-    const { error } = await sb.from('post_comments').insert({
-      post_id: commentPostId, author_id: currentUser.id, body: txt
-    });
-    if (error) throw error;
-    await loadComments();
-    bumpCommentCount(commentPostId, 1);
-    loadFeedComments(feedPosts.map(p => p.id));
-  } catch(e) {
-    console.log('sendComment error:', e);
-    showToast('Could not post comment');
-    inp.value = txt;
-  }
-}
-
-async function deleteComment(id) {
-  try {
-    const { error } = await sb.from('post_comments').delete().eq('id', id).eq('author_id', currentUser.id);
-    if (error) throw error;
-    await loadComments();
-    bumpCommentCount(commentPostId, -1);
-    loadFeedComments(feedPosts.map(p => p.id));
-  } catch(e) { showToast('Could not delete comment'); }
-}
-
 function bumpCommentCount(postId, delta) {
   const p = feedPosts.find(x => x.id === postId);
-  if (p) { p.comments_count = Math.max(0, (p.comments_count || 0) + delta); renderFeed(); }
+  if (!p) return;
+  p.comments_count = Math.max(0, (p.comments_count || 0) + delta);
+  // Update only the counter on this card. A full renderFeed() here would
+  // rebuild every post and close the comment box being typed in.
+  document.querySelectorAll(`[data-cmt-count="${postId}"]`).forEach(el => {
+    el.textContent = p.comments_count;
+  });
 }
 
 // ============================================================
@@ -10004,7 +10226,7 @@ async function openUserProfile(userId, opts) {
             const p = c.posts || {};
             const pcfg = POST_TYPES[p.post_type] || POST_TYPES.general;
             const on = (p.details && p.details.pet_name) || p.body || pcfg.label;
-            return `<div class="own-post" ${c.post_id ? `onclick="openComments('${c.post_id}')" style="cursor:pointer;"` : ''}>
+            return `<div class="own-post" ${c.post_id ? `onclick="goToComments('${c.post_id}')" style="cursor:pointer;"` : ''}>
               <div style="font-size:11px;color:var(--t3);margin-bottom:4px;">On a ${escHtml(pcfg.label.toLowerCase())} · ${getTimeAgo(c.created_at)}</div>
               <div style="font-size:13px;line-height:1.5;">${escHtml(c.body)}</div>
               <div style="font-size:11px;color:var(--t3);margin-top:6px;">Re: ${escHtml(String(on).slice(0,60))}</div>
