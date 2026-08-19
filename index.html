@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>PetXchange — All Pets. All Needs. One Exchange.</title>
 <meta name="description" content="India's pet community. Find playdates and mates for your pet, get help when you need a sitter or walker, report lost pets, and book trusted local services.">
-<meta name="theme-color" content="#F25815">
+<meta name="theme-color" content="#FC5803">
 
 <!-- Link previews (WhatsApp, Instagram DMs, Twitter, etc.) -->
 <meta property="og:type" content="website">
@@ -45,7 +45,7 @@
 </script>
 <style>
 :root {
-  --coral:#F25815;--coral-l:#FAECE7;--coral-d:#4A1B0C;--coral-m:#993C1D;
+  --coral:#FC5803;--coral-l:#FAECE7;--coral-d:#4A1B0C;--coral-m:#993C1D;
   --teal:#1D9E75;--teal-l:#E1F5EE;--teal-d:#04342C;--teal-m:#0F6E56;
   --purple:#534AB7;--purple-l:#EEEDFE;--purple-d:#26215C;--purple-m:#3C3489;
   --amber:#BA7517;--amber-l:#FAEEDA;--amber-d:#412402;--amber-m:#854F0B;
@@ -680,8 +680,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
 
   /* brand — unchanged hue, plus a dedicated token for solid fills
      so light and dark can diverge without touching every rule */
-  --coral:#F25815;
-  --brand-solid:#F25815;
+  --coral:#FC5803;
+  --brand-solid:#FC5803;
   --coral-ring:rgba(216,90,48,.18);
 
   --scrim:rgba(26,16,11,.55);
@@ -839,16 +839,21 @@ img{background:var(--surface-2)}
 
 .sp-logo{
   width:92px;height:92px;border-radius:28px;
-  background:#FFFDF9;
-  box-shadow:0 12px 30px -10px rgba(44,44,44,.22), 0 1px 0 rgba(255,255,255,.6) inset;
+  background:linear-gradient(155deg,#FF7B2E 0%,#FC5803 55%,#E24A00 100%);
+  box-shadow:0 14px 32px -10px rgba(252,88,3,.55), 0 1px 0 rgba(255,255,255,.25) inset;
   display:flex;align-items:center;justify-content:center;
   animation:px-pop .55s var(--ease-out) both;
 }
 .sp-logo .brand-mark{width:54px;height:54px}
+.sp-logo .brand-mark-up{color:#fff}
+.sp-logo .brand-mark-dn{color:#282828}
 .sp-name{
-  font-size:42px;letter-spacing:-1.6px;color:#2A1710;
+  font-size:42px;letter-spacing:-1.6px;
   animation:px-rise .55s .1s var(--ease-out) both;
 }
+.sp-name-pet{color:#FC5803}
+.sp-name-x{color:#2A1710}
+[data-theme="dark"] .sp-name-x{color:#F6EFE9}
 .sp-tag{
   font-size:13.5px;color:#8A7059;letter-spacing:.1px;
   animation:px-rise .55s .18s var(--ease-out) both;
@@ -881,22 +886,26 @@ img{background:var(--surface-2)}
 #loading-overlay > div:nth-child(2){font-family:var(--ff-display);letter-spacing:-.5px;color:var(--text)!important}
 .loading-logo{
   width:76px;height:76px;border-radius:24px;
-  background:#FFFDF9;
-  box-shadow:0 10px 30px -10px rgba(44,44,44,.2);
+  background:linear-gradient(155deg,#FF7B2E 0%,#FC5803 55%,#E24A00 100%);
+  box-shadow:0 10px 28px -10px rgba(252,88,3,.5);
   display:flex;align-items:center;justify-content:center;
   animation:px-pop .5s var(--ease-out) both;
 }
 .loading-logo .brand-mark{width:44px;height:44px}
+.loading-logo .brand-mark-up{color:#fff}
+.loading-logo .brand-mark-dn{color:#282828}
 .loading-spin{border-color:var(--bd);border-top-color:var(--coral)}
 
 #s-auth{background:var(--card)}
 .auth-logo{
   width:66px;height:66px;border-radius:20px;
-  background:#FFFDF9;
-  box-shadow:0 8px 24px -10px rgba(44,44,44,.18);
+  background:linear-gradient(155deg,#FF7B2E 0%,#FC5803 55%,#E24A00 100%);
+  box-shadow:0 8px 22px -10px rgba(252,88,3,.45);
   display:flex;align-items:center;justify-content:center;
 }
 .auth-logo .brand-mark{width:38px;height:38px}
+.auth-logo .brand-mark-up{color:#fff}
+.auth-logo .brand-mark-dn{color:#282828}
 .auth-title{font-size:28px;letter-spacing:-.8px;color:var(--text)}
 .auth-sub{color:var(--t2);margin:8px 0 26px}
 .auth-tabs{background:var(--surface-2);padding:4px;border-radius:100px}
@@ -1158,7 +1167,7 @@ img{background:var(--surface-2)}
 .fab{
   bottom:calc(var(--th) + env(safe-area-inset-bottom) + 18px);
   width:56px;height:56px;
-  background:linear-gradient(155deg,#F25815,var(--brand-solid));
+  background:linear-gradient(155deg,#FC5803,var(--brand-solid));
   box-shadow:0 8px 24px -6px rgba(216,90,48,.75),0 2px 6px rgba(58,30,18,.2);
   transition:transform .18s var(--ease-out),box-shadow .2s;
   z-index:15;
@@ -1262,7 +1271,7 @@ img{background:var(--surface-2)}
 .match-scroll{padding:14px 14px 6px;gap:14px}
 .m-ring{
   width:64px;height:64px;padding:2.5px;border:2.5px solid transparent;
-  background:linear-gradient(150deg,#F25815,var(--coral)) border-box;
+  background:linear-gradient(150deg,#FC5803,var(--coral)) border-box;
   border-radius:50%;
   transition:transform .16s var(--ease);
 }
@@ -1371,7 +1380,7 @@ img{background:var(--surface-2)}
 /* ---------- 20. Provider dashboard ---------- */
 .earn-banner,.dash-hero{
   border-radius:var(--r-xl);margin:14px 12px;padding:20px;
-  background:linear-gradient(150deg,#F25815 0%,var(--brand-solid) 58%,#A8380C 100%);
+  background:linear-gradient(150deg,#FC5803 0%,var(--brand-solid) 58%,#A8380C 100%);
   box-shadow:0 10px 30px -12px rgba(216,90,48,.7);
 }
 .earn-n{font-size:36px;letter-spacing:-1.2px}
@@ -1606,7 +1615,7 @@ img{background:var(--surface-2)}
 /* ---------- Brand mark: two chevrons meeting, "exchange" ---------- */
 .brand-mark{display:block;flex-shrink:0}
 .brand-mark-up{color:var(--coral)}
-.brand-mark-dn{color:#2C2C2C}
+.brand-mark-dn{color:#282828}
 [data-theme="dark"] .brand-mark-dn{color:#D8D2CC}
 .hdr-logo .brand-mark{width:21px;height:21px}
 
@@ -1781,7 +1790,7 @@ img{background:var(--surface-2)}
   </div>
   <div style="text-align:center;padding:0 24px;">
     <div class="sp-logo"><svg viewBox="0 0 100 100" class="brand-mark" aria-hidden="true"><path d="M14,20 L50,52 L86,20" fill="none" stroke="currentColor" class="brand-mark-up" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/><path d="M14,80 L50,48 L86,80" fill="none" stroke="currentColor" class="brand-mark-dn" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-    <div class="sp-name">PetXchange</div>
+    <div class="sp-name"><span class="sp-name-pet">Pet</span><span class="sp-name-x">Xchange</span></div>
     <div class="sp-tag">All Pets. All Needs. One Exchange.</div>
     <div class="sp-actions">
       <button class="sp-btn" onclick="startSignup()">Sign up</button>
@@ -10665,7 +10674,7 @@ function applyTheme(setting){
     window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
   document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
   const meta=document.querySelector('meta[name="theme-color"]');
-  if(meta) meta.setAttribute('content', dark ? '#131110' : '#F25815');
+  if(meta) meta.setAttribute('content', dark ? '#131110' : '#FC5803');
   const lbl=document.getElementById('theme-label');
   if(lbl) lbl.textContent = setting.charAt(0).toUpperCase()+setting.slice(1);
   const ico=document.getElementById('theme-icon');
