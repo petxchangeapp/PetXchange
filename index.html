@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>PetXchange — All Pets. All Needs. One Exchange.</title>
 <meta name="description" content="India's pet community. Find playdates and mates for your pet, get help when you need a sitter or walker, report lost pets, and book trusted local services.">
-<meta name="theme-color" content="#D85A30">
+<meta name="theme-color" content="#F25815">
 
 <!-- Link previews (WhatsApp, Instagram DMs, Twitter, etc.) -->
 <meta property="og:type" content="website">
@@ -20,8 +20,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="PetXchange">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23D85A30'/%3E%3Ctext x='90' y='122' font-size='96' text-anchor='middle' fill='white' font-family='system-ui,sans-serif' font-weight='bold'%3EP%3C/text%3E%3C/svg%3E">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23D85A30'/%3E%3Ctext x='32' y='45' font-size='36' text-anchor='middle' fill='white' font-family='system-ui,sans-serif' font-weight='bold'%3EP%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css">
 
@@ -44,7 +45,7 @@
 </script>
 <style>
 :root {
-  --coral:#D85A30;--coral-l:#FAECE7;--coral-d:#4A1B0C;--coral-m:#993C1D;
+  --coral:#F25815;--coral-l:#FAECE7;--coral-d:#4A1B0C;--coral-m:#993C1D;
   --teal:#1D9E75;--teal-l:#E1F5EE;--teal-d:#04342C;--teal-m:#0F6E56;
   --purple:#534AB7;--purple-l:#EEEDFE;--purple-d:#26215C;--purple-m:#3C3489;
   --amber:#BA7517;--amber-l:#FAEEDA;--amber-d:#412402;--amber-m:#854F0B;
@@ -679,8 +680,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
 
   /* brand — unchanged hue, plus a dedicated token for solid fills
      so light and dark can diverge without touching every rule */
-  --coral:#D85A30;
-  --brand-solid:#D85A30;
+  --coral:#F25815;
+  --brand-solid:#F25815;
   --coral-ring:rgba(216,90,48,.18);
 
   --scrim:rgba(26,16,11,.55);
@@ -714,7 +715,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
   --gray-l:#2A2523;
   --gray-d:#E9E3DF;
 
-  --coral:#FF8355;          /* accent for text + icons on dark */
+  --coral:#FF7A3D;          /* accent for text + icons on dark */
   --coral-l:#3A2015;
   --coral-m:#FFAA85;
   --coral-d:#FFD5C2;
@@ -837,12 +838,13 @@ img{background:var(--surface-2)}
 #s-splash .sp-pets{display:none}   /* the drifting icons are gone — the pattern carries it now */
 
 .sp-logo{
-  width:88px;height:88px;border-radius:28px;
-  background:linear-gradient(155deg,#FF9463 0%,var(--coral) 58%,#C24E22 100%);
-  box-shadow:0 12px 30px -10px rgba(216,90,48,.45), inset 0 1px 0 rgba(255,255,255,.35);
+  width:92px;height:92px;border-radius:28px;
+  background:#FFFDF9;
+  box-shadow:0 12px 30px -10px rgba(44,44,44,.22), 0 1px 0 rgba(255,255,255,.6) inset;
+  display:flex;align-items:center;justify-content:center;
   animation:px-pop .55s var(--ease-out) both;
 }
-.sp-logo i{font-size:46px;color:#fff}
+.sp-logo .brand-mark{width:54px;height:54px}
 .sp-name{
   font-size:42px;letter-spacing:-1.6px;color:#2A1710;
   animation:px-rise .55s .1s var(--ease-out) both;
@@ -854,7 +856,7 @@ img{background:var(--surface-2)}
 .sp-actions{display:flex;flex-direction:column;gap:11px;max-width:290px;margin:40px auto 0}
 .sp-btn{
   margin-top:0;width:100%;padding:17px 24px;font-size:16.5px;letter-spacing:-.01em;
-  background:linear-gradient(155deg,#FF9463,var(--coral));color:#fff;
+  background:linear-gradient(155deg,#FF8A4D,var(--coral));color:#fff;
   box-shadow:0 8px 22px -8px rgba(216,90,48,.55);
   animation:px-rise .55s .26s var(--ease-out) both;
   transition:transform .14s var(--ease),box-shadow .2s;
@@ -879,18 +881,22 @@ img{background:var(--surface-2)}
 #loading-overlay > div:nth-child(2){font-family:var(--ff-display);letter-spacing:-.5px;color:var(--text)!important}
 .loading-logo{
   width:76px;height:76px;border-radius:24px;
-  background:linear-gradient(155deg,#F0784B,var(--coral));
-  box-shadow:0 10px 30px -10px rgba(216,90,48,.7);
+  background:#FFFDF9;
+  box-shadow:0 10px 30px -10px rgba(44,44,44,.2);
+  display:flex;align-items:center;justify-content:center;
   animation:px-pop .5s var(--ease-out) both;
 }
+.loading-logo .brand-mark{width:44px;height:44px}
 .loading-spin{border-color:var(--bd);border-top-color:var(--coral)}
 
 #s-auth{background:var(--card)}
 .auth-logo{
   width:66px;height:66px;border-radius:20px;
-  background:linear-gradient(155deg,#F0784B,var(--coral));
-  box-shadow:0 8px 24px -10px rgba(216,90,48,.8);
+  background:#FFFDF9;
+  box-shadow:0 8px 24px -10px rgba(44,44,44,.18);
+  display:flex;align-items:center;justify-content:center;
 }
+.auth-logo .brand-mark{width:38px;height:38px}
 .auth-title{font-size:28px;letter-spacing:-.8px;color:var(--text)}
 .auth-sub{color:var(--t2);margin:8px 0 26px}
 .auth-tabs{background:var(--surface-2);padding:4px;border-radius:100px}
@@ -1152,7 +1158,7 @@ img{background:var(--surface-2)}
 .fab{
   bottom:calc(var(--th) + env(safe-area-inset-bottom) + 18px);
   width:56px;height:56px;
-  background:linear-gradient(155deg,#F0784B,var(--brand-solid));
+  background:linear-gradient(155deg,#F25815,var(--brand-solid));
   box-shadow:0 8px 24px -6px rgba(216,90,48,.75),0 2px 6px rgba(58,30,18,.2);
   transition:transform .18s var(--ease-out),box-shadow .2s;
   z-index:15;
@@ -1256,7 +1262,7 @@ img{background:var(--surface-2)}
 .match-scroll{padding:14px 14px 6px;gap:14px}
 .m-ring{
   width:64px;height:64px;padding:2.5px;border:2.5px solid transparent;
-  background:linear-gradient(150deg,#F0784B,var(--coral)) border-box;
+  background:linear-gradient(150deg,#F25815,var(--coral)) border-box;
   border-radius:50%;
   transition:transform .16s var(--ease);
 }
@@ -1365,7 +1371,7 @@ img{background:var(--surface-2)}
 /* ---------- 20. Provider dashboard ---------- */
 .earn-banner,.dash-hero{
   border-radius:var(--r-xl);margin:14px 12px;padding:20px;
-  background:linear-gradient(150deg,#F0784B 0%,var(--brand-solid) 58%,#B8451F 100%);
+  background:linear-gradient(150deg,#F25815 0%,var(--brand-solid) 58%,#A8380C 100%);
   box-shadow:0 10px 30px -12px rgba(216,90,48,.7);
 }
 .earn-n{font-size:36px;letter-spacing:-1.2px}
@@ -1597,6 +1603,13 @@ img{background:var(--surface-2)}
 }
 .cmt-more:active{color:var(--coral)}
 
+/* ---------- Brand mark: two chevrons meeting, "exchange" ---------- */
+.brand-mark{display:block;flex-shrink:0}
+.brand-mark-up{color:var(--coral)}
+.brand-mark-dn{color:#2C2C2C}
+[data-theme="dark"] .brand-mark-dn{color:#D8D2CC}
+.hdr-logo .brand-mark{width:21px;height:21px}
+
 </style>
 </head>
 <body>
@@ -1648,7 +1661,7 @@ img{background:var(--surface-2)}
 </script>
 
 <div id="loading-overlay">
-  <div class="loading-logo"><i class="ti ti-planet"></i></div>
+  <div class="loading-logo"><svg viewBox="0 0 100 100" class="brand-mark" aria-hidden="true"><path d="M14,20 L50,52 L86,20" fill="none" stroke="currentColor" class="brand-mark-up" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/><path d="M14,80 L50,48 L86,80" fill="none" stroke="currentColor" class="brand-mark-dn" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
   <div style="font-size:20px;font-weight:800;color:var(--coral-d);">PetXchange</div>
   <div class="loading-spin"></div>
 </div>
@@ -1657,7 +1670,7 @@ img{background:var(--surface-2)}
 <div id="s-auth" class="screen" style="display:none;flex-direction:column;">
   <div style="width:100%;max-width:380px;margin:0 auto;">
     <button class="auth-back" onclick="authBack()"><i class="ti ti-arrow-left"></i></button>
-    <div class="auth-logo"><i class="ti ti-planet"></i></div>
+    <div class="auth-logo"><svg viewBox="0 0 100 100" class="brand-mark" aria-hidden="true"><path d="M14,20 L50,52 L86,20" fill="none" stroke="currentColor" class="brand-mark-up" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/><path d="M14,80 L50,48 L86,80" fill="none" stroke="currentColor" class="brand-mark-dn" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
     <div class="auth-title">PetXchange</div>
     <div class="auth-sub" id="auth-sub">All Pets. All Needs. One Exchange.<br>Join India's pet community.</div>
 
@@ -1767,7 +1780,7 @@ img{background:var(--surface-2)}
     <i class="ti ti-paw"></i>
   </div>
   <div style="text-align:center;padding:0 24px;">
-    <div class="sp-logo"><i class="ti ti-planet"></i></div>
+    <div class="sp-logo"><svg viewBox="0 0 100 100" class="brand-mark" aria-hidden="true"><path d="M14,20 L50,52 L86,20" fill="none" stroke="currentColor" class="brand-mark-up" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/><path d="M14,80 L50,48 L86,80" fill="none" stroke="currentColor" class="brand-mark-dn" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
     <div class="sp-name">PetXchange</div>
     <div class="sp-tag">All Pets. All Needs. One Exchange.</div>
     <div class="sp-actions">
@@ -1807,7 +1820,7 @@ img{background:var(--surface-2)}
 <div id="s-discover" class="screen" style="display:none;flex-direction:column;">
   <div class="header">
     <div>
-      <div class="hdr-logo"><i class="ti ti-planet"></i> PetXchange</div>
+      <div class="hdr-logo"><svg viewBox="0 0 100 100" class="brand-mark" aria-hidden="true"><path d="M14,20 L50,52 L86,20" fill="none" stroke="currentColor" class="brand-mark-up" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/><path d="M14,80 L50,48 L86,80" fill="none" stroke="currentColor" class="brand-mark-dn" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/></svg> PetXchange</div>
       <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
         <div class="hdr-loc" id="hdr-city" onclick="openLocationPicker('s-discover')"><i class="ti ti-map-pin"></i> <span>Set your location</span></div>
         <select class="radius-pill" id="disc-radius-pill" onchange="quickSetRadius(this.value)" style="display:none;">
@@ -1959,7 +1972,7 @@ img{background:var(--surface-2)}
 <!-- ===== FEED ===== -->
 <div id="s-feed" class="screen" style="display:none;flex-direction:column;position:relative;">
   <div class="header">
-    <div class="hdr-logo"><i class="ti ti-planet"></i> Community</div>
+    <div class="hdr-logo"><svg viewBox="0 0 100 100" class="brand-mark" aria-hidden="true"><path d="M14,20 L50,52 L86,20" fill="none" stroke="currentColor" class="brand-mark-up" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/><path d="M14,80 L50,48 L86,80" fill="none" stroke="currentColor" class="brand-mark-dn" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/></svg> Community</div>
     <div class="hdr-acts"><i class="ti ti-search" onclick="openSearch()"></i>
       <span class="bell-wrap" onclick="openNotifications()"><i class="ti ti-bell"></i><span class="bell-dot" id="bell-dot-2" style="display:none;">0</span></span></div>
   </div>
@@ -1993,7 +2006,7 @@ img{background:var(--surface-2)}
 <!-- ===== SERVICES ===== -->
 <div id="s-services" class="screen" style="display:none;flex-direction:column;">
   <div class="header">
-    <div><div class="hdr-logo"><i class="ti ti-planet"></i> Services</div><div class="hdr-loc" id="svc-city" onclick="openLocationPicker('s-services')" style="cursor:pointer;"><i class="ti ti-map-pin"></i> Book or hire nearby</div></div>
+    <div><div class="hdr-logo"><svg viewBox="0 0 100 100" class="brand-mark" aria-hidden="true"><path d="M14,20 L50,52 L86,20" fill="none" stroke="currentColor" class="brand-mark-up" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/><path d="M14,80 L50,48 L86,80" fill="none" stroke="currentColor" class="brand-mark-dn" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/></svg> Services</div><div class="hdr-loc" id="svc-city" onclick="openLocationPicker('s-services')" style="cursor:pointer;"><i class="ti ti-map-pin"></i> Book or hire nearby</div></div>
     <div class="hdr-acts"><i class="ti ti-adjustments-horizontal" onclick="openModal('m-svc-filters')"></i></div>
   </div>
   <div class="scroll-area">
@@ -2106,7 +2119,7 @@ img{background:var(--surface-2)}
 <!-- ===== INBOX ===== -->
 <div id="s-inbox" class="screen" style="display:none;flex-direction:column;">
   <div class="header">
-    <div class="hdr-logo"><i class="ti ti-planet"></i> Inbox</div>
+    <div class="hdr-logo"><svg viewBox="0 0 100 100" class="brand-mark" aria-hidden="true"><path d="M14,20 L50,52 L86,20" fill="none" stroke="currentColor" class="brand-mark-up" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/><path d="M14,80 L50,48 L86,80" fill="none" stroke="currentColor" class="brand-mark-dn" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/></svg> Inbox</div>
     <div class="hdr-acts"><i class="ti ti-refresh" onclick="loadInbox()"></i></div>
   </div>
   <div class="scroll-area">
@@ -2290,7 +2303,7 @@ img{background:var(--surface-2)}
 <!-- ===== MY PROFILE ===== -->
 <div id="s-me" class="screen" style="display:none;flex-direction:column;">
   <div class="header">
-    <div class="hdr-logo"><i class="ti ti-planet"></i> My profile</div>
+    <div class="hdr-logo"><svg viewBox="0 0 100 100" class="brand-mark" aria-hidden="true"><path d="M14,20 L50,52 L86,20" fill="none" stroke="currentColor" class="brand-mark-up" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/><path d="M14,80 L50,48 L86,80" fill="none" stroke="currentColor" class="brand-mark-dn" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/></svg> My profile</div>
     <div class="hdr-acts"><i class="ti ti-settings" onclick="openSettings()"></i></div>
   </div>
   <div class="scroll-area">
@@ -10652,7 +10665,7 @@ function applyTheme(setting){
     window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
   document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
   const meta=document.querySelector('meta[name="theme-color"]');
-  if(meta) meta.setAttribute('content', dark ? '#131110' : '#D85A30');
+  if(meta) meta.setAttribute('content', dark ? '#131110' : '#F25815');
   const lbl=document.getElementById('theme-label');
   if(lbl) lbl.textContent = setting.charAt(0).toUpperCase()+setting.slice(1);
   const ico=document.getElementById('theme-icon');
@@ -10742,5 +10755,15 @@ syncRoleUI();
     <button class="cbtn" style="color:var(--red);border-color:var(--red);" onclick="doLogout()">Log out</button>
   </div>
 </div>
+
+<script>
+// Registered last, after everything the app itself needs is already
+// defined — installability should never be able to delay or break boot.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch((e) => console.log('[sw] registration skipped:', e.message));
+  });
+}
+</script>
 </body>
 </html>
