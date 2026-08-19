@@ -1865,19 +1865,26 @@ img{background:var(--surface-2)}
 
 <!-- ===== OWNER PROFILE ===== -->
 <div id="s-owner" class="screen" style="display:none;flex-direction:column;">
-  <div id="own-cover" class="own-cover" style="background:var(--coral-l);">
-    <button class="own-back" onclick="goBack('s-discover')"><i class="ti ti-arrow-left"></i></button>
-    <div id="own-avi" class="own-avi" style="background:var(--coral);">A</div>
+  <div class="header">
+    <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+      <i class="ti ti-arrow-left" style="font-size:22px;cursor:pointer;flex-shrink:0;" onclick="goBack('s-discover')"></i>
+      <span style="font-size:17px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Profile</span>
+    </div>
+    <div class="hdr-acts">
+      <span id="own-intent-tag" class="pill" style="background:var(--teal-l);color:var(--teal-m);font-size:11px;"></span>
+    </div>
   </div>
 
   <div class="scroll-area" style="padding-bottom:80px;">
-    <div class="own-body">
-      <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
-        <span id="own-intent-tag" class="pill" style="background:var(--teal-l);color:var(--teal-m);font-size:12px;"></span>
+    <div class="own-body" style="padding:18px 16px 14px;">
+      <div class="prof-top">
+        <div class="prof-avi-lg" id="own-avi" style="background:var(--coral);">A</div>
+        <div style="flex:1;min-width:0;">
+          <div class="own-name" id="own-name" style="font-size:20px;">Loading…</div>
+          <div class="own-loc"><i class="ti ti-map-pin" style="font-size:12px;color:var(--coral);"></i><span id="own-loc">—</span><span class="handle" id="own-handle" style="margin-left:6px;"></span></div>
+        </div>
       </div>
-      <div class="own-name" id="own-name">Loading…</div>
-      <div class="own-loc"><i class="ti ti-map-pin" style="font-size:12px;color:var(--coral);"></i><span id="own-loc">—</span><span class="handle" id="own-handle" style="margin-left:6px;"></span></div>
-      <div class="own-bio" id="own-bio">Passionate golden retriever parent. Love meeting other dog families for playdates. Also a Koi enthusiast!</div>
+      <div class="own-bio" id="own-bio" style="margin-top:10px;">Passionate golden retriever parent. Love meeting other dog families for playdates. Also a Koi enthusiast!</div>
 
       <div class="own-stats">
         <div class="own-stat"><div class="own-stat-n" id="own-s1">—</div><div class="own-stat-l">Pets</div></div>
@@ -1995,11 +2002,6 @@ img{background:var(--surface-2)}
       <input type="text" id="svc-search" placeholder="Search walkers, sitters, groomers…" oninput="searchSvc(this.value)">
     </div>
 
-    <!-- Providers get straight into Manage my business from here, since
-         Services is where they think about their work. Shown to anyone with
-         the provider role or a listing; also lets a pet parent start one. -->
-    <div id="svc-mybiz" style="display:none;padding:10px 12px 2px;"></div>
-
     <!-- Bookings you've made, with their current status. Filled by
          loadSvcBookings(); hidden entirely when there are none. -->
     <div id="svc-bookings-sec" style="display:none;">
@@ -2065,11 +2067,11 @@ img{background:var(--surface-2)}
       <button class="sbtn" style="margin:0;background:var(--purple-m);padding:11px;font-size:13px;" onclick="postCareRequest()">Post a care request</button>
     </div>
 
-    <div class="tmp-card" style="margin:14px 12px 0;background:var(--teal-l);" id="biz-cta">
-      <div class="tmp-t" style="color:var(--teal-d);"><i class="ti ti-briefcase" style="font-size:16px;"></i> Want to offer a service?</div>
-      <p style="font-size:12px;color:var(--teal-d);margin-bottom:10px;">Run a clinic, or just free on weekends to walk a dog? Both belong here. Charge what you like — or nothing at all.</p>
-      <button class="sbtn" style="margin:0;background:var(--teal);padding:11px;font-size:13px;" onclick="switchToProvider()">Offer a service — free</button>
-    </div>
+    <!-- Providers get straight into Manage my business from here, since
+         Services is where they think about their work — moved to the bottom
+         so it doesn't compete with browsing for attention. Shown to anyone
+         with the provider role or a listing; also lets a pet parent start one. -->
+    <div id="svc-mybiz" style="margin:14px 12px 0;"></div>
 
     <div class="cs-banner">
       <div class="cs-banner-t"><i class="ti ti-rocket" style="font-size:16px;color:var(--amber-m);"></i> Coming soon</div>
@@ -10119,8 +10121,6 @@ async function openUserProfile(userId, opts) {
   ownerBackTo = opts.back || 's-discover';
   showScreen('s-owner');
 
-  const cover = document.getElementById('own-cover');
-  cover.style.background = opts.bg || 'var(--coral-l)';
   document.getElementById('own-bio').textContent = 'Loading…';
   document.getElementById('own-pets-list').innerHTML = '';
   document.getElementById('own-posts-list').innerHTML = '';
