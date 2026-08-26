@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>PetXchange — All Pets. All Needs. One Exchange.</title>
 <meta name="description" content="India's pet community. Find playdates and mates for your pet, get help when you need a sitter or walker, report lost pets, and book trusted local services.">
-<meta name="theme-color" content="#FC5803">
+<meta name="theme-color" content="#D85A30">
 
 <!-- Link previews (WhatsApp, Instagram DMs, Twitter, etc.) -->
 <meta property="og:type" content="website">
@@ -21,8 +21,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="PetXchange">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css">
 
@@ -45,7 +45,7 @@
 </script>
 <style>
 :root {
-  --coral:#FC5803;--coral-l:#FAECE7;--coral-d:#4A1B0C;--coral-m:#993C1D;
+  --coral:#D85A30;--coral-l:#FAECE7;--coral-d:#4A1B0C;--coral-m:#993C1D;
   --teal:#1D9E75;--teal-l:#E1F5EE;--teal-d:#04342C;--teal-m:#0F6E56;
   --purple:#534AB7;--purple-l:#EEEDFE;--purple-d:#26215C;--purple-m:#3C3489;
   --amber:#BA7517;--amber-l:#FAEEDA;--amber-d:#412402;--amber-m:#854F0B;
@@ -680,8 +680,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
 
   /* brand — unchanged hue, plus a dedicated token for solid fills
      so light and dark can diverge without touching every rule */
-  --coral:#FC5803;
-  --brand-solid:#FC5803;
+  --coral:#D85A30;
+  --brand-solid:#D85A30;
   --coral-ring:rgba(216,90,48,.18);
 
   --scrim:rgba(26,16,11,.55);
@@ -715,7 +715,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
   --gray-l:#2A2523;
   --gray-d:#E9E3DF;
 
-  --coral:#FF7A3D;          /* accent for text + icons on dark */
+  --coral:#FF8355;          /* accent for text + icons on dark */
   --coral-l:#3A2015;
   --coral-m:#FFAA85;
   --coral-d:#FFD5C2;
@@ -838,22 +838,16 @@ img{background:var(--surface-2)}
 #s-splash .sp-pets{display:none}   /* the drifting icons are gone — the pattern carries it now */
 
 .sp-logo{
-  width:92px;height:92px;border-radius:28px;
-  background:linear-gradient(155deg,#FF7B2E 0%,#FC5803 55%,#E24A00 100%);
-  box-shadow:0 14px 32px -10px rgba(252,88,3,.55), 0 1px 0 rgba(255,255,255,.25) inset;
-  display:flex;align-items:center;justify-content:center;
+  width:88px;height:88px;border-radius:28px;
+  background:linear-gradient(155deg,#FF9463 0%,var(--coral) 58%,#C24E22 100%);
+  box-shadow:0 10px 34px -8px rgba(216,90,48,.75), inset 0 1px 0 rgba(255,255,255,.28);
   animation:px-pop .55s var(--ease-out) both;
 }
-.sp-logo .brand-mark{width:54px;height:54px}
-.sp-logo .brand-mark-up{color:#fff}
-.sp-logo .brand-mark-dn{color:#282828}
+.sp-logo i{font-size:44px;color:#fff}
 .sp-name{
-  font-size:42px;letter-spacing:-1.6px;
+  font-size:42px;letter-spacing:-1.6px;color:#2A1710;
   animation:px-rise .55s .1s var(--ease-out) both;
 }
-.sp-name-pet{color:#FC5803}
-.sp-name-x{color:#2A1710}
-[data-theme="dark"] .sp-name-x{color:#F6EFE9}
 .sp-tag{
   font-size:13.5px;color:#8A7059;letter-spacing:.1px;
   animation:px-rise .55s .18s var(--ease-out) both;
@@ -861,7 +855,7 @@ img{background:var(--surface-2)}
 .sp-actions{display:flex;flex-direction:column;gap:11px;max-width:290px;margin:40px auto 0}
 .sp-btn{
   margin-top:0;width:100%;padding:17px 24px;font-size:16.5px;letter-spacing:-.01em;
-  background:linear-gradient(155deg,#FF8A4D,var(--coral));color:#fff;
+  background:linear-gradient(155deg,#FF9463,var(--coral));color:#fff;
   box-shadow:0 8px 22px -8px rgba(216,90,48,.55);
   animation:px-rise .55s .26s var(--ease-out) both;
   transition:transform .14s var(--ease),box-shadow .2s;
@@ -886,26 +880,18 @@ img{background:var(--surface-2)}
 #loading-overlay > div:nth-child(2){font-family:var(--ff-display);letter-spacing:-.5px;color:var(--text)!important}
 .loading-logo{
   width:76px;height:76px;border-radius:24px;
-  background:linear-gradient(155deg,#FF7B2E 0%,#FC5803 55%,#E24A00 100%);
-  box-shadow:0 10px 28px -10px rgba(252,88,3,.5);
-  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(155deg,var(--coral),var(--coral));
+  box-shadow:0 10px 30px -10px rgba(216,90,48,.7);
   animation:px-pop .5s var(--ease-out) both;
 }
-.loading-logo .brand-mark{width:44px;height:44px}
-.loading-logo .brand-mark-up{color:#fff}
-.loading-logo .brand-mark-dn{color:#282828}
 .loading-spin{border-color:var(--bd);border-top-color:var(--coral)}
 
 #s-auth{background:var(--card)}
 .auth-logo{
   width:66px;height:66px;border-radius:20px;
-  background:linear-gradient(155deg,#FF7B2E 0%,#FC5803 55%,#E24A00 100%);
-  box-shadow:0 8px 22px -10px rgba(252,88,3,.45);
-  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(155deg,var(--coral),var(--coral));
+  box-shadow:0 8px 24px -10px rgba(216,90,48,.8);
 }
-.auth-logo .brand-mark{width:38px;height:38px}
-.auth-logo .brand-mark-up{color:#fff}
-.auth-logo .brand-mark-dn{color:#282828}
 .auth-title{font-size:28px;letter-spacing:-.8px;color:var(--text)}
 .auth-sub{color:var(--t2);margin:8px 0 26px}
 .auth-tabs{background:var(--surface-2);padding:4px;border-radius:100px}
@@ -1167,7 +1153,7 @@ img{background:var(--surface-2)}
 .fab{
   bottom:calc(var(--th) + env(safe-area-inset-bottom) + 18px);
   width:56px;height:56px;
-  background:linear-gradient(155deg,#FC5803,var(--brand-solid));
+  background:linear-gradient(155deg,#D85A30,var(--brand-solid));
   box-shadow:0 8px 24px -6px rgba(216,90,48,.75),0 2px 6px rgba(58,30,18,.2);
   transition:transform .18s var(--ease-out),box-shadow .2s;
   z-index:15;
@@ -1271,7 +1257,7 @@ img{background:var(--surface-2)}
 .match-scroll{padding:14px 14px 6px;gap:14px}
 .m-ring{
   width:64px;height:64px;padding:2.5px;border:2.5px solid transparent;
-  background:linear-gradient(150deg,#FC5803,var(--coral)) border-box;
+  background:linear-gradient(150deg,#D85A30,var(--coral)) border-box;
   border-radius:50%;
   transition:transform .16s var(--ease);
 }
@@ -1380,7 +1366,7 @@ img{background:var(--surface-2)}
 /* ---------- 20. Provider dashboard ---------- */
 .earn-banner,.dash-hero{
   border-radius:var(--r-xl);margin:14px 12px;padding:20px;
-  background:linear-gradient(150deg,#FC5803 0%,var(--brand-solid) 58%,#A8380C 100%);
+  background:linear-gradient(150deg,#D85A30 0%,var(--brand-solid) 58%,#B8451F 100%);
   box-shadow:0 10px 30px -12px rgba(216,90,48,.7);
 }
 .earn-n{font-size:36px;letter-spacing:-1.2px}
@@ -1612,17 +1598,9 @@ img{background:var(--surface-2)}
 }
 .cmt-more:active{color:var(--coral)}
 
-/* ---------- Brand mark: two chevrons meeting, "exchange" ---------- */
-.brand-mark{display:block;flex-shrink:0}
-.brand-mark-up{color:var(--coral)}
-.brand-mark-dn{color:#282828}
-[data-theme="dark"] .brand-mark-dn{color:#D8D2CC}
-.hdr-logo .brand-mark{width:21px;height:21px}
-
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><path id="pxmark-up" d="M 20.00,97.00 C 19.67,105.17 18.83,116.33 22.00,127.00 C 25.17,137.67 -19.67,99.33 39.00,161.00 C 97.67,222.67 311.83,436.50 374.00,497.00 C 436.17,557.50 398.83,516.33 412.00,524.00 C 425.17,531.67 439.00,538.00 453.00,543.00 C 467.00,548.00 481.83,551.50 496.00,554.00 C 510.17,556.50 522.00,557.83 538.00,558.00 C 554.00,558.17 575.83,557.17 592.00,555.00 C 608.17,552.83 622.00,549.00 635.00,545.00 C 648.00,541.00 656.17,538.33 670.00,531.00 C 683.83,523.67 652.67,561.83 718.00,501.00 C 783.33,440.17 1001.67,226.33 1062.00,166.00 C 1122.33,105.67 1075.83,149.33 1080.00,139.00 C 1084.17,128.67 1086.17,113.00 1087.00,104.00 C 1087.83,95.00 1086.83,91.83 1085.00,85.00 C 1083.17,78.17 1082.67,71.83 1076.00,63.00 C 1069.33,54.17 1056.33,39.17 1045.00,32.00 C 1033.67,24.83 1018.83,21.83 1008.00,20.00 C 997.17,18.17 989.50,19.00 980.00,21.00 C 970.50,23.00 958.00,28.67 951.00,32.00 C 944.00,35.33 992.50,-13.33 938.00,41.00 C 883.50,95.33 682.00,302.00 624.00,358.00 C 566.00,414.00 602.50,372.67 590.00,377.00 C 577.50,381.33 562.50,384.33 549.00,384.00 C 535.50,383.67 520.83,379.83 509.00,375.00 C 497.17,370.17 529.50,405.83 478.00,355.00 C 426.50,304.17 253.67,124.00 200.00,70.00 C 146.33,16.00 169.17,39.33 156.00,31.00 C 142.83,22.67 131.00,21.67 121.00,20.00 C 111.00,18.33 104.17,19.67 96.00,21.00 C 87.83,22.33 81.67,22.67 72.00,28.00 C 62.33,33.33 46.00,44.67 38.00,53.00 C 30.00,61.33 27.00,70.67 24.00,78.00 C 21.00,85.33 20.33,88.83 20.00,97.00 Z" fill="currentColor"/><path id="pxmark-dn" d="M 78.00,987.00 C 77.17,997.50 79.50,1013.83 82.00,1023.00 C 84.50,1032.17 88.00,1036.00 93.00,1042.00 C 98.00,1048.00 105.00,1054.67 112.00,1059.00 C 119.00,1063.33 128.00,1066.33 135.00,1068.00 C 142.00,1069.67 145.17,1070.67 154.00,1069.00 C 162.83,1067.33 174.33,1067.00 188.00,1058.00 C 201.67,1049.00 185.83,1064.00 236.00,1015.00 C 286.17,966.00 441.00,808.83 489.00,764.00 C 537.00,719.17 511.67,749.50 524.00,746.00 C 536.33,742.50 552.00,742.33 563.00,743.00 C 574.00,743.67 580.33,745.33 590.00,750.00 C 599.67,754.67 572.83,724.17 621.00,771.00 C 669.17,817.83 830.83,983.33 879.00,1031.00 C 927.17,1078.67 899.50,1050.83 910.00,1057.00 C 920.50,1063.17 930.33,1067.00 942.00,1068.00 C 953.67,1069.00 970.67,1065.50 980.00,1063.00 C 989.33,1060.50 992.50,1057.17 998.00,1053.00 C 1003.50,1048.83 1009.00,1043.17 1013.00,1038.00 C 1017.00,1032.83 1019.67,1028.00 1022.00,1022.00 C 1024.33,1016.00 1027.17,1011.17 1027.00,1002.00 C 1026.83,992.83 1025.50,977.67 1021.00,967.00 C 1016.50,956.33 1051.83,991.50 1000.00,938.00 C 948.17,884.50 763.67,698.67 710.00,646.00 C 656.33,593.33 688.83,628.83 678.00,622.00 C 667.17,615.17 657.50,610.00 645.00,605.00 C 632.50,600.00 615.67,595.00 603.00,592.00 C 590.33,589.00 581.50,587.67 569.00,587.00 C 556.50,586.33 542.67,586.17 528.00,588.00 C 513.33,589.83 495.33,593.67 481.00,598.00 C 466.67,602.33 455.33,606.83 442.00,614.00 C 428.67,621.17 457.17,587.17 401.00,641.00 C 344.83,694.83 157.33,883.83 105.00,937.00 C 52.67,990.17 91.50,951.67 87.00,960.00 C 82.50,968.33 78.83,976.50 78.00,987.00 Z" fill="currentColor"/></defs></svg>
 
 
 <!-- Loading overlay -->
@@ -1672,7 +1650,7 @@ img{background:var(--surface-2)}
 </script>
 
 <div id="loading-overlay">
-  <div class="loading-logo"><svg viewBox="0 0 1107 1089" class="brand-mark" aria-hidden="true"><use href="#pxmark-up" class="brand-mark-up"/><use href="#pxmark-dn" class="brand-mark-dn"/></svg></div>
+  <div class="loading-logo"><i class="ti ti-planet"></i></div>
   <div style="font-size:20px;font-weight:800;color:var(--coral-d);">PetXchange</div>
   <div class="loading-spin"></div>
 </div>
@@ -1681,7 +1659,7 @@ img{background:var(--surface-2)}
 <div id="s-auth" class="screen" style="display:none;flex-direction:column;">
   <div style="width:100%;max-width:380px;margin:0 auto;">
     <button class="auth-back" onclick="authBack()"><i class="ti ti-arrow-left"></i></button>
-    <div class="auth-logo"><svg viewBox="0 0 1107 1089" class="brand-mark" aria-hidden="true"><use href="#pxmark-up" class="brand-mark-up"/><use href="#pxmark-dn" class="brand-mark-dn"/></svg></div>
+    <div class="auth-logo"><i class="ti ti-planet"></i></div>
     <div class="auth-title">PetXchange</div>
     <div class="auth-sub" id="auth-sub">All Pets. All Needs. One Exchange.<br>Join India's pet community.</div>
 
@@ -1791,8 +1769,8 @@ img{background:var(--surface-2)}
     <i class="ti ti-paw"></i>
   </div>
   <div style="text-align:center;padding:0 24px;">
-    <div class="sp-logo"><svg viewBox="0 0 1107 1089" class="brand-mark" aria-hidden="true"><use href="#pxmark-up" class="brand-mark-up"/><use href="#pxmark-dn" class="brand-mark-dn"/></svg></div>
-    <div class="sp-name"><span class="sp-name-pet">Pet</span><span class="sp-name-x">Xchange</span></div>
+    <div class="sp-logo"><i class="ti ti-planet"></i></div>
+    <div class="sp-name">PetXchange</div>
     <div class="sp-tag">All Pets. All Needs. One Exchange.</div>
     <div class="sp-actions">
       <button class="sp-btn" onclick="startSignup()">Sign up</button>
@@ -1831,7 +1809,7 @@ img{background:var(--surface-2)}
 <div id="s-discover" class="screen" style="display:none;flex-direction:column;">
   <div class="header">
     <div>
-      <div class="hdr-logo"><svg viewBox="0 0 1107 1089" class="brand-mark" aria-hidden="true"><use href="#pxmark-up" class="brand-mark-up"/><use href="#pxmark-dn" class="brand-mark-dn"/></svg> PetXchange</div>
+      <div class="hdr-logo"><i class="ti ti-planet"></i> PetXchange</div>
       <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
         <div class="hdr-loc" id="hdr-city" onclick="openLocationPicker('s-discover')"><i class="ti ti-map-pin"></i> <span>Set your location</span></div>
         <select class="radius-pill" id="disc-radius-pill" onchange="quickSetRadius(this.value)" style="display:none;">
@@ -1983,7 +1961,7 @@ img{background:var(--surface-2)}
 <!-- ===== FEED ===== -->
 <div id="s-feed" class="screen" style="display:none;flex-direction:column;position:relative;">
   <div class="header">
-    <div class="hdr-logo"><svg viewBox="0 0 1107 1089" class="brand-mark" aria-hidden="true"><use href="#pxmark-up" class="brand-mark-up"/><use href="#pxmark-dn" class="brand-mark-dn"/></svg> Community</div>
+    <div class="hdr-logo"><i class="ti ti-planet"></i> Community</div>
     <div class="hdr-acts"><i class="ti ti-search" onclick="openSearch()"></i>
       <span class="bell-wrap" onclick="openNotifications()"><i class="ti ti-bell"></i><span class="bell-dot" id="bell-dot-2" style="display:none;">0</span></span></div>
   </div>
@@ -2017,7 +1995,7 @@ img{background:var(--surface-2)}
 <!-- ===== SERVICES ===== -->
 <div id="s-services" class="screen" style="display:none;flex-direction:column;">
   <div class="header">
-    <div><div class="hdr-logo"><svg viewBox="0 0 1107 1089" class="brand-mark" aria-hidden="true"><use href="#pxmark-up" class="brand-mark-up"/><use href="#pxmark-dn" class="brand-mark-dn"/></svg> Services</div><div class="hdr-loc" id="svc-city" onclick="openLocationPicker('s-services')" style="cursor:pointer;"><i class="ti ti-map-pin"></i> Book or hire nearby</div></div>
+    <div><div class="hdr-logo"><i class="ti ti-planet"></i> Services</div><div class="hdr-loc" id="svc-city" onclick="openLocationPicker('s-services')" style="cursor:pointer;"><i class="ti ti-map-pin"></i> Book or hire nearby</div></div>
     <div class="hdr-acts"><i class="ti ti-adjustments-horizontal" onclick="openModal('m-svc-filters')"></i></div>
   </div>
   <div class="scroll-area">
@@ -2130,7 +2108,7 @@ img{background:var(--surface-2)}
 <!-- ===== INBOX ===== -->
 <div id="s-inbox" class="screen" style="display:none;flex-direction:column;">
   <div class="header">
-    <div class="hdr-logo"><svg viewBox="0 0 1107 1089" class="brand-mark" aria-hidden="true"><use href="#pxmark-up" class="brand-mark-up"/><use href="#pxmark-dn" class="brand-mark-dn"/></svg> Inbox</div>
+    <div class="hdr-logo"><i class="ti ti-planet"></i> Inbox</div>
     <div class="hdr-acts"><i class="ti ti-refresh" onclick="loadInbox()"></i></div>
   </div>
   <div class="scroll-area">
@@ -2314,7 +2292,7 @@ img{background:var(--surface-2)}
 <!-- ===== MY PROFILE ===== -->
 <div id="s-me" class="screen" style="display:none;flex-direction:column;">
   <div class="header">
-    <div class="hdr-logo"><svg viewBox="0 0 1107 1089" class="brand-mark" aria-hidden="true"><use href="#pxmark-up" class="brand-mark-up"/><use href="#pxmark-dn" class="brand-mark-dn"/></svg> My profile</div>
+    <div class="hdr-logo"><i class="ti ti-planet"></i> My profile</div>
     <div class="hdr-acts"><i class="ti ti-settings" onclick="openSettings()"></i></div>
   </div>
   <div class="scroll-area">
@@ -10676,7 +10654,7 @@ function applyTheme(setting){
     window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
   document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
   const meta=document.querySelector('meta[name="theme-color"]');
-  if(meta) meta.setAttribute('content', dark ? '#131110' : '#FC5803');
+  if(meta) meta.setAttribute('content', dark ? '#131110' : '#D85A30');
   const lbl=document.getElementById('theme-label');
   if(lbl) lbl.textContent = setting.charAt(0).toUpperCase()+setting.slice(1);
   const ico=document.getElementById('theme-icon');
