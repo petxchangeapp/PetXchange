@@ -1,0 +1,16 @@
+{
+  "name": "PetXchange",
+  "short_name": "PetXchange",
+  "description": "All Pets. All Needs. One Exchange. Find playdates, adopt, book vets, groomers and walkers, and connect with the pet community near you.",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FDF6EC",
+  "theme_color": "#D85A30",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
